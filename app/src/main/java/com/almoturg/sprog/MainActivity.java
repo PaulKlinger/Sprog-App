@@ -85,7 +85,12 @@ public class MainActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        processPoems();
+        File file = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems.json");
+        if (! file.exists()) {
+            updatePoems(null);
+        } else {
+            processPoems();
+        }
     }
 
     private void sortPoems() {
@@ -115,19 +120,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void processPoems() {
+        poems = new ArrayList<>();
+
+        File poems_file = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems.json");
+        File poems_old_file = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems_old.json");
+        if (! poems_file.exists()){
+            poems_old_file.renameTo(poems_file);
+        }
+
         TextView tv1 = (TextView) findViewById(R.id.update_status);
         try {
-            poems = PoemParser.readJsonStream(new FileInputStream(new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems.json")));
+            poems = PoemParser.readJsonStream(new FileInputStream(poems_file));
             tv1.setText(String.format("%d poems", poems.size()));
         } catch (IOException e) {
             tv1.setText("IO Error" + e.toString());
         }
+
         mAdapter = new MyAdapter(poems, this);
         mRecyclerView.setAdapter(mAdapter);
         sortPoems();
     }
 
     public void updatePoems(View view) {
+        File poems_file = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems.json");
+        File poems_old_file = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems_old.json");
+        if (poems_file.exists()){
+            poems_file.renameTo(new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems_old.json"));
+        }
+
         String url = "https://almoturg.com/poems.json";
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
         request.setDescription("Sprog poems");
@@ -140,12 +160,14 @@ public class MainActivity extends AppCompatActivity {
         DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         BroadcastReceiver onComplete = new BroadcastReceiver() {
             public void onReceive(Context ctxt, Intent intent) {
+
                 TextView tv1 = (TextView) findViewById(R.id.update_status);
                 tv1.setText("json downloaded");
                 processPoems();
             }
         };
         registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
         manager.enqueue(request);
     }
 }

@@ -17,6 +17,9 @@
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:orientation="horizontal">
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -25,13 +28,21 @@
             android:scaleType="fitCenter"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:id="@+id/update_status"
-            android:paddingLeft="15dp"
-            android:paddingBottom="10dp"
-            android:gravity="bottom"/>
+            android:textSize="17sp"
+            android:padding="0dp"
+            android:gravity="center"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,16 +51,17 @@
             android:drawableStart="@drawable/refresh"
             android:drawableLeft="@drawable/refresh"
             android:minWidth="0dp"
-            android:layout_gravity="right"
+            android:layout_gravity="right|bottom"
             />
         <Spinner
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/sort_spinner"
-            android:layout_gravity="right"
+            android:layout_gravity="right|bottom"
             android:dropDownWidth="wrap_content"
-            android:minWidth="0dp"/>
-
+            android:minWidth="0dp"
+            android:gravity="bottom"/>
+        </LinearLayout>
         </android.support.v7.widget.Toolbar>
 
     <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView

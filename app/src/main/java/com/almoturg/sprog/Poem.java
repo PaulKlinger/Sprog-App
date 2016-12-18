@@ -15,10 +15,12 @@ class Poem implements Serializable {
     public String post_author;
     public String post_content;
     public List<ParentComment> parents;
+    public String link;
+    public Poem main_poem;
 
     public Poem(int gold, int score, String content, double timestamp,
                 String post_title, String post_author, String post_content,
-                List<ParentComment> parents) {
+                List<ParentComment> parents, String link, Poem main_poem) {
         this.content = content;
         this.gold = gold;
         this.score = score;
@@ -27,5 +29,7 @@ class Poem implements Serializable {
         this.post_author = post_author;
         this.post_content = post_content;
         this.parents = parents;
+        this.link = link;
+        this.main_poem = main_poem;
     }
 }
