@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,6 +45,7 @@ public class PoemActivity extends AppCompatActivity {
         ((TextView) v.findViewById(R.id.author)).setText(poem.post_author);
         if (poem.post_content != null && poem.post_content.length()>0){
             ((TextView) v.findViewById(R.id.content)).setText(bypass.markdownToSpannable(poem.post_content));
+            ((TextView) v.findViewById(R.id.content)).setMovementMethod(LinkMovementMethod.getInstance());
             v.findViewById(R.id.content).setVisibility(View.VISIBLE);
         }
         mainlist.addView(v);
@@ -51,11 +53,13 @@ public class PoemActivity extends AppCompatActivity {
         for (ParentComment parent : poem.parents){
             if (parent.is_poem != null){
                 v = LayoutInflater.from(this).inflate(R.layout.poem_row, mainlist, false);
+                ((TextView)v.findViewById(R.id.content)).setMovementMethod(LinkMovementMethod.getInstance());
                 Util.update_poem_row(parent.is_poem, v, true, this);
             } else {
                 v = LayoutInflater.from(this)
                         .inflate(R.layout.parents_list_row, mainlist, false);
                 ((TextView) v.findViewById(R.id.content)).setText(bypass.markdownToSpannable(parent.content));
+                ((TextView) v.findViewById(R.id.content)).setMovementMethod(LinkMovementMethod.getInstance());
                 ((TextView) v.findViewById(R.id.author)).setText(parent.author);
             }
             mainlist.addView(v);
@@ -63,6 +67,7 @@ public class PoemActivity extends AppCompatActivity {
 
         if (poem.content != null && poem.content.length()>0){
             v = LayoutInflater.from(this).inflate(R.layout.poem_row, mainlist, false);
+            ((TextView)v.findViewById(R.id.content)).setMovementMethod(LinkMovementMethod.getInstance());
             Util.update_poem_row(poem, v, true, this);
             mainlist.addView(v);
         }
