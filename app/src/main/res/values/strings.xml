@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Sprog</string>
+
+    <string-array name="sort_orders">
+        <item>Date</item>
+        <item>Score</item>
+        <item>Gold</item>
+    </string-array>
 </resources>
