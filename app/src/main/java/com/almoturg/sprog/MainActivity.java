@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.JsonReader;
@@ -29,9 +30,6 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -47,11 +45,17 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private List<Poem> poems;
+    public String sort_order = "Date";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        myToolbar.setTitle(null);
 
         Spinner sortSpinner = (Spinner) findViewById(R.id.sort_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -62,33 +66,11 @@ public class MainActivity extends AppCompatActivity {
         sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedItem = parent.getItemAtPosition(position).toString();
-                if (selectedItem.equals("Date")) {
-                    Collections.sort(poems, new Comparator<Poem>() {
-                        @Override
-                        public int compare(Poem p1, Poem p2) {
-                            return (int) (p2.timestamp - p1.timestamp);
-                        }
-                    });
-                } else if (selectedItem.equals("Score")) {
-                    Collections.sort(poems, new Comparator<Poem>() {
-                        @Override
-                        public int compare(Poem p1, Poem p2) {
-                            return (p2.score - p1.score);
-                        }
-                    });
-                } else if (selectedItem.equals("Gold")) {
-                    Collections.sort(poems, new Comparator<Poem>() {
-                        @Override
-                        public int compare(Poem p1, Poem p2) {
-                            return (p2.gold - p1.gold);
-                        }
-                    });
-                }
-                mAdapter.notifyDataSetChanged();
-            } // to close the onItemSelected
+                sort_order = selectedItem;
+                sortPoems();
+            }
 
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
 
@@ -106,18 +88,43 @@ public class MainActivity extends AppCompatActivity {
         processPoems();
     }
 
+    private void sortPoems() {
+        if (sort_order.equals("Date")) {
+            Collections.sort(poems, new Comparator<Poem>() {
+                @Override
+                public int compare(Poem p1, Poem p2) {
+                    return (int) (p2.timestamp - p1.timestamp);
+                }
+            });
+        } else if (sort_order.equals("Score")) {
+            Collections.sort(poems, new Comparator<Poem>() {
+                @Override
+                public int compare(Poem p1, Poem p2) {
+                    return (p2.score - p1.score);
+                }
+            });
+        } else if (sort_order.equals("Gold")) {
+            Collections.sort(poems, new Comparator<Poem>() {
+                @Override
+                public int compare(Poem p1, Poem p2) {
+                    return (p2.gold - p1.gold);
+                }
+            });
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
     public void processPoems() {
         TextView tv1 = (TextView) findViewById(R.id.update_status);
         try {
             poems = PoemParser.readJsonStream(new FileInputStream(new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems.json")));
-            tv1.setText(String.format("%d poems loaded", poems.size()));
+            tv1.setText(String.format("%d poems", poems.size()));
         } catch (IOException e) {
             tv1.setText("IO Error" + e.toString());
         }
-
-        // specify an adapter (see also next example)
         mAdapter = new MyAdapter(poems, this);
         mRecyclerView.setAdapter(mAdapter);
+        sortPoems();
     }
 
     public void updatePoems(View view) {
@@ -125,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
         request.setDescription("Sprog poems");
         request.setTitle("Sprog");
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
 
         request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, "poems.json");
 
@@ -224,7 +231,14 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
     @NonNull
     @Override
     public String getSectionName(int position) {
-        cal.setTimeInMillis((long) poems.get(position).timestamp * 1000);
-        return DateFormat.format("yyyyMM", cal).toString();
+        if (((MainActivity) context).sort_order.equals("Date")){
+            cal.setTimeInMillis((long) poems.get(position).timestamp * 1000);
+            return DateFormat.format("yyyy-MM", cal).toString();
+        } else if (((MainActivity) context).sort_order.equals("Score")){
+            return Integer.toString(poems.get(position).score);
+        } else if  (((MainActivity) context).sort_order.equals("Gold")) {
+            return Integer.toString(poems.get(position).gold);
+        }
+        return "";
     }
 }

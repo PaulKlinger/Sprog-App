@@ -5,41 +5,61 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="0dp"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:padding="0dp"
     android:orientation="vertical"
     tools:context="com.almoturg.sprog.MainActivity"
     android:background="#eee">
-
-    <LinearLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/main_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorAccent"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/fleuron_white"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"/>
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hello World (Sprog)!"
+            android:layout_height="match_parent"
             android:id="@+id/update_status"
-            android:layout_marginRight="10dp"/>
+            android:paddingLeft="15dp"
+            android:paddingBottom="10dp"
+            android:gravity="bottom"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="load"
             android:onClick="updatePoems"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:drawableStart="@drawable/refresh"
+            android:drawableLeft="@drawable/refresh"
+            android:minWidth="0dp"
+            android:layout_gravity="right"
             />
         <Spinner
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/sort_spinner">
+            android:id="@+id/sort_spinner"
+            android:layout_gravity="right"
+            android:dropDownWidth="wrap_content"
+            android:minWidth="0dp"/>
 
-        </Spinner>
-    </LinearLayout>
+        </android.support.v7.widget.Toolbar>
+
     <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
         android:id="@+id/my_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
         app:fastScrollPopupTextSize="25sp"
-        app:fastScrollPopupBackgroundSize="50dp"/>
+        app:fastScrollPopupBackgroundSize="50dp"
+        app:fastScrollPopupBgColor="@color/colorAccent"
+        app:fastScrollThumbColor="@color/colorAccent"/>
 </LinearLayout>

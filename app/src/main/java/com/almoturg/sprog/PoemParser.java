@@ -53,7 +53,7 @@ public class PoemParser {
                     score = reader.nextInt();
                     break;
                 case "orig_content":
-                    content = reader.nextString();
+                    content = reader.nextString().replace("^", "");
                     break;
                 case "timestamp":
                     timestamp = reader.nextDouble();
@@ -62,10 +62,10 @@ public class PoemParser {
                     post_title = reader.nextString();
                     break;
                 case "submission_user":
-                    post_author = reader.nextString();
+                    post_author = reader.nextString().replace("\\_", "_");
                     break;
                 case "orig_submission_content":
-                    post_content = reader.nextString();
+                    post_content = reader.nextString().replace("^", "");
                     break;
                 case "parents":
                     parents = readParentCommentArray(reader);
@@ -101,10 +101,10 @@ public class PoemParser {
             String name = reader.nextName();
             switch (name) {
                 case "author":
-                    author = reader.nextString();
+                    author = reader.nextString().replace("\\_", "_");;
                     break;
                 case "orig_body":
-                    content = reader.nextString();
+                    content = reader.nextString().replace("^", "");
                     break;
                 default:
                     reader.skipValue();
