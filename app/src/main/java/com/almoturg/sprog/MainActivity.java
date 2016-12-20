@@ -101,12 +101,6 @@ public class MainActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        File file = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems.json");
-        if (!file.exists()) {
-            updatePoems(null);
-        } else {
-            processPoems();
-        }
     }
 
     @Override
@@ -146,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                                     && diff_in_ms > ms_today - SECOND_UPDATE_HOUR * 60 * 60 * 1000)
                     ) {
                 updatePoems(null);
-            } else {
+            } else if (poems == null){
                 processPoems();
             }
         }
