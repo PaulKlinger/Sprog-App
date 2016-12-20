@@ -46,4 +46,7 @@ public final class Util {
         cal.setTimeInMillis((long) poem.timestamp * 1000);
         ((TextView) poem_row.findViewById(R.id.datetime)).setText(DateFormat.format("yyyy-MM-dd HH:mm:ss", cal).toString());
     }
+    public static <T> T last(T[] array) {
+        return array[array.length - 1];
+    }
 }

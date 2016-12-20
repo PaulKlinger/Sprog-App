@@ -24,6 +24,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.io.File;
@@ -44,11 +46,15 @@ public class MainActivity extends AppCompatActivity {
     public String sort_order = "Date";
     private BroadcastReceiver onComplete;
     public TextView statusView;
+    private Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SprogApplication application = (SprogApplication) getApplication();
+        mTracker = application.getDefaultTracker();
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(myToolbar);
@@ -93,6 +99,15 @@ public class MainActivity extends AppCompatActivity {
         } else {
             processPoems();
         }
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+        mTracker.setScreenName("PoemsList");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
+        // Put auto update here
     }
 
     private void sortPoems() {

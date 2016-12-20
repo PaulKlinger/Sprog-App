@@ -12,16 +12,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import in.uncod.android.bypass.Bypass;
 
 public class PoemActivity extends AppCompatActivity {
     private Bypass bypass;
     private Poem poem;
+    private Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_poem);
+
+        SprogApplication application = (SprogApplication) getApplication();
+        mTracker = application.getDefaultTracker();
+
         bypass = new Bypass(this, new Bypass.Options());
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.poem_toolbar);
@@ -71,6 +79,18 @@ public class PoemActivity extends AppCompatActivity {
             Util.update_poem_row(poem, v, true, this);
             mainlist.addView(v);
         }
+
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+        mTracker.setScreenName("Poem");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("PoemPage")
+                .setAction(Util.last(poem.link.split("/")))
+                .build());
 
     }
 
