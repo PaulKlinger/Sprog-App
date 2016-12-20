@@ -4,6 +4,7 @@ import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -23,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.util.Log;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -34,6 +36,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import in.uncod.android.bypass.Bypass;
 
@@ -47,6 +50,11 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver onComplete;
     public TextView statusView;
     private Tracker mTracker;
+    private boolean updating = false; // after processing set last update time if this is true
+
+    // These are the times when an update should be available on the server
+    static int FIRST_UPDATE_HOUR = 2;
+    static int SECOND_UPDATE_HOUR = 14;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,12 +110,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
         mTracker.setScreenName("PoemsList");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
-        // Put auto update here
+        autoUpdate();
+    }
+
+    private void autoUpdate() {
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        long last_update_tstamp = prefs.getLong("LAST_UPDATE_TIME", -1);
+
+        File file = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems.json");
+        if (last_update_tstamp == -1 || !file.exists()) {
+            updatePoems(null);
+        } else {
+            Log.i(TAG, "Checking if it's time to update");
+            Log.i(TAG, String.format("last update time %d", last_update_tstamp));
+            Calendar last_update_cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+            Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+
+            last_update_cal.setTimeInMillis(last_update_tstamp);
+            long diff_in_ms = now.getTimeInMillis() - last_update_tstamp;
+            long ms_today = now.get(Calendar.HOUR_OF_DAY) * 60 * 60 * 1000
+                    + now.get(Calendar.MINUTE) * 60 * 1000
+                    + now.get(Calendar.SECOND) * 1000
+                    + now.get(Calendar.MILLISECOND);
+
+            if (
+                    (now.get(Calendar.HOUR_OF_DAY) >= FIRST_UPDATE_HOUR
+                            && diff_in_ms > ms_today - FIRST_UPDATE_HOUR * 60 * 60 * 1000
+                    ) ||
+                            (now.get(Calendar.HOUR_OF_DAY) >= SECOND_UPDATE_HOUR
+                                    && diff_in_ms > ms_today - SECOND_UPDATE_HOUR * 60 * 60 * 1000)
+                    ) {
+                updatePoems(null);
+            } else {
+                processPoems();
+            }
+        }
     }
 
     private void sortPoems() {
@@ -141,7 +183,20 @@ public class MainActivity extends AppCompatActivity {
         new ParsePoemsTask(this).execute();
     }
 
-    public void setNewPoems(List<Poem> poems){
+    public void setNewPoems(List<Poem> poems) {
+        if (updating){
+            updating = false;
+            if (poems.size() > 1000){
+                SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+
+                Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                editor.putLong("LAST_UPDATE_TIME", now.getTimeInMillis());
+                editor.apply();
+
+            }
+        }
+
         this.poems = poems;
         mAdapter = new MyAdapter(poems, this);
         mRecyclerView.setAdapter(mAdapter);
@@ -153,6 +208,8 @@ public class MainActivity extends AppCompatActivity {
         if (onComplete != null) {
             return;
         }
+        updating = true;
+
         File poems_file = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems.json");
         File poems_old_file = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems_old.json");
         if (poems_file.exists()) {
