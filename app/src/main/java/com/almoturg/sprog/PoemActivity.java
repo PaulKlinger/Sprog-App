@@ -52,7 +52,7 @@ public class PoemActivity extends AppCompatActivity {
         ((TextView) v.findViewById(R.id.title)).setText(poem.post_title);
         ((TextView) v.findViewById(R.id.author)).setText(poem.post_author);
         if (poem.post_content != null && poem.post_content.length()>0){
-            ((TextView) v.findViewById(R.id.content)).setText(bypass.markdownToSpannable(poem.post_content));
+            ((TextView) v.findViewById(R.id.content)).setText(poem.post_content);
             ((TextView) v.findViewById(R.id.content)).setMovementMethod(LinkMovementMethod.getInstance());
             v.findViewById(R.id.content).setVisibility(View.VISIBLE);
         }

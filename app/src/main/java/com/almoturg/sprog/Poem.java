@@ -13,13 +13,13 @@ class Poem implements Serializable {
     public double timestamp;
     public String post_title;
     public String post_author;
-    public String post_content;
+    public CharSequence post_content;
     public List<ParentComment> parents;
     public String link;
     public Poem main_poem;
 
     public Poem(int gold, int score, String content, double timestamp,
-                String post_title, String post_author, String post_content,
+                String post_title, String post_author, CharSequence post_content,
                 List<ParentComment> parents, String link, Poem main_poem) {
         this.content = content;
         this.gold = gold;

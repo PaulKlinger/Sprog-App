@@ -16,13 +16,9 @@ import in.uncod.android.bypass.Bypass;
  */
 
 public final class Util {
-    private static Bypass bypass = null;
     private static Calendar cal = null;
 
     public static void update_poem_row(Poem poem, View poem_row, Boolean border, Context context) {
-        if (bypass == null) {
-            bypass = new Bypass(context, new Bypass.Options());
-        }
         if (cal == null){
             cal = Calendar.getInstance(Locale.ENGLISH);
         }
@@ -34,7 +30,7 @@ public final class Util {
             poem_row.findViewById(R.id.container).setPadding(card_padding, card_padding, card_padding, card_padding);
         }
 
-        ((TextView) poem_row.findViewById(R.id.content)).setText(bypass.markdownToSpannable(poem.content));
+        ((TextView) poem_row.findViewById(R.id.content)).setText(poem.content);
         ((TextView) poem_row.findViewById(R.id.gold_count)).setText(" × " + Long.toString(poem.gold));
         if (poem.gold > 0) {
             poem_row.findViewById(R.id.gold_display).setVisibility(View.VISIBLE);

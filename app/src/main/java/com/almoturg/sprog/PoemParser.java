@@ -1,5 +1,6 @@
 package com.almoturg.sprog;
 
+import android.content.Context;
 import android.util.JsonReader;
 import android.util.JsonToken;
 
@@ -10,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import in.uncod.android.bypass.Bypass;
+
 /**
  * Created by Paul on 2016-12-18.
  */
@@ -17,8 +20,10 @@ import java.util.List;
 public class PoemParser {
     private JsonReader reader;
     private HashMap<String, Poem> mainpoem_links;
+    private Bypass bypass;
 
-    public PoemParser(InputStream in) throws IOException {
+    public PoemParser(InputStream in, Context context) throws IOException {
+        bypass = new Bypass(context, new Bypass.Options());
         this.reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
         mainpoem_links = new HashMap<>();
         reader.beginArray();
@@ -47,7 +52,7 @@ public class PoemParser {
         double timestamp = -1;
         String post_title = null;
         String post_author = null;
-        String post_content = null;
+        CharSequence post_content = null;
         List<ParentComment> parents = null;
         String link = null;
         Poem mainpoem = null;
@@ -80,7 +85,7 @@ public class PoemParser {
                     post_author = "/u/" + reader.nextString().replace("\\_", "_");
                     break;
                 case "orig_submission_content":
-                    post_content = reader.nextString().replace("^", "");
+                    post_content = bypass.markdownToSpannable(reader.nextString().replace("^", ""));
                     break;
                 case "parents":
                     parents = readParentCommentArray();

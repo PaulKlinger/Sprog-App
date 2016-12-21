@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import in.uncod.android.bypass.Bypass;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "Sprog";
@@ -180,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
         poems = new ArrayList<>();
         mAdapter = new MyAdapter(poems, this);
         mRecyclerView.setAdapter(mAdapter);
-        new ParsePoemsTask(this).execute();
+        new ParsePoemsTask(this).execute(this);
     }
 
     public void addPoems(List<Poem> poems_set){
@@ -247,7 +246,6 @@ public class MainActivity extends AppCompatActivity {
 
 class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         implements FastScrollRecyclerView.SectionedAdapter {
-    private Bypass bypass;
     private Context context;
     private List<Poem> poems;
     private Calendar cal;
@@ -284,7 +282,6 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
     // Provide a suitable constructor (depends on the kind of dataset)
     MyAdapter(List<Poem> poems, Context context) {
         this.poems = poems;
-        this.bypass = new Bypass(context, new Bypass.Options());
         this.context = context;
         this.cal = Calendar.getInstance(Locale.ENGLISH);
     }

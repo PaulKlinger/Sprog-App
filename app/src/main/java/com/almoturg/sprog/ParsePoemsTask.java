@@ -1,5 +1,6 @@
 package com.almoturg.sprog;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.widget.TextView;
@@ -14,11 +15,11 @@ import java.util.List;
  * Created by Paul on 2016-12-18.
  */
 
-public class ParsePoemsTask extends AsyncTask<Void, List<Poem>, Boolean> {
+public class ParsePoemsTask extends AsyncTask<Context, List<Poem>, Boolean> {
     private MainActivity activity;
 
     @Override
-    protected Boolean doInBackground(Void... arg0){
+    protected Boolean doInBackground(Context... context){
         List<Poem> poems;
 
         File poems_file = new File(activity.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems.json");
@@ -28,7 +29,7 @@ public class ParsePoemsTask extends AsyncTask<Void, List<Poem>, Boolean> {
         }
 
         try {
-            PoemParser parser = new PoemParser(new FileInputStream(poems_file));
+            PoemParser parser = new PoemParser(new FileInputStream(poems_file), context[0]);
             while (true){
                 poems = parser.getPoems(10);
                 if (poems == null){break;}
