@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -14,42 +15,32 @@ import java.util.List;
  */
 
 public class PoemParser {
-    static public List<Poem> readJsonStream(InputStream in) throws IOException {
-        JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
-        try {
-            List<Poem> poems = readPoemsArray(reader);
-            addMainPoems(poems);
-            return poems;
-        } finally {
-            reader.close();
-        }
-    }
+    private JsonReader reader;
+    private HashMap<String, Poem> mainpoem_links;
 
-    static private void addMainPoems(List<Poem> poems) {
-        for (Poem poem : poems) {
-            for (Poem main_poem : poems) {
-                for (ParentComment parent : main_poem.parents) {
-                    if (parent.link != null && parent.link.equals(poem.link)) {
-                        poem.main_poem = main_poem;
-                        parent.is_poem = poem;
-                    }
-                }
-            }
-        }
-    }
-
-    static private List<Poem> readPoemsArray(JsonReader reader) throws IOException {
-        List<Poem> Poems = new ArrayList<Poem>();
-
+    public PoemParser(InputStream in) throws IOException {
+        this.reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
+        mainpoem_links = new HashMap<>();
         reader.beginArray();
-        while (reader.hasNext()) {
-            Poems.add(readPoem(reader));
-        }
-        reader.endArray();
-        return Poems;
     }
 
-    static private Poem readPoem(JsonReader reader) throws IOException {
+    public List<Poem> getPoems(int n) throws IOException {
+        if (reader == null){
+            return null;
+        }
+        List<Poem> poems = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (!reader.hasNext()) {
+                reader.close();
+                reader = null;
+                break;
+            }
+            poems.add(readPoem());
+        }
+        return poems;
+    }
+
+    private Poem readPoem() throws IOException {
         int gold = -1;
         int score = -1;
         String content = null;
@@ -59,16 +50,22 @@ public class PoemParser {
         String post_content = null;
         List<ParentComment> parents = null;
         String link = null;
+        Poem mainpoem = null;
 
         reader.beginObject();
         while (reader.hasNext()) {
             String name = reader.nextName();
+
             switch (name) {
                 case "gold":
                     gold = reader.nextInt();
                     break;
                 case "score":
                     score = reader.nextInt();
+                    break;
+                case "link":
+                    link = reader.nextString();
+                    mainpoem = mainpoem_links.get(link);
                     break;
                 case "orig_content":
                     content = reader.nextString().replace("^", "");
@@ -86,10 +83,7 @@ public class PoemParser {
                     post_content = reader.nextString().replace("^", "");
                     break;
                 case "parents":
-                    parents = readParentCommentArray(reader);
-                    break;
-                case "link":
-                    link = reader.nextString();
+                    parents = readParentCommentArray();
                     break;
                 default:
                     reader.skipValue();
@@ -97,23 +91,39 @@ public class PoemParser {
             }
         }
         reader.endObject();
-        return new Poem(gold, score, content, timestamp,
+        Poem poem = new Poem(gold, score, content, timestamp,
                 post_title, post_author, post_content,
-                parents, link, null);
+                parents, link, mainpoem);
+        if (mainpoem == null) {
+            // add parent comments of this poem which are poems to mainpoem_links
+            for (ParentComment p : poem.parents) {
+                if (p.author.equalsIgnoreCase("/u/poem_for_your_sprog")) {
+                    mainpoem_links.put(p.link, poem);
+                }
+            }
+        } else {
+            // if this poem is the parent of another one put it into the corresponding ParentComment
+            for (ParentComment p : mainpoem.parents) {
+                if (p.link.equals(poem.link)) {
+                    p.is_poem = poem;
+                }
+            }
+        }
+        return poem;
     }
 
-    static private List<ParentComment> readParentCommentArray(JsonReader reader) throws IOException {
+    private List<ParentComment> readParentCommentArray() throws IOException {
         List<ParentComment> parents = new ArrayList<ParentComment>();
 
         reader.beginArray();
         while (reader.hasNext()) {
-            parents.add(readParentComment(reader));
+            parents.add(readParentComment());
         }
         reader.endArray();
         return parents;
     }
 
-    static private ParentComment readParentComment(JsonReader reader) throws IOException {
+    private ParentComment readParentComment() throws IOException {
         String content = null;
         String author = null;
         int gold = -1;
@@ -132,7 +142,6 @@ public class PoemParser {
             switch (name) {
                 case "author":
                     author = "/u/" + reader.nextString().replace("\\_", "_");
-                    ;
                     break;
                 case "orig_body":
                     content = reader.nextString().replace("^", "");

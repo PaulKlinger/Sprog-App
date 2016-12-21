@@ -14,12 +14,12 @@ import java.util.List;
  * Created by Paul on 2016-12-18.
  */
 
-public class ParsePoemsTask extends AsyncTask<Void, Void, List<Poem>> {
+public class ParsePoemsTask extends AsyncTask<Void, List<Poem>, Boolean> {
     private MainActivity activity;
 
     @Override
-    protected List<Poem> doInBackground(Void... arg0){
-        List<Poem> poems = new ArrayList<>();
+    protected Boolean doInBackground(Void... arg0){
+        List<Poem> poems;
 
         File poems_file = new File(activity.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems.json");
         File poems_old_file = new File(activity.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems_old.json");
@@ -28,16 +28,28 @@ public class ParsePoemsTask extends AsyncTask<Void, Void, List<Poem>> {
         }
 
         try {
-            poems = PoemParser.readJsonStream(new FileInputStream(poems_file));
+            PoemParser parser = new PoemParser(new FileInputStream(poems_file));
+            while (true){
+                poems = parser.getPoems(10);
+                if (poems == null){break;}
+                publishProgress(poems);
+            }
+
         } catch (IOException e) {
+            return false;
         }
 
-        return poems;
+        return true;
     }
 
     @Override
-    protected void onPostExecute(List<Poem> poems){
-        activity.setNewPoems(poems);
+    protected void onProgressUpdate(List<Poem>... poems_set){
+        activity.addPoems(poems_set[0]);
+    }
+
+    @Override
+    protected void onPostExecute(Boolean status){
+        activity.finishedProcessing(status);
     }
 
     public ParsePoemsTask(MainActivity activity){

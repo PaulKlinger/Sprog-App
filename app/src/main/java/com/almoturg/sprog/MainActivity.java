@@ -31,6 +31,7 @@ import com.google.android.gms.analytics.Tracker;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -173,11 +174,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void processPoems() {
+        sort_order = "Date";
+        ((Spinner) findViewById(R.id.sort_spinner)).setSelection(0); // 0 is Date (is there a better way to do this??)
         statusView.setText("processing");
+        poems = new ArrayList<>();
+        mAdapter = new MyAdapter(poems, this);
+        mRecyclerView.setAdapter(mAdapter);
         new ParsePoemsTask(this).execute();
     }
 
-    public void setNewPoems(List<Poem> poems) {
+    public void addPoems(List<Poem> poems_set){
+        poems.addAll(poems_set);
+        statusView.setText(String.format("%d poems", poems.size()));
+        mAdapter.notifyDataSetChanged();
+    }
+    public void finishedProcessing(boolean status){
         if (updating){
             updating = false;
             if (poems.size() > 1000){
@@ -190,12 +201,9 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
-
-        this.poems = poems;
-        mAdapter = new MyAdapter(poems, this);
-        mRecyclerView.setAdapter(mAdapter);
-        sortPoems();
-        statusView.setText(String.format("%d poems", poems.size()));
+        if (!status) {
+            statusView.setText("error");
+        }
     }
 
     public void updatePoems(View view) {
