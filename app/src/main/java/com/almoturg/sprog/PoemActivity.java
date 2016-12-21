@@ -17,6 +17,8 @@ import com.google.android.gms.analytics.Tracker;
 
 import in.uncod.android.bypass.Bypass;
 
+import static com.almoturg.sprog.SprogApplication.poems;
+
 public class PoemActivity extends AppCompatActivity {
     private Bypass bypass;
     private Poem poem;
@@ -40,7 +42,7 @@ public class PoemActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         Intent mIntent=getIntent();
-        poem = (Poem) mIntent.getSerializableExtra("POEM");
+        poem = poems.get((int) mIntent.getSerializableExtra("POEM_ID"));
         if (poem.main_poem != null){ // This poem is in the parents of another one
             poem = poem.main_poem;
         }
@@ -62,7 +64,7 @@ public class PoemActivity extends AppCompatActivity {
             if (parent.is_poem != null){
                 v = LayoutInflater.from(this).inflate(R.layout.poem_row, mainlist, false);
                 ((TextView)v.findViewById(R.id.content)).setMovementMethod(LinkMovementMethod.getInstance());
-                Util.update_poem_row(parent.is_poem, v, true, this);
+                Util.update_poem_row(parent.is_poem, v, true, false, this);
             } else {
                 v = LayoutInflater.from(this)
                         .inflate(R.layout.parents_list_row, mainlist, false);
@@ -76,7 +78,7 @@ public class PoemActivity extends AppCompatActivity {
         if (poem.content != null && poem.content.length()>0){
             v = LayoutInflater.from(this).inflate(R.layout.poem_row, mainlist, false);
             ((TextView)v.findViewById(R.id.content)).setMovementMethod(LinkMovementMethod.getInstance());
-            Util.update_poem_row(poem, v, true, this);
+            Util.update_poem_row(poem, v, true, false, this);
             mainlist.addView(v);
         }
 

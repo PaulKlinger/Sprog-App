@@ -18,8 +18,9 @@ import in.uncod.android.bypass.Bypass;
 public final class Util {
     private static Calendar cal = null;
 
-    public static void update_poem_row(Poem poem, View poem_row, Boolean border, Context context) {
-        if (cal == null){
+    public static void update_poem_row(Poem poem, View poem_row, boolean border,
+                                       boolean only_first_line, Context context) {
+        if (cal == null) {
             cal = Calendar.getInstance(Locale.ENGLISH);
         }
 
@@ -30,6 +31,9 @@ public final class Util {
             poem_row.findViewById(R.id.container).setPadding(card_padding, card_padding, card_padding, card_padding);
         }
 
+        if (false && only_first_line){
+            ((TextView) poem_row.findViewById(R.id.content)).setText(poem.first_line + "...");
+        }
         ((TextView) poem_row.findViewById(R.id.content)).setText(poem.content);
         ((TextView) poem_row.findViewById(R.id.gold_count)).setText(" × " + Long.toString(poem.gold));
         if (poem.gold > 0) {
@@ -42,6 +46,7 @@ public final class Util {
         cal.setTimeInMillis((long) poem.timestamp * 1000);
         ((TextView) poem_row.findViewById(R.id.datetime)).setText(DateFormat.format("yyyy-MM-dd HH:mm:ss", cal).toString());
     }
+
     public static <T> T last(T[] array) {
         return array[array.length - 1];
     }

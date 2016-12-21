@@ -39,18 +39,20 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import static com.almoturg.sprog.SprogApplication.poems;
+
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "Sprog";
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private List<Poem> poems;
     public String sort_order = "Date";
     private BroadcastReceiver onComplete;
     public TextView statusView;
     private Tracker mTracker;
     private boolean updating = false; // after processing set last update time if this is true
+    private boolean processing = false;
 
     // These are the times when an update should be available on the server
     static int FIRST_UPDATE_HOUR = 2;
@@ -79,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
         sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (poems != null) {
+                if (! processing) {
                     String selectedItem = parent.getItemAtPosition(position).toString();
                     sort_order = selectedItem;
                     sortPoems();
@@ -173,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void processPoems() {
+        processing = true;
         sort_order = "Date";
         ((Spinner) findViewById(R.id.sort_spinner)).setSelection(0); // 0 is Date (is there a better way to do this??)
         statusView.setText("processing");
@@ -203,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
         if (!status) {
             statusView.setText("error");
         }
+        processing = false;
     }
 
     public void updatePoems(View view) {
@@ -270,7 +274,7 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         public void onClick(View v) {
             if (poem_content.getEllipsize() == null) {
                 Intent intent = new Intent(context, PoemActivity.class);
-                intent.putExtra("POEM", poems.get(position));
+                intent.putExtra("POEM_ID", position);
                 context.startActivity(intent);
             } else {
                 poem_content.setEllipsize(null);
@@ -308,7 +312,7 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         holder.position = position;
         holder.poem_content.setEllipsize(TextUtils.TruncateAt.END);
         holder.poem_content.setMaxLines(1);
-        Util.update_poem_row(poem, holder.view, false, context);
+        Util.update_poem_row(poem, holder.view, false, true, context);
 
     }
 

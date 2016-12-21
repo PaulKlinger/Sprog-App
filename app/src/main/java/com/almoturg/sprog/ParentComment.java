@@ -1,11 +1,9 @@
 package com.almoturg.sprog;
 
-import java.io.Serializable;
-
 /**
  * Created by Paul on 2016-12-18.
  */
-class ParentComment implements Serializable {
+class ParentComment {
     public String content;
     public String author;
     public int gold;
