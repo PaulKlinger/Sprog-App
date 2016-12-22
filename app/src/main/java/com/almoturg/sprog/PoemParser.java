@@ -48,7 +48,7 @@ public class PoemParser {
     private Poem readPoem() throws IOException {
         int gold = -1;
         int score = -1;
-        CharSequence content = null;
+        String content = null;
         double timestamp = -1;
         String post_title = null;
         String post_author = null;
@@ -73,7 +73,7 @@ public class PoemParser {
                     mainpoem = mainpoem_links.get(link);
                     break;
                 case "orig_content":
-                    content = bypass.markdownToSpannable(reader.nextString().replace("^", ""));
+                    content = reader.nextString().replace("^", "");
                     break;
                 case "timestamp":
                     timestamp = reader.nextDouble();
@@ -96,7 +96,9 @@ public class PoemParser {
             }
         }
         reader.endObject();
-        Poem poem = new Poem(gold, score, content, timestamp,
+
+        CharSequence first_line = bypass.markdownToSpannable(content.split("\n", 2)[0].trim() + "...");
+        Poem poem = new Poem(gold, score, bypass.markdownToSpannable(content), first_line, timestamp,
                 post_title, post_author, post_content,
                 parents, link, mainpoem);
         if (mainpoem == null) {

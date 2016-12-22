@@ -31,10 +31,16 @@ public final class Util {
             poem_row.findViewById(R.id.container).setPadding(card_padding, card_padding, card_padding, card_padding);
         }
 
-        if (false && only_first_line){
-            ((TextView) poem_row.findViewById(R.id.content)).setText(poem.first_line + "...");
+        if (only_first_line){
+            poem_row.findViewById(R.id.first_line).setVisibility(View.VISIBLE);
+            poem_row.findViewById(R.id.content_wrapper).setVisibility(View.GONE);
+            ((TextView) poem_row.findViewById(R.id.first_line)).setText(poem.first_line);
+        } else {
+            poem_row.findViewById(R.id.first_line).setVisibility(View.GONE);
+            poem_row.findViewById(R.id.content_wrapper).setVisibility(View.VISIBLE);
+            ((TextView) poem_row.findViewById(R.id.content)).setText(poem.content);
+            poem_row.findViewById(R.id.author).setVisibility(View.VISIBLE);
         }
-        ((TextView) poem_row.findViewById(R.id.content)).setText(poem.content);
         ((TextView) poem_row.findViewById(R.id.gold_count)).setText(" × " + Long.toString(poem.gold));
         if (poem.gold > 0) {
             poem_row.findViewById(R.id.gold_display).setVisibility(View.VISIBLE);

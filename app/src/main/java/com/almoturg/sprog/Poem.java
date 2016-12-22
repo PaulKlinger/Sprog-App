@@ -18,7 +18,7 @@ class Poem {
     public String link;
     public Poem main_poem;
 
-    public Poem(int gold, int score, CharSequence content, double timestamp,
+    public Poem(int gold, int score, CharSequence content, CharSequence first_line, double timestamp,
                 String post_title, String post_author, String post_content,
                 List<ParentComment> parents, String link, Poem main_poem) {
         this.content = content;
@@ -31,5 +31,7 @@ class Poem {
         this.parents = parents;
         this.link = link;
         this.main_poem = main_poem;
+
+        this.first_line = first_line;
     }
 }

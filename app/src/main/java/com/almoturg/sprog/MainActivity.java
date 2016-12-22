@@ -73,24 +73,25 @@ public class MainActivity extends AppCompatActivity {
 
         statusView = (TextView) findViewById(R.id.update_status);
 
-        Spinner sortSpinner = (Spinner) findViewById(R.id.sort_spinner);
+        final Spinner sortSpinner = (Spinner) findViewById(R.id.sort_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.sort_orders, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sortSpinner.setAdapter(adapter);
 
-        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (!processing) {
-                    String selectedItem = parent.getItemAtPosition(position).toString();
-                    sort_order = selectedItem;
-                    sortPoems();
-                }
-            }
-
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+        sortSpinner.post(new Runnable() {
+            public void run() {
+                sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        if (!processing) {
+                            String selectedItem = parent.getItemAtPosition(position).toString();
+                            sort_order = selectedItem;
+                            sortPoems();
+                        }
+                    }
+                    public void onNothingSelected(AdapterView<?> parent) {}
+                });
+        }});
 
 
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
@@ -144,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                 updatePoems(null);
             } else if (poems == null) {
                 processPoems();
-            } else {
+            } else if (mAdapter == null){
                 // TODO: This really has nothing to do with autoupdate, should put somewhere else...
                 mAdapter = new MyAdapter(poems, this);
                 mRecyclerView.setAdapter(mAdapter);
@@ -154,6 +155,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sortPoems() {
+        // sortPoems is automatically called when the spinner is created, poems might not be loaded yet
+        if (poems == null) return;
+
         if (sort_order.equals("Date")) {
             Collections.sort(poems, new Comparator<Poem>() {
                 @Override
@@ -266,25 +270,28 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
     public class ViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
         public int position;
-        public TextView poem_content;
+        public View content_wrapper;
+        public View first_line;
         public CardView view;
 
         public ViewHolder(View v) {
             super(v);
             v.setOnClickListener(this);
-            this.poem_content = (TextView) v.findViewById(R.id.content);
+            this.content_wrapper = v.findViewById(R.id.content_wrapper);
             this.view = (CardView) v;
+            this.first_line = v.findViewById(R.id.first_line);
         }
 
         @Override
         public void onClick(View v) {
-            if (poem_content.getEllipsize() == null) {
+            if (content_wrapper.getVisibility() == View.GONE) {
+                first_line.setVisibility(View.GONE);
+                content_wrapper.setVisibility(View.VISIBLE);
+                ((TextView) v.findViewById(R.id.content)).setText(poems.get(position).content);
+            } else {
                 Intent intent = new Intent(context, PoemActivity.class);
                 intent.putExtra("POEM_ID", position);
                 context.startActivity(intent);
-            } else {
-                poem_content.setEllipsize(null);
-                poem_content.setMaxLines(Integer.MAX_VALUE);
             }
         }
     }
@@ -316,8 +323,6 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
         Poem poem = (poems.get(position));
 
         holder.position = position;
-        holder.poem_content.setEllipsize(TextUtils.TruncateAt.END);
-        holder.poem_content.setMaxLines(1);
         Util.update_poem_row(poem, holder.view, false, true, context);
 
     }
