@@ -144,6 +144,10 @@ public class MainActivity extends AppCompatActivity {
                 updatePoems(null);
             } else if (poems == null){
                 processPoems();
+            } else {
+                // TODO: This really has nothing to do with autoupdate, should put somewhere else...
+                mAdapter = new MyAdapter(poems, this);
+                mRecyclerView.setAdapter(mAdapter);
             }
         }
     }
