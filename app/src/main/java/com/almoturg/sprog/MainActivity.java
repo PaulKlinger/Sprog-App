@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
         sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (! processing) {
+                if (!processing) {
                     String selectedItem = parent.getItemAtPosition(position).toString();
                     sort_order = selectedItem;
                     sortPoems();
@@ -142,12 +142,13 @@ public class MainActivity extends AppCompatActivity {
                                     && diff_in_ms > ms_today - SECOND_UPDATE_HOUR * 60 * 60 * 1000)
                     ) {
                 updatePoems(null);
-            } else if (poems == null){
+            } else if (poems == null) {
                 processPoems();
             } else {
                 // TODO: This really has nothing to do with autoupdate, should put somewhere else...
                 mAdapter = new MyAdapter(poems, this);
                 mRecyclerView.setAdapter(mAdapter);
+                statusView.setText(String.format("%d poems", poems.size()));
             }
         }
     }
@@ -189,15 +190,16 @@ public class MainActivity extends AppCompatActivity {
         new ParsePoemsTask(this).execute(this);
     }
 
-    public void addPoems(List<Poem> poems_set){
+    public void addPoems(List<Poem> poems_set) {
         poems.addAll(poems_set);
         statusView.setText(String.format("%d poems", poems.size()));
         mAdapter.notifyDataSetChanged();
     }
-    public void finishedProcessing(boolean status){
-        if (updating){
+
+    public void finishedProcessing(boolean status) {
+        if (updating) {
             updating = false;
-            if (poems.size() > 1000){
+            if (poems.size() > 1000) {
                 SharedPreferences prefs = getPreferences(MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
 
