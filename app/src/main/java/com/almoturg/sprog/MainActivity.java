@@ -5,30 +5,28 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.text.format.DateFormat;
-import android.view.LayoutInflater;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.util.Log;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,9 +34,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.TimeZone;
 
+import static com.almoturg.sprog.SprogApplication.filtered_poems;
 import static com.almoturg.sprog.SprogApplication.poems;
 
 
@@ -71,11 +69,11 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         myToolbar.setTitle(null);
 
-        statusView = (TextView) findViewById(R.id.update_status);
+        statusView = (TextView) findViewById(R.id.status);
 
         final Spinner sortSpinner = (Spinner) findViewById(R.id.sort_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.sort_orders, android.R.layout.simple_spinner_item);
+                R.array.sort_orders, R.layout.spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sortSpinner.setAdapter(adapter);
 
@@ -89,10 +87,28 @@ public class MainActivity extends AppCompatActivity {
                             sortPoems();
                         }
                     }
-                    public void onNothingSelected(AdapterView<?> parent) {}
-                });
-        }});
 
+                    public void onNothingSelected(AdapterView<?> parent) {
+                    }
+                });
+            }
+        });
+
+        final EditText search_box = (EditText) findViewById(R.id.search_box);
+        search_box.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                searchPoems();
+            }
+        });
 
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 
@@ -145,11 +161,11 @@ public class MainActivity extends AppCompatActivity {
                 updatePoems(null);
             } else if (poems == null) {
                 processPoems();
-            } else if (mAdapter == null){
+            } else if (mAdapter == null) {
                 // TODO: This really has nothing to do with autoupdate, should put somewhere else...
-                mAdapter = new MyAdapter(poems, this);
+                mAdapter = new PoemsListAdapter(filtered_poems, this);
                 mRecyclerView.setAdapter(mAdapter);
-                statusView.setText(String.format("%d poems", poems.size()));
+                statusView.setText(String.format("%d poems", filtered_poems.size()));
             }
         }
     }
@@ -180,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-        mAdapter.notifyDataSetChanged();
+        searchPoems();
     }
 
     public void processPoems() {
@@ -189,13 +205,16 @@ public class MainActivity extends AppCompatActivity {
         ((Spinner) findViewById(R.id.sort_spinner)).setSelection(0); // 0 is Date (is there a better way to do this??)
         statusView.setText("processing");
         poems = new ArrayList<>();
-        mAdapter = new MyAdapter(poems, this);
+        filtered_poems = new ArrayList<>();
+        toggleSearch(null); // hide search box (checks processing)
+        mAdapter = new PoemsListAdapter(filtered_poems, this);
         mRecyclerView.setAdapter(mAdapter);
         new ParsePoemsTask(this).execute(this);
     }
 
     public void addPoems(List<Poem> poems_set) {
         poems.addAll(poems_set);
+        filtered_poems.addAll(poems_set);
         statusView.setText(String.format("%d poems", poems.size()));
         mAdapter.notifyDataSetChanged();
     }
@@ -255,95 +274,49 @@ public class MainActivity extends AppCompatActivity {
         statusView.setText("loading poems");
         manager.enqueue(request);
     }
-}
 
-
-class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>
-        implements FastScrollRecyclerView.SectionedAdapter {
-    private Context context;
-    private List<Poem> poems;
-    private Calendar cal;
-
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
-    public class ViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
-        public int position;
-        public View content_wrapper;
-        public View first_line;
-        public CardView view;
-
-        public ViewHolder(View v) {
-            super(v);
-            v.setOnClickListener(this);
-            this.content_wrapper = v.findViewById(R.id.content_wrapper);
-            this.view = (CardView) v;
-            this.first_line = v.findViewById(R.id.first_line);
+    public void toggleSearch(View view) {
+        EditText search_box = (EditText) findViewById(R.id.search_box);
+        if (search_box.getVisibility() == View.GONE && !processing) {
+            search_box.setVisibility(View.VISIBLE);
+            findViewById(R.id.toggle_search).setBackgroundResource(R.drawable.search_button_background);
+            search_box.requestFocus();
+            ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                    .showSoftInput(search_box, InputMethodManager.SHOW_IMPLICIT);
+        } else {
+            search_box.setVisibility(View.GONE);
+            search_box.setText("");
+            findViewById(R.id.toggle_search).setBackgroundColor(Color.TRANSPARENT);
+            ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                    .hideSoftInputFromWindow(search_box.getWindowToken(),0);
+            searchPoems();
         }
+    }
 
-        @Override
-        public void onClick(View v) {
-            if (content_wrapper.getVisibility() == View.GONE) {
-                first_line.setVisibility(View.GONE);
-                content_wrapper.setVisibility(View.VISIBLE);
-                ((TextView) v.findViewById(R.id.content)).setText(poems.get(position).content);
-            } else {
-                Intent intent = new Intent(context, PoemActivity.class);
-                intent.putExtra("POEM_ID", position);
-                context.startActivity(intent);
+    public void searchPoems() {
+        Log.d(TAG, "searching");
+        if (mAdapter == null) { // afterTextChanged gets called when EditText is created...
+            return;
+        }
+        String search_string = ((EditText) findViewById(R.id.search_box)).getText().toString().toLowerCase();
+        String[] keywords = search_string.split(" ");
+        filtered_poems = new ArrayList<>();
+        for (Poem p : poems) {
+            String content = p.content.toString().toLowerCase();
+            boolean add = true;
+            for (String keyword : keywords) {
+                if (!content.contains(keyword)) {
+                    add = false;
+                }
+            }
+            if (add) {
+                filtered_poems.add(p);
             }
         }
-    }
-
-    // Provide a suitable constructor (depends on the kind of dataset)
-    MyAdapter(List<Poem> poems, Context context) {
-        this.poems = poems;
-        this.context = context;
-        this.cal = Calendar.getInstance(Locale.ENGLISH);
-    }
-
-    // Create new views (invoked by the layout manager)
-    @Override
-    public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                   int viewType) {
-        // create a new view
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.poem_row, parent, false);
-        // set the view's size, margins, paddings and layout parameters
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
-    }
-
-    // Replace the contents of a view (invoked by the layout manager)
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
-        Poem poem = (poems.get(position));
-
-        holder.position = position;
-        Util.update_poem_row(poem, holder.view, false, true, context);
-
-    }
-
-    // Return the size of your dataset (invoked by the layout manager)
-    @Override
-    public int getItemCount() {
-        return poems.size();
-    }
-
-    @NonNull
-    @Override
-    public String getSectionName(int position) {
-        if (((MainActivity) context).sort_order.equals("Date")) {
-            cal.setTimeInMillis((long) poems.get(position).timestamp * 1000);
-            return DateFormat.format("yyyy-MM", cal).toString();
-        } else if (((MainActivity) context).sort_order.equals("Score")) {
-            return Integer.toString(poems.get(position).score);
-        } else if (((MainActivity) context).sort_order.equals("Gold")) {
-            return Integer.toString(poems.get(position).gold);
-        }
-        return "";
+        statusView.setText(filtered_poems.size() + " poems");
+        mAdapter = new PoemsListAdapter(filtered_poems, this);
+        mRecyclerView.setAdapter(mAdapter);
     }
 }
+
+

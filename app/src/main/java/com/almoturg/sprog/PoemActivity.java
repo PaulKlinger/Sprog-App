@@ -17,7 +17,7 @@ import com.google.android.gms.analytics.Tracker;
 
 import in.uncod.android.bypass.Bypass;
 
-import static com.almoturg.sprog.SprogApplication.poems;
+import static com.almoturg.sprog.SprogApplication.filtered_poems;
 
 public class PoemActivity extends AppCompatActivity {
     private Bypass bypass;
@@ -42,7 +42,7 @@ public class PoemActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         Intent mIntent=getIntent();
-        poem = poems.get((int) mIntent.getSerializableExtra("POEM_ID"));
+        poem = filtered_poems.get((int) mIntent.getSerializableExtra("POEM_ID"));
         if (poem.main_poem != null){ // This poem is in the parents of another one
             poem = poem.main_poem;
         }
@@ -54,7 +54,7 @@ public class PoemActivity extends AppCompatActivity {
         ((TextView) v.findViewById(R.id.title)).setText(poem.post_title);
         ((TextView) v.findViewById(R.id.author)).setText(poem.post_author);
         if (poem.post_content != null && poem.post_content.length()>0){
-            ((TextView) v.findViewById(R.id.content)).setText(poem.post_content);
+            ((TextView) v.findViewById(R.id.content)).setText(bypass.markdownToSpannable(poem.post_content));
             ((TextView) v.findViewById(R.id.content)).setMovementMethod(LinkMovementMethod.getInstance());
             v.findViewById(R.id.content).setVisibility(View.VISIBLE);
         }

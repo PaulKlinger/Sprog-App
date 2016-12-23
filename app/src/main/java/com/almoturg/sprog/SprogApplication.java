@@ -31,6 +31,7 @@ import java.util.List;
 public class SprogApplication extends Application {
     private Tracker mTracker;
     public static List<Poem> poems;
+    public static List<Poem> filtered_poems;
 
     /**
      * Gets the default {@link Tracker} for this {@link Application}.
