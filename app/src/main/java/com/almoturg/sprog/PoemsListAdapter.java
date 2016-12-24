@@ -43,13 +43,16 @@ class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.ViewHolder>
 
         @Override
         public void onClick(View v) {
+            // I'm really not sure about getLayoutPosition (instead of getAdapterPosition())
+            // but at least it doesn't return -1 and cause an error.
+            // I think as long as poems are only added at the end it should be ok.
             if (content_wrapper.getVisibility() == View.GONE) {
                 first_line.setVisibility(View.GONE);
                 content_wrapper.setVisibility(View.VISIBLE);
-                ((TextView) v.findViewById(R.id.content)).setText(filtered_poems.get(getAdapterPosition()).content);
+                ((TextView) v.findViewById(R.id.content)).setText(filtered_poems.get(getLayoutPosition()).content);
             } else {
                 Intent intent = new Intent(context, PoemActivity.class);
-                intent.putExtra("POEM_ID", getAdapterPosition());
+                intent.putExtra("POEM_ID", getLayoutPosition());
                 context.startActivity(intent);
             }
         }
