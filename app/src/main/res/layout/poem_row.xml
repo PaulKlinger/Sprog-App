@@ -76,7 +76,7 @@
                     android:textSize="14sp" />
             </LinearLayout>
             <TextView
-                android:text="/u/Poem_for_your_Sprog"
+                android:text="/u/Poem_for_your_sprog"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
