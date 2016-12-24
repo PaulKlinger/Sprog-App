@@ -22,6 +22,7 @@ import android.app.Application;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,8 +31,8 @@ import java.util.List;
  */
 public class SprogApplication extends Application {
     private Tracker mTracker;
-    public static List<Poem> poems;
-    public static List<Poem> filtered_poems;
+    public static List<Poem> poems = new ArrayList<>();
+    public static List<Poem> filtered_poems = new ArrayList<>();
 
     /**
      * Gets the default {@link Tracker} for this {@link Application}.
