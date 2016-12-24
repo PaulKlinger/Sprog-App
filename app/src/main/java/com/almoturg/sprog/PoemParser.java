@@ -97,7 +97,7 @@ class PoemParser {
         }
         reader.endObject();
 
-        CharSequence first_line = bypass.markdownToSpannable(content.split("\n", 2)[0].trim() + "...");
+        CharSequence first_line = bypass.markdownToSpannable(content.trim().split("\n", 2)[0].trim() + "...");
         Poem poem = new Poem(gold, score, bypass.markdownToSpannable(content), first_line, timestamp,
                 post_title, post_author, post_content,
                 parents, link, mainpoem);

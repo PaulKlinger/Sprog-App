@@ -15,7 +15,7 @@ import java.util.List;
  * Created by Paul on 2016-12-18.
  */
 
-public class ParsePoemsTask extends AsyncTask<Context, List<Poem>, Boolean> {
+class ParsePoemsTask extends AsyncTask<Context, List<Poem>, Boolean> {
     private MainActivity activity;
 
     @Override
@@ -53,7 +53,7 @@ public class ParsePoemsTask extends AsyncTask<Context, List<Poem>, Boolean> {
         activity.finishedProcessing(status);
     }
 
-    public ParsePoemsTask(MainActivity activity){
+    ParsePoemsTask(MainActivity activity){
         this.activity = activity;
     }
 
