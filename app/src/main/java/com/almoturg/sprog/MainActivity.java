@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     public String sort_order = "Date";
-    private BroadcastReceiver onComplete;
+    private BroadcastReceiver downloadPoemsComplete;
     public TextView statusView;
     private Tracker mTracker;
     private boolean updating = false; // after processing set last update time if this is true
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         if (mAdapter == null) {
             mAdapter = new PoemsListAdapter(this);
             mRecyclerView.setAdapter(mAdapter);
-            if (filtered_poems != null) {
+            if (filtered_poems.size() > 0) {
                 statusView.setText(String.format("%d poems", filtered_poems.size()));
             }
         }
@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (is_update_time && internet_access) {
                 updatePoems(null);
-            } else if (poems == null) { // file exists by above (except race)
+            } else if (poems.size() == 0) { // file exists by above (except race)
                 processPoems();
             }
         }
@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updatePoems(View view) {
-        if (onComplete != null) {
+        if (downloadPoemsComplete != null) {
             return;
         }
         updating = true;
@@ -243,16 +243,16 @@ public class MainActivity extends AppCompatActivity {
 
         // get download service and enqueue file
         DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-        onComplete = new BroadcastReceiver() {
+        downloadPoemsComplete = new BroadcastReceiver() {
             public void onReceive(Context ctxt, Intent intent) {
 
                 statusView.setText("poems downloaded");
                 processPoems();
-                unregisterReceiver(onComplete);
-                onComplete = null;
+                unregisterReceiver(downloadPoemsComplete);
+                downloadPoemsComplete = null;
             }
         };
-        registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        registerReceiver(downloadPoemsComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
         statusView.setText("loading poems");
         manager.enqueue(request);
