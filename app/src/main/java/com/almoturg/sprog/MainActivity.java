@@ -282,17 +282,10 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         String search_string = ((EditText) findViewById(R.id.search_box)).getText().toString().toLowerCase();
-        String[] keywords = search_string.split(" ");
         filtered_poems = new ArrayList<>();
         for (Poem p : poems) {
             String content = p.content.toString().toLowerCase();
-            boolean add = true;
-            for (String keyword : keywords) {
-                if (!content.contains(keyword)) {
-                    add = false;
-                }
-            }
-            if (add) {
+            if (content.contains(search_string)) {
                 filtered_poems.add(p);
             }
         }
