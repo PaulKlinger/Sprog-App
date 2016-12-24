@@ -2,23 +2,21 @@ package com.almoturg.sprog;
 
 import java.util.List;
 
-/**
- * Created by Paul on 2016-12-18.
- */
-class Poem {
-    public int gold;
-    public int score;
-    public CharSequence content;
-    public CharSequence first_line;
-    public double timestamp;
-    public String post_title;
-    public String post_author;
-    public String post_content;
-    public List<ParentComment> parents;
-    public String link;
-    public Poem main_poem;
 
-    public Poem(int gold, int score, CharSequence content, CharSequence first_line, double timestamp,
+class Poem {
+    int gold;
+    int score;
+    CharSequence content;
+    CharSequence first_line;
+    double timestamp;
+    String post_title;
+    String post_author;
+    String post_content;
+    List<ParentComment> parents;
+    String link;
+    Poem main_poem;
+
+    Poem(int gold, int score, CharSequence content, CharSequence first_line, double timestamp,
                 String post_title, String post_author, String post_content,
                 List<ParentComment> parents, String link, Poem main_poem) {
         this.content = content;

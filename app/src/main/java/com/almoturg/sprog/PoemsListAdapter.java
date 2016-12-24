@@ -18,6 +18,7 @@ import java.util.Locale;
 
 import static com.almoturg.sprog.SprogApplication.filtered_poems;
 
+
 class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.ViewHolder>
         implements FastScrollRecyclerView.SectionedAdapter {
     private Context context;

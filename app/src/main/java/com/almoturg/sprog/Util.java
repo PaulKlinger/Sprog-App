@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.text.format.DateFormat;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,11 +11,6 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import in.uncod.android.bypass.Bypass;
-
-/**
- * Created by Paul on 2016-12-18.
- */
 
 final class Util {
     private static Calendar cal = null;

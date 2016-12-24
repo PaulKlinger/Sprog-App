@@ -3,17 +3,12 @@ package com.almoturg.sprog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Paul on 2016-12-18.
- */
 
 class ParsePoemsTask extends AsyncTask<Context, List<Poem>, Boolean> {
     private MainActivity activity;

@@ -93,7 +93,6 @@ public class PoemActivity extends AppCompatActivity {
                 .setCategory("PoemPage")
                 .setAction(Util.last(poem.link.split("/")))
                 .build());
-
     }
 
     public void toReddit(View view){

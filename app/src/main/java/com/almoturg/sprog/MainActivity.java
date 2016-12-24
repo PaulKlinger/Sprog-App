@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "Sprog";
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
     public String sort_order = "Date";
     private BroadcastReceiver onComplete;
     public TextView statusView;
@@ -78,8 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         if (!processing) {
-                            String selectedItem = parent.getItemAtPosition(position).toString();
-                            sort_order = selectedItem;
+                            sort_order = parent.getItemAtPosition(position).toString();
                             sortPoems();
                         }
                     }
@@ -113,8 +111,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
@@ -133,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
                 statusView.setText(String.format("%d poems", filtered_poems.size()));
             }
         }
-
         preparePoems();
     }
 
@@ -217,7 +213,6 @@ public class MainActivity extends AppCompatActivity {
                 Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
                 editor.putLong("LAST_UPDATE_TIME", now.getTimeInMillis());
                 editor.apply();
-
             }
         }
         if (!status) {
@@ -305,5 +300,3 @@ public class MainActivity extends AppCompatActivity {
         mAdapter.notifyDataSetChanged();
     }
 }
-
-

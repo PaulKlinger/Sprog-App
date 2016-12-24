@@ -13,9 +13,6 @@ import java.util.List;
 
 import in.uncod.android.bypass.Bypass;
 
-/**
- * Created by Paul on 2016-12-18.
- */
 
 class PoemParser {
     private JsonReader reader;
@@ -55,7 +52,7 @@ class PoemParser {
         String post_content = null;
         List<ParentComment> parents = null;
         String link = null;
-        Poem mainpoem = null;
+        Poem main_poem = null;
 
         reader.beginObject();
         while (reader.hasNext()) {
@@ -70,7 +67,7 @@ class PoemParser {
                     break;
                 case "link":
                     link = reader.nextString();
-                    mainpoem = mainpoem_links.get(link);
+                    main_poem = mainpoem_links.get(link);
                     break;
                 case "orig_content":
                     content = reader.nextString().replace("^", "");
@@ -100,8 +97,8 @@ class PoemParser {
         CharSequence first_line = bypass.markdownToSpannable(content.trim().split("\n", 2)[0].trim() + "...");
         Poem poem = new Poem(gold, score, bypass.markdownToSpannable(content), first_line, timestamp,
                 post_title, post_author, post_content,
-                parents, link, mainpoem);
-        if (mainpoem == null) {
+                parents, link, main_poem);
+        if (main_poem == null) {
             // add parent comments of this poem which are poems to mainpoem_links
             for (ParentComment p : poem.parents) {
                 if (p.author.equalsIgnoreCase("/u/poem_for_your_sprog")) {
@@ -110,7 +107,7 @@ class PoemParser {
             }
         } else {
             // if this poem is the parent of another one put it into the corresponding ParentComment
-            for (ParentComment p : mainpoem.parents) {
+            for (ParentComment p : main_poem.parents) {
                 if (p.link.equals(poem.link)) {
                     p.is_poem = poem;
                 }
@@ -120,7 +117,7 @@ class PoemParser {
     }
 
     private List<ParentComment> readParentCommentArray() throws IOException {
-        List<ParentComment> parents = new ArrayList<ParentComment>();
+        List<ParentComment> parents = new ArrayList<>();
 
         reader.beginArray();
         while (reader.hasNext()) {
@@ -133,9 +130,6 @@ class PoemParser {
     private ParentComment readParentComment() throws IOException {
         String content = null;
         String author = null;
-        int gold = -1;
-        int score = -1;
-        double timestamp = -1;
         String link = null;
 
         reader.beginObject();
@@ -153,15 +147,6 @@ class PoemParser {
                 case "orig_body":
                     content = reader.nextString().replace("^", "");
                     break;
-                case "gold":
-                    gold = reader.nextInt();
-                    break;
-                case "score":
-                    score = reader.nextInt();
-                    break;
-                case "timestamp":
-                    timestamp = reader.nextDouble();
-                    break;
                 case "link":
                     link = reader.nextString();
                     break;
@@ -171,6 +156,6 @@ class PoemParser {
             }
         }
         reader.endObject();
-        return new ParentComment(gold, score, content, author, timestamp, link);
+        return new ParentComment(content, author, link);
     }
 }
