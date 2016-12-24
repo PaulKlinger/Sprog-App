@@ -17,19 +17,19 @@ import in.uncod.android.bypass.Bypass;
  * Created by Paul on 2016-12-18.
  */
 
-public class PoemParser {
+class PoemParser {
     private JsonReader reader;
     private HashMap<String, Poem> mainpoem_links;
     private Bypass bypass;
 
-    public PoemParser(InputStream in, Context context) throws IOException {
+    PoemParser(InputStream in, Context context) throws IOException {
         bypass = new Bypass(context, new Bypass.Options());
         this.reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
         mainpoem_links = new HashMap<>();
         reader.beginArray();
     }
 
-    public List<Poem> getPoems(int n) throws IOException {
+    List<Poem> getPoems(int n) throws IOException {
         if (reader == null){
             return null;
         }

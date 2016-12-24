@@ -52,10 +52,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean updating = false; // after processing set last update time if this is true
     private boolean processing = false;
 
-    // These are the times when an update should be available on the server
-    static int FIRST_UPDATE_HOUR = 2;
-    static int SECOND_UPDATE_HOUR = 14;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-
     }
 
     @Override
@@ -128,44 +123,39 @@ public class MainActivity extends AppCompatActivity {
         mTracker.setScreenName("PoemsList");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
-        autoUpdate();
+        // I don't actually konw why this doesn't work in onCreate
+        // but everything else to do with the recyclerview does.
+        // Maybe it would work there??
+        if (mAdapter == null) {
+            mAdapter = new PoemsListAdapter(this);
+            mRecyclerView.setAdapter(mAdapter);
+            if (filtered_poems != null) {
+                statusView.setText(String.format("%d poems", filtered_poems.size()));
+            }
+        }
+
+        preparePoems();
     }
 
-    private void autoUpdate() {
+    private void preparePoems() { // not sure about the name...
         SharedPreferences prefs = getPreferences(MODE_PRIVATE);
         long last_update_tstamp = prefs.getLong("LAST_UPDATE_TIME", -1);
+        boolean internet_access = Util.isConnected(this);
 
         File file = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems.json");
         if (last_update_tstamp == -1 || !file.exists()) {
-            updatePoems(null);
-        } else {
-            Log.i(TAG, "Checking if it's time to update");
-            Log.i(TAG, String.format("last update time %d", last_update_tstamp));
-            Calendar last_update_cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-            Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-
-            last_update_cal.setTimeInMillis(last_update_tstamp);
-            long diff_in_ms = now.getTimeInMillis() - last_update_tstamp;
-            long ms_today = now.get(Calendar.HOUR_OF_DAY) * 60 * 60 * 1000
-                    + now.get(Calendar.MINUTE) * 60 * 1000
-                    + now.get(Calendar.SECOND) * 1000
-                    + now.get(Calendar.MILLISECOND);
-
-            if (
-                    (now.get(Calendar.HOUR_OF_DAY) >= FIRST_UPDATE_HOUR
-                            && diff_in_ms > ms_today - FIRST_UPDATE_HOUR * 60 * 60 * 1000
-                    ) ||
-                            (now.get(Calendar.HOUR_OF_DAY) >= SECOND_UPDATE_HOUR
-                                    && diff_in_ms > ms_today - SECOND_UPDATE_HOUR * 60 * 60 * 1000)
-                    ) {
+            if (internet_access) {
                 updatePoems(null);
-            } else if (poems == null) {
+            } else {
+                statusView.setText("no internet");
+            }
+        } else {
+            boolean is_update_time = Util.isUpdateTime(last_update_tstamp);
+
+            if (is_update_time && internet_access) {
+                updatePoems(null);
+            } else if (poems == null) { // file exists by above (except race)
                 processPoems();
-            } else if (mAdapter == null) {
-                // TODO: This really has nothing to do with autoupdate, should put somewhere else...
-                mAdapter = new PoemsListAdapter(filtered_poems, this);
-                mRecyclerView.setAdapter(mAdapter);
-                statusView.setText(String.format("%d poems", filtered_poems.size()));
             }
         }
     }
@@ -207,8 +197,6 @@ public class MainActivity extends AppCompatActivity {
         poems = new ArrayList<>();
         filtered_poems = new ArrayList<>();
         toggleSearch(null); // hide search box (checks processing)
-        mAdapter = new PoemsListAdapter(filtered_poems, this);
-        mRecyclerView.setAdapter(mAdapter);
         new ParsePoemsTask(this).execute(this);
     }
 
@@ -314,8 +302,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         statusView.setText(filtered_poems.size() + " poems");
-        mAdapter = new PoemsListAdapter(filtered_poems, this);
-        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
     }
 }
 

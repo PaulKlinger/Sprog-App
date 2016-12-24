@@ -51,7 +51,7 @@ public class PoemActivity extends AppCompatActivity {
 
         View v;
         v = LayoutInflater.from(this).inflate(R.layout.post_row, mainlist, false);
-        ((TextView) v.findViewById(R.id.title)).setText(poem.post_title);
+        ((TextView) v.findViewById(R.id.title)).setText(bypass.markdownToSpannable(poem.post_title));
         ((TextView) v.findViewById(R.id.author)).setText(poem.post_author);
         if (poem.post_content != null && poem.post_content.length()>0){
             ((TextView) v.findViewById(R.id.content)).setText(bypass.markdownToSpannable(poem.post_content));
