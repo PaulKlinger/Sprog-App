@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void sortPoems() {
         // sortPoems is automatically called when the spinner is created, poems might not be loaded yet
-        if (poems == null) return;
+        if (poems.size() == 0) return;
 
         if (sort_order.equals("Date")) {
             Collections.sort(poems, new Comparator<Poem>() {
