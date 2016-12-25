@@ -6,7 +6,7 @@ import java.util.List;
 class Poem {
     int gold;
     int score;
-    CharSequence content;
+    String content;
     CharSequence first_line;
     double timestamp;
     String post_title;
@@ -16,7 +16,7 @@ class Poem {
     String link;
     Poem main_poem;
 
-    Poem(int gold, int score, CharSequence content, CharSequence first_line, double timestamp,
+    Poem(int gold, int score, String content, CharSequence first_line, double timestamp,
                 String post_title, String post_author, String post_content,
                 List<ParentComment> parents, String link, Poem main_poem) {
         this.content = content;

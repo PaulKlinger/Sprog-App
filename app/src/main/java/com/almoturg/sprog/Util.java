@@ -11,12 +11,15 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import in.uncod.android.bypass.Bypass;
+
 
 final class Util {
     private static Calendar cal = null;
     // These are the times when an update should be available on the server
     private static int FIRST_UPDATE_HOUR = 2;
     private static int SECOND_UPDATE_HOUR = 14;
+    private static Bypass bypass;
 
     static void update_poem_row(Poem poem, View poem_row, boolean border,
                                        boolean only_first_line, Context context) {
@@ -38,7 +41,7 @@ final class Util {
         } else {
             poem_row.findViewById(R.id.first_line).setVisibility(View.GONE);
             poem_row.findViewById(R.id.content_wrapper).setVisibility(View.VISIBLE);
-            ((TextView) poem_row.findViewById(R.id.content)).setText(poem.content);
+            ((TextView) poem_row.findViewById(R.id.content)).setText(convertMarkdown(poem.content, context));
             poem_row.findViewById(R.id.author).setVisibility(View.VISIBLE);
         }
         ((TextView) poem_row.findViewById(R.id.gold_count)).setText(" × " + Long.toString(poem.gold));
@@ -82,5 +85,13 @@ final class Util {
                 ||
                 (now.get(Calendar.HOUR_OF_DAY) >= SECOND_UPDATE_HOUR
                         && diff_in_ms > ms_today - SECOND_UPDATE_HOUR * 60 * 60 * 1000);
+    }
+
+    static CharSequence convertMarkdown(String markdown, Context context){
+        if (bypass == null){
+            bypass = new Bypass(context);
+        }
+        markdown = markdown.replaceAll("(?:^|[^(\\[])(https?://\\S*\\.\\S*)(?:\\s|$)", "[$1]($1)");
+        return bypass.markdownToSpannable(markdown);
     }
 }

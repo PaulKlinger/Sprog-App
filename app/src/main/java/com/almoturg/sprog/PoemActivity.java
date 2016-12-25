@@ -15,12 +15,9 @@ import android.widget.TextView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import in.uncod.android.bypass.Bypass;
-
 import static com.almoturg.sprog.SprogApplication.filtered_poems;
 
 public class PoemActivity extends AppCompatActivity {
-    private Bypass bypass;
     private Poem poem;
     private Tracker mTracker;
 
@@ -32,8 +29,6 @@ public class PoemActivity extends AppCompatActivity {
         SprogApplication application = (SprogApplication) getApplication();
         mTracker = application.getDefaultTracker();
 
-        bypass = new Bypass(this, new Bypass.Options());
-
         Toolbar myToolbar = (Toolbar) findViewById(R.id.poem_toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -41,9 +36,9 @@ public class PoemActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        Intent mIntent=getIntent();
+        Intent mIntent = getIntent();
         poem = filtered_poems.get((int) mIntent.getSerializableExtra("POEM_ID"));
-        if (poem.main_poem != null){ // This poem is in the parents of another one
+        if (poem.main_poem != null) { // This poem is in the parents of another one
             poem = poem.main_poem;
         }
 
@@ -51,33 +46,33 @@ public class PoemActivity extends AppCompatActivity {
 
         View v;
         v = LayoutInflater.from(this).inflate(R.layout.post_row, mainlist, false);
-        ((TextView) v.findViewById(R.id.title)).setText(bypass.markdownToSpannable(poem.post_title));
+        ((TextView) v.findViewById(R.id.title)).setText(Util.convertMarkdown(poem.post_title, this));
         ((TextView) v.findViewById(R.id.author)).setText(poem.post_author);
-        if (poem.post_content != null && poem.post_content.length()>0){
-            ((TextView) v.findViewById(R.id.content)).setText(bypass.markdownToSpannable(poem.post_content));
+        if (poem.post_content != null && poem.post_content.length() > 0) {
+            ((TextView) v.findViewById(R.id.content)).setText(Util.convertMarkdown(poem.post_content, this));
             ((TextView) v.findViewById(R.id.content)).setMovementMethod(LinkMovementMethod.getInstance());
             v.findViewById(R.id.content).setVisibility(View.VISIBLE);
         }
         mainlist.addView(v);
 
-        for (ParentComment parent : poem.parents){
-            if (parent.is_poem != null){
+        for (ParentComment parent : poem.parents) {
+            if (parent.is_poem != null) {
                 v = LayoutInflater.from(this).inflate(R.layout.poem_row, mainlist, false);
-                ((TextView)v.findViewById(R.id.content)).setMovementMethod(LinkMovementMethod.getInstance());
+                ((TextView) v.findViewById(R.id.content)).setMovementMethod(LinkMovementMethod.getInstance());
                 Util.update_poem_row(parent.is_poem, v, true, false, this);
             } else {
                 v = LayoutInflater.from(this)
                         .inflate(R.layout.parents_list_row, mainlist, false);
-                ((TextView) v.findViewById(R.id.content)).setText(bypass.markdownToSpannable(parent.content));
+                ((TextView) v.findViewById(R.id.content)).setText(Util.convertMarkdown(parent.content, this));
                 ((TextView) v.findViewById(R.id.content)).setMovementMethod(LinkMovementMethod.getInstance());
                 ((TextView) v.findViewById(R.id.author)).setText(parent.author);
             }
             mainlist.addView(v);
         }
 
-        if (poem.content != null && poem.content.length()>0){
+        if (poem.content != null && poem.content.length() > 0) {
             v = LayoutInflater.from(this).inflate(R.layout.poem_row, mainlist, false);
-            ((TextView)v.findViewById(R.id.content)).setMovementMethod(LinkMovementMethod.getInstance());
+            ((TextView) v.findViewById(R.id.content)).setMovementMethod(LinkMovementMethod.getInstance());
             Util.update_poem_row(poem, v, true, false, this);
             mainlist.addView(v);
         }
@@ -85,7 +80,7 @@ public class PoemActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
         mTracker.setScreenName("Poem");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
@@ -95,7 +90,7 @@ public class PoemActivity extends AppCompatActivity {
                 .build());
     }
 
-    public void toReddit(View view){
+    public void toReddit(View view) {
         startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(poem.link + "?context=100")));
     }
 

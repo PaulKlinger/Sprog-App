@@ -48,7 +48,7 @@ class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.ViewHolder>
             if (content_wrapper.getVisibility() == View.GONE) {
                 first_line.setVisibility(View.GONE);
                 content_wrapper.setVisibility(View.VISIBLE);
-                ((TextView) v.findViewById(R.id.content)).setText(poem.content);
+                ((TextView) v.findViewById(R.id.content)).setText(Util.convertMarkdown(poem.content, context));
             } else {
                 Intent intent = new Intent(context, PoemActivity.class);
                 intent.putExtra("POEM_ID", filtered_poems.indexOf(poem));
