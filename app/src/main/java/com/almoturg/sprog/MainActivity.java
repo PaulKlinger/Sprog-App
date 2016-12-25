@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
         poems.addAll(poems_set);
         filtered_poems.addAll(poems_set);
         statusView.setText(String.format("%d poems", poems.size()));
-        mAdapter.notifyDataSetChanged();
+        mAdapter.notifyItemRangeInserted(filtered_poems.size(), poems_set.size());
     }
 
     public void finishedProcessing(boolean status) {

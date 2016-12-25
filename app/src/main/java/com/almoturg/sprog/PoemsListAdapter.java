@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.ViewHolder>
             implements View.OnClickListener {
         View content_wrapper;
         View first_line;
+        Poem poem;
         public CardView view;
 
         ViewHolder(View v) {
@@ -43,16 +45,13 @@ class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.ViewHolder>
 
         @Override
         public void onClick(View v) {
-            // I'm really not sure about getLayoutPosition (instead of getAdapterPosition())
-            // but at least it doesn't return -1 and cause an error.
-            // I think as long as poems are only added at the end it should be ok.
             if (content_wrapper.getVisibility() == View.GONE) {
                 first_line.setVisibility(View.GONE);
                 content_wrapper.setVisibility(View.VISIBLE);
-                ((TextView) v.findViewById(R.id.content)).setText(filtered_poems.get(getLayoutPosition()).content);
+                ((TextView) v.findViewById(R.id.content)).setText(poem.content);
             } else {
                 Intent intent = new Intent(context, PoemActivity.class);
-                intent.putExtra("POEM_ID", getLayoutPosition());
+                intent.putExtra("POEM_ID", filtered_poems.indexOf(poem));
                 context.startActivity(intent);
             }
         }
@@ -68,6 +67,7 @@ class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.ViewHolder>
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
+        Log.i(MainActivity.TAG, "createviewholder " + viewType);
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.poem_row, parent, false);
@@ -81,9 +81,8 @@ class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.ViewHolder>
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         Poem poem = (filtered_poems.get(position));
-
+        holder.poem = poem;
         Util.update_poem_row(poem, holder.view, false, true, context);
-
     }
 
     // Return the size of your dataset (invoked by the layout manager)
