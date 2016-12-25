@@ -22,10 +22,8 @@
             android:layout_height="match_parent"
             android:onClick="toReddit"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:drawableStart="@mipmap/snoo"
-            android:drawableLeft="@mipmap/snoo"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
+            android:drawableStart="@drawable/link"
+            android:drawableLeft="@drawable/link"
             android:minWidth="0dp"
             android:layout_gravity="right|bottom"
             />
