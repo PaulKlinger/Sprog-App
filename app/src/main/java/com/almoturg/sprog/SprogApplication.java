@@ -33,6 +33,7 @@ public class SprogApplication extends Application {
     private Tracker mTracker;
     public static List<Poem> poems = new ArrayList<>();
     public static List<Poem> filtered_poems = new ArrayList<>();
+    public static final Object bypassLock = new Object();
 
     /**
      * Gets the default {@link Tracker} for this {@link Application}.

@@ -89,9 +89,16 @@ final class Util {
 
     static CharSequence convertMarkdown(String markdown, Context context){
         if (bypass == null){
-            bypass = new Bypass(context);
+            synchronized (SprogApplication.bypassLock){
+                bypass = new Bypass(context);
+            }
         }
         markdown = markdown.replaceAll("(?:^|[^(\\[])(https?://\\S*\\.\\S*)(?:\\s|$)", "[$1]($1)");
-        return bypass.markdownToSpannable(markdown);
+
+        CharSequence converted;
+        synchronized (SprogApplication.bypassLock){
+            converted = bypass.markdownToSpannable(markdown);
+        }
+        return converted;
     }
 }

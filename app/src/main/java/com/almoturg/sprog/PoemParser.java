@@ -20,14 +20,16 @@ class PoemParser {
     private Bypass bypass;
 
     PoemParser(InputStream in, Context context) throws IOException {
-        bypass = new Bypass(context, new Bypass.Options());
+        synchronized (SprogApplication.bypassLock){
+            bypass = new Bypass(context, new Bypass.Options());
+        }
         this.reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
         mainpoem_links = new HashMap<>();
         reader.beginArray();
     }
 
     List<Poem> getPoems(int n) throws IOException {
-        if (reader == null){
+        if (reader == null) {
             return null;
         }
         List<Poem> poems = new ArrayList<>();
@@ -94,7 +96,12 @@ class PoemParser {
         }
         reader.endObject();
 
-        CharSequence first_line = bypass.markdownToSpannable(content.trim().split("\n", 2)[0].trim() + "...");
+        CharSequence first_line;
+
+        synchronized (SprogApplication.bypassLock){
+            first_line = bypass.markdownToSpannable(content.trim().split("\n", 2)[0].trim() + "...");
+        }
+
         Poem poem = new Poem(gold, score, content, first_line, timestamp,
                 post_title, post_author, post_content,
                 parents, link, main_poem);
