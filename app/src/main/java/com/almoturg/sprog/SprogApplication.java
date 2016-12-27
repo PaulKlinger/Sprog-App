@@ -18,6 +18,7 @@ package com.almoturg.sprog;
 
 
 import android.app.Application;
+import android.content.Context;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
@@ -34,6 +35,7 @@ public class SprogApplication extends Application {
     public static List<Poem> poems = new ArrayList<>();
     public static List<Poem> filtered_poems = new ArrayList<>();
     public static final Object bypassLock = new Object();
+    private static SprogDbHelper sprogDbHelper;
 
     /**
      * Gets the default {@link Tracker} for this {@link Application}.
@@ -48,5 +50,10 @@ public class SprogApplication extends Application {
         return mTracker;
     }
 
-
+    synchronized public static SprogDbHelper getDbHelper(Context context){
+        if (sprogDbHelper == null) {
+            sprogDbHelper = new SprogDbHelper(context);
+        }
+        return sprogDbHelper;
+    }
 }

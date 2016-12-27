@@ -46,6 +46,10 @@ class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.ViewHolder>
         @Override
         public void onClick(View v) {
             if (content_wrapper.getVisibility() == View.GONE) {
+                if (! poem.read){
+                    poem.read = true;
+                    ((MainActivity) context).new_read_poems.add(poem.link);
+                }
                 first_line.setVisibility(View.GONE);
                 content_wrapper.setVisibility(View.VISIBLE);
                 ((TextView) v.findViewById(R.id.content)).setText(Util.convertMarkdown(poem.content, context));

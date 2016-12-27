@@ -15,10 +15,11 @@ class Poem {
     List<ParentComment> parents;
     String link;
     Poem main_poem;
+    boolean read;
 
     Poem(int gold, int score, String content, CharSequence first_line, double timestamp,
                 String post_title, String post_author, String post_content,
-                List<ParentComment> parents, String link, Poem main_poem) {
+                List<ParentComment> parents, String link, Poem main_poem, boolean is_read) {
         this.content = content;
         this.gold = gold;
         this.score = score;
@@ -31,5 +32,6 @@ class Poem {
         this.main_poem = main_poem;
 
         this.first_line = first_line;
+        this.read = is_read;
     }
 }

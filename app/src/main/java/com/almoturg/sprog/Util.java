@@ -1,12 +1,17 @@
 package com.almoturg.sprog;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.widget.CardView;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -22,7 +27,7 @@ final class Util {
     private static Bypass bypass;
 
     static void update_poem_row(Poem poem, View poem_row, boolean border,
-                                       boolean only_first_line, Context context) {
+                                       boolean main_list, Context context) {
         if (cal == null) {
             cal = Calendar.getInstance(Locale.ENGLISH);
         }
@@ -34,10 +39,16 @@ final class Util {
             poem_row.findViewById(R.id.container).setPadding(card_padding, card_padding, card_padding, card_padding);
         }
 
-        if (only_first_line) {
+        if (main_list) {
             poem_row.findViewById(R.id.first_line).setVisibility(View.VISIBLE);
             poem_row.findViewById(R.id.content_wrapper).setVisibility(View.GONE);
             ((TextView) poem_row.findViewById(R.id.first_line)).setText(poem.first_line);
+            if (poem.read && ((MainActivity) context).prefs.getBoolean("MARK_READ_ENABLED", true)) {
+                ((CardView) poem_row).setCardBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.colorReadPoem, null));
+            } else {
+                ((CardView) poem_row).setCardBackgroundColor(ResourcesCompat.getColor(context.getResources(), R.color.colorUnReadPoem, null));
+            }
+
         } else {
             poem_row.findViewById(R.id.first_line).setVisibility(View.GONE);
             poem_row.findViewById(R.id.content_wrapper).setVisibility(View.VISIBLE);

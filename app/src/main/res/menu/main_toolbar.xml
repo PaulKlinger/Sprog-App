@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+    <!--<item
+        android:id="@+id/action_force_refresh"
+        android:orderInCategory="100"
+        android:title="update now"
+        app:showAsAction="never"/>-->
+    <item
+        android:id="@+id/action_mark_read"
+        android:orderInCategory="200"
+        android:title="gray out read poems"
+        android:checkable="true"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_reset_read"
+        android:orderInCategory="200"
+        android:title="mark all unread"
+        app:showAsAction="never"/>
 </menu>

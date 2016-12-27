@@ -8,7 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +16,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -40,7 +42,7 @@ import static com.almoturg.sprog.SprogApplication.filtered_poems;
 import static com.almoturg.sprog.SprogApplication.poems;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends ActionBarActivity {
     public static final String TAG = "Sprog";
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -50,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private Tracker mTracker;
     private boolean updating = false; // after processing set last update time if this is true
     private boolean processing = false;
+    SharedPreferences prefs;
+    ArrayList<String> new_read_poems; // Poems newly marked as read
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +116,10 @@ public class MainActivity extends AppCompatActivity {
 
         // use a linear layout manager
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        prefs = getPreferences(MODE_PRIVATE);
+
+        new_read_poems = new ArrayList<>();
     }
 
     @Override
@@ -133,8 +141,14 @@ public class MainActivity extends AppCompatActivity {
         preparePoems();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SprogApplication.getDbHelper(this).addReadPoems(new_read_poems);
+        new_read_poems.clear();
+    }
+
     private void preparePoems() { // not sure about the name...
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
         long last_update_tstamp = prefs.getLong("LAST_UPDATE_TIME", -1);
         boolean internet_access = Util.isConnected(this);
 
@@ -207,7 +221,6 @@ public class MainActivity extends AppCompatActivity {
         if (updating) {
             updating = false;
             if (poems.size() > 1000) {
-                SharedPreferences prefs = getPreferences(MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
 
                 Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -271,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
             search_box.setText("");
             findViewById(R.id.toggle_search).setBackgroundColor(Color.TRANSPARENT);
             ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
-                    .hideSoftInputFromWindow(search_box.getWindowToken(),0);
+                    .hideSoftInputFromWindow(search_box.getWindowToken(), 0);
             searchPoems();
         }
     }
@@ -291,5 +304,42 @@ public class MainActivity extends AppCompatActivity {
         }
         statusView.setText(filtered_poems.size() + " poems");
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main_toolbar, menu);
+        menu.findItem(R.id.action_mark_read).setChecked(prefs.getBoolean("MARK_READ_ENABLED", true));
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+/*        if (id == R.id.action_force_refresh) {
+            updatePoems(null);
+            return true;
+        } else */
+        if (id == R.id.action_mark_read) {
+            item.setChecked(! item.isChecked());
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("MARK_READ_ENABLED", item.isChecked());
+            editor.apply();
+            mAdapter.notifyDataSetChanged();
+        } else if (id == R.id.action_reset_read) {
+            new_read_poems.clear();
+            SprogApplication.getDbHelper(this).clearReadPoems();
+            for (Poem p : poems){
+                p.read = false;
+            }
+            mAdapter.notifyDataSetChanged();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

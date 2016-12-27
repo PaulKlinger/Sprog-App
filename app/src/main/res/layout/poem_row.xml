@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     cardview:cardCornerRadius="2dp"
     cardview:cardElevation="3dp"
-    cardview:cardUseCompatPadding="true">
+    cardview:cardUseCompatPadding="true"
+    cardview:cardBackgroundColor="@color/colorUnReadPoem">
 
     <LinearLayout
         android:layout_width="match_parent"
