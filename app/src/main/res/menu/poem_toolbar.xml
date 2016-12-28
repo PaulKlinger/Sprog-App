@@ -8,10 +8,10 @@
         android:title="Reddit comment"
         android:icon="@drawable/link"
         android:orderInCategory="100"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
     <item
         android:id="@+id/action_share"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         android:title="share"
         android:orderInCategory="200"
         app:actionProviderClass=
@@ -21,5 +21,5 @@
         android:title="copy"
         android:icon="@drawable/ic_copy"
         android:orderInCategory="300"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 </menu>
