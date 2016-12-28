@@ -16,4 +16,12 @@
     <style name="Widget.Spinner" parent="Widget.AppCompat.Spinner">
         <item name="android:background">@drawable/spinner_background</item>
     </style>
+
+    <style name="ThemeToolbar" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <!-- navigation icon color -->
+        <item name="colorControlNormal">@color/colorToolbarIcon</item>
+
+        <!-- color of the menu overflow icon -->
+        <item name="android:textColorSecondary">@color/colorToolbarIcon</item>
+    </style>
 </resources>

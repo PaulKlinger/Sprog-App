@@ -8,9 +8,9 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -42,7 +42,7 @@ import static com.almoturg.sprog.SprogApplication.filtered_poems;
 import static com.almoturg.sprog.SprogApplication.poems;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
     public static final String TAG = "Sprog";
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -54,6 +54,10 @@ public class MainActivity extends ActionBarActivity {
     private boolean processing = false;
     SharedPreferences prefs;
     ArrayList<String> new_read_poems; // Poems newly marked as read
+
+    // for analytics tracking of search queries
+    private String last_search_string = "";
+    private boolean sent_search = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -281,6 +285,15 @@ public class MainActivity extends ActionBarActivity {
                     .showSoftInput(search_box, InputMethodManager.SHOW_IMPLICIT);
         } else {
             search_box.setVisibility(View.GONE);
+            if ((!sent_search) && last_search_string.length() > 0) {
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("search")
+                        .setAction(last_search_string)
+                        .build());
+                Log.d("SPROG", "search:" + last_search_string);
+            }
+            last_search_string = "";
+            sent_search = false;
             search_box.setText("");
             findViewById(R.id.toggle_search).setBackgroundColor(Color.TRANSPARENT);
             ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
@@ -290,11 +303,24 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void searchPoems() {
-        Log.d(TAG, "searching");
         if (mAdapter == null) { // afterTextChanged gets called when EditText is created...
             return;
         }
         String search_string = ((EditText) findViewById(R.id.search_box)).getText().toString().toLowerCase();
+        if (!search_string.contains(last_search_string)) {
+            if (! sent_search) {
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("search")
+                        .setAction(last_search_string)
+                        .build());
+                Log.d("SPROG", "search:" + last_search_string);
+                sent_search = true;
+            }
+        } else {
+            sent_search = false;
+        }
+        last_search_string = search_string;
+
         filtered_poems = new ArrayList<>();
         for (Poem p : poems) {
             String content = p.content.toString().toLowerCase();
@@ -326,7 +352,7 @@ public class MainActivity extends ActionBarActivity {
             return true;
         } else */
         if (id == R.id.action_mark_read) {
-            item.setChecked(! item.isChecked());
+            item.setChecked(!item.isChecked());
             SharedPreferences.Editor editor = prefs.edit();
             editor.putBoolean("MARK_READ_ENABLED", item.isChecked());
             editor.apply();
@@ -334,7 +360,7 @@ public class MainActivity extends ActionBarActivity {
         } else if (id == R.id.action_reset_read) {
             new_read_poems.clear();
             SprogApplication.getDbHelper(this).clearReadPoems();
-            for (Poem p : poems){
+            for (Poem p : poems) {
                 p.read = false;
             }
             mAdapter.notifyDataSetChanged();

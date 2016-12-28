@@ -16,7 +16,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorAccent"
         android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:theme="@style/ThemeToolbar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
         <LinearLayout

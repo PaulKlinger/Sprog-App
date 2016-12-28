@@ -8,4 +8,5 @@
     <color name="colorReadPoem">#eaeaea</color>
     <color name="colorUnReadPoem">#fcfcfc</color>
     <color name="colorBackground">#eaeaea</color>
+    <color name="colorToolbarIcon">#9A343434</color>
 </resources>
