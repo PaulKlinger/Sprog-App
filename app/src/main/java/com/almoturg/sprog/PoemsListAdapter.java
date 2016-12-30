@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +45,7 @@ class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.ViewHolder>
         @Override
         public void onClick(View v) {
             if (content_wrapper.getVisibility() == View.GONE) {
-                if (! poem.read){
+                if (!poem.read) {
                     poem.read = true;
                     ((MainActivity) context).new_read_poems.add(poem.link);
                 }
@@ -69,9 +68,7 @@ class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.ViewHolder>
 
     // Create new views (invoked by the layout manager)
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                   int viewType) {
-        Log.i(MainActivity.TAG, "createviewholder " + viewType);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.poem_row, parent, false);

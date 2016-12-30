@@ -43,7 +43,6 @@ import static com.almoturg.sprog.SprogApplication.poems;
 
 
 public class MainActivity extends AppCompatActivity {
-    public static final String TAG = "Sprog";
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     public String sort_order = "Date";
@@ -306,9 +305,10 @@ public class MainActivity extends AppCompatActivity {
         if (mAdapter == null) { // afterTextChanged gets called when EditText is created...
             return;
         }
-        String search_string = ((EditText) findViewById(R.id.search_box)).getText().toString().toLowerCase();
+        String search_string = ((EditText) findViewById(R.id.search_box))
+                .getText().toString().toLowerCase();
         if (!search_string.contains(last_search_string)) {
-            if (! sent_search) {
+            if (!sent_search) {
                 mTracker.send(new HitBuilders.EventBuilder()
                         .setCategory("search")
                         .setAction(last_search_string)
@@ -323,7 +323,7 @@ public class MainActivity extends AppCompatActivity {
 
         filtered_poems = new ArrayList<>();
         for (Poem p : poems) {
-            String content = p.content.toString().toLowerCase();
+            String content = p.content.toLowerCase();
             if (content.contains(search_string)) {
                 filtered_poems.add(p);
             }

@@ -9,7 +9,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-class SprogDbHelper extends SQLiteOpenHelper{
+class SprogDbHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "Sprog.db";
@@ -31,17 +31,19 @@ class SprogDbHelper extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ENTRIES);
     }
+
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
         db.execSQL(SQL_DELETE_ENTRIES);
         onCreate(db);
     }
+
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
     }
 
-    ArrayList<String> getReadPoems(){
+    ArrayList<String> getReadPoems() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cur = db.rawQuery("SELECT link from " + READ_TABLE, null);
         ArrayList<String> read_poems = new ArrayList<>();
@@ -54,12 +56,12 @@ class SprogDbHelper extends SQLiteOpenHelper{
         return read_poems;
     }
 
-    void addReadPoems(ArrayList<String> new_read_poems){
+    void addReadPoems(ArrayList<String> new_read_poems) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
 
         ContentValues values;
-        for (String link : new_read_poems){
+        for (String link : new_read_poems) {
             values = new ContentValues();
             values.put("link", link);
             db.insert(READ_TABLE, null, values);
@@ -70,7 +72,7 @@ class SprogDbHelper extends SQLiteOpenHelper{
         db.close();
     }
 
-    void clearReadPoems(){
+    void clearReadPoems() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(SQL_CLEAR_READ_POEMS);
     }

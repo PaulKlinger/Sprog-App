@@ -1,8 +1,5 @@
 package com.almoturg.sprog;
 
-/**
- * Created by Paul on 2016-12-18.
- */
 class ParentComment {
     String content;
     String author;

@@ -39,6 +39,7 @@ public class SprogApplication extends Application {
 
     /**
      * Gets the default {@link Tracker} for this {@link Application}.
+     *
      * @return tracker
      */
     synchronized public Tracker getDefaultTracker() {
@@ -50,7 +51,7 @@ public class SprogApplication extends Application {
         return mTracker;
     }
 
-    synchronized public static SprogDbHelper getDbHelper(Context context){
+    synchronized public static SprogDbHelper getDbHelper(Context context) {
         if (sprogDbHelper == null) {
             sprogDbHelper = new SprogDbHelper(context);
         }

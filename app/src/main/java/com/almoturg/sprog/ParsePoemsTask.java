@@ -14,7 +14,7 @@ class ParsePoemsTask extends AsyncTask<Context, List<Poem>, Boolean> {
     private MainActivity activity;
 
     @Override
-    protected Boolean doInBackground(Context... context){
+    protected Boolean doInBackground(Context... context) {
         List<Poem> poems;
 
         File poems_file = new File(activity.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems.json");
@@ -25,9 +25,11 @@ class ParsePoemsTask extends AsyncTask<Context, List<Poem>, Boolean> {
 
         try {
             PoemParser parser = new PoemParser(new FileInputStream(poems_file), context[0]);
-            while (true){
+            while (true) {
                 poems = parser.getPoems(10);
-                if (poems == null){break;}
+                if (poems == null) {
+                    break;
+                }
                 publishProgress(poems);
             }
 
@@ -39,16 +41,16 @@ class ParsePoemsTask extends AsyncTask<Context, List<Poem>, Boolean> {
     }
 
     @Override
-    protected void onProgressUpdate(List<Poem>... poems_set){
+    protected void onProgressUpdate(List<Poem>... poems_set) {
         activity.addPoems(poems_set[0]);
     }
 
     @Override
-    protected void onPostExecute(Boolean status){
+    protected void onPostExecute(Boolean status) {
         activity.finishedProcessing(status);
     }
 
-    ParsePoemsTask(MainActivity activity){
+    ParsePoemsTask(MainActivity activity) {
         this.activity = activity;
     }
 

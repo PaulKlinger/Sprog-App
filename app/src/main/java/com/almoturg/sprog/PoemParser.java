@@ -3,7 +3,6 @@ package com.almoturg.sprog;
 import android.content.Context;
 import android.util.JsonReader;
 import android.util.JsonToken;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +21,7 @@ class PoemParser {
     private ArrayList<String> read_poems;
 
     PoemParser(InputStream in, Context context) throws IOException {
-        synchronized (SprogApplication.bypassLock){
+        synchronized (SprogApplication.bypassLock) {
             bypass = new Bypass(context, new Bypass.Options());
         }
         read_poems = SprogApplication.getDbHelper(context).getReadPoems();
@@ -102,11 +101,12 @@ class PoemParser {
 
         CharSequence first_line;
 
-        synchronized (SprogApplication.bypassLock){
-            first_line = bypass.markdownToSpannable(content.trim().split("\n", 2)[0].trim() + "...");
+        synchronized (SprogApplication.bypassLock) {
+            first_line = bypass.markdownToSpannable(
+                    content.trim().split("\n", 2)[0].trim() + "...");
         }
 
-        if (read_poems.contains(link)){
+        if (read_poems.contains(link)) {
             read = true;
         }
 

@@ -18,8 +18,8 @@ class Poem {
     boolean read;
 
     Poem(int gold, int score, String content, CharSequence first_line, double timestamp,
-                String post_title, String post_author, String post_content,
-                List<ParentComment> parents, String link, Poem main_poem, boolean is_read) {
+         String post_title, String post_author, String post_content,
+         List<ParentComment> parents, String link, Poem main_poem, boolean is_read) {
         this.content = content;
         this.gold = gold;
         this.score = score;

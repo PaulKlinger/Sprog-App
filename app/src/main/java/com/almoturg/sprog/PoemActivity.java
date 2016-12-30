@@ -57,11 +57,14 @@ public class PoemActivity extends AppCompatActivity {
 
         View v;
         v = LayoutInflater.from(this).inflate(R.layout.post_row, mainlist, false);
-        ((TextView) v.findViewById(R.id.title)).setText(Util.convertMarkdown(poem.post_title, this));
+        ((TextView) v.findViewById(R.id.title))
+                .setText(Util.convertMarkdown(poem.post_title, this));
         ((TextView) v.findViewById(R.id.author)).setText(poem.post_author);
         if (poem.post_content != null && poem.post_content.length() > 0) {
-            ((TextView) v.findViewById(R.id.content)).setText(Util.convertMarkdown(poem.post_content, this));
-            ((TextView) v.findViewById(R.id.content)).setMovementMethod(LinkMovementMethod.getInstance());
+            ((TextView) v.findViewById(R.id.content))
+                    .setText(Util.convertMarkdown(poem.post_content, this));
+            ((TextView) v.findViewById(R.id.content))
+                    .setMovementMethod(LinkMovementMethod.getInstance());
             v.findViewById(R.id.content).setVisibility(View.VISIBLE);
         }
         mainlist.addView(v);
@@ -69,13 +72,16 @@ public class PoemActivity extends AppCompatActivity {
         for (ParentComment parent : poem.parents) {
             if (parent.is_poem != null) {
                 v = LayoutInflater.from(this).inflate(R.layout.poem_row, mainlist, false);
-                ((TextView) v.findViewById(R.id.content)).setMovementMethod(LinkMovementMethod.getInstance());
+                ((TextView) v.findViewById(R.id.content))
+                        .setMovementMethod(LinkMovementMethod.getInstance());
                 Util.update_poem_row(parent.is_poem, v, true, false, this);
             } else {
                 v = LayoutInflater.from(this)
                         .inflate(R.layout.parents_list_row, mainlist, false);
-                ((TextView) v.findViewById(R.id.content)).setText(Util.convertMarkdown(parent.content, this));
-                ((TextView) v.findViewById(R.id.content)).setMovementMethod(LinkMovementMethod.getInstance());
+                ((TextView) v.findViewById(R.id.content))
+                        .setText(Util.convertMarkdown(parent.content, this));
+                ((TextView) v.findViewById(R.id.content))
+                        .setMovementMethod(LinkMovementMethod.getInstance());
                 ((TextView) v.findViewById(R.id.author)).setText(parent.author);
             }
             mainlist.addView(v);
@@ -83,7 +89,8 @@ public class PoemActivity extends AppCompatActivity {
 
         if (poem.content != null && poem.content.length() > 0) {
             v = LayoutInflater.from(this).inflate(R.layout.poem_row, mainlist, false);
-            ((TextView) v.findViewById(R.id.content)).setMovementMethod(LinkMovementMethod.getInstance());
+            ((TextView) v.findViewById(R.id.content))
+                    .setMovementMethod(LinkMovementMethod.getInstance());
             Util.update_poem_row(poem, v, true, false, this);
             mainlist.addView(v);
         }
@@ -99,10 +106,6 @@ public class PoemActivity extends AppCompatActivity {
                 .setCategory("PoemPage")
                 .setAction(Util.last(poem.link.split("/")))
                 .build());
-    }
-
-    public void toReddit(View view) {
-
     }
 
     @Override
@@ -127,7 +130,8 @@ public class PoemActivity extends AppCompatActivity {
                     .setCategory("toReddit")
                     .setAction(Util.last(poem.link.split("/")))
                     .build());
-            startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(poem.link + "?context=100")));
+            startActivity(new Intent(Intent.ACTION_VIEW).setData(
+                    Uri.parse(poem.link + "?context=100")));
         } else if (item.getItemId() == R.id.action_share) {
             Toast toast = Toast.makeText(this, "sharing", Toast.LENGTH_SHORT);
             toast.show();
@@ -143,7 +147,8 @@ public class PoemActivity extends AppCompatActivity {
 
         MenuItem item = menu.findItem(R.id.action_share);
 
-        ShareActionProvider mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+        ShareActionProvider mShareActionProvider =
+                (ShareActionProvider) MenuItemCompat.getActionProvider(item);
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
         shareIntent.putExtra(Intent.EXTRA_TEXT,
