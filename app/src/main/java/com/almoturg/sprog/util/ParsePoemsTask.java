@@ -1,8 +1,12 @@
-package com.almoturg.sprog;
+package com.almoturg.sprog.util;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
+
+import com.almoturg.sprog.model.Poem;
+import com.almoturg.sprog.ui.MainActivity;
+import com.almoturg.sprog.util.PoemParser;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,7 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 
-class ParsePoemsTask extends AsyncTask<Context, List<Poem>, Boolean> {
+public class ParsePoemsTask extends AsyncTask<Context, List<Poem>, Boolean> {
     private MainActivity activity;
 
     @Override
@@ -50,7 +54,7 @@ class ParsePoemsTask extends AsyncTask<Context, List<Poem>, Boolean> {
         activity.finishedProcessing(status);
     }
 
-    ParsePoemsTask(MainActivity activity) {
+    public ParsePoemsTask(MainActivity activity) {
         this.activity = activity;
     }
 

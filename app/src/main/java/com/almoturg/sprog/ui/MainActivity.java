@@ -1,4 +1,4 @@
-package com.almoturg.sprog;
+package com.almoturg.sprog.ui;
 
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
@@ -27,6 +27,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.util.Log;
 
+import com.almoturg.sprog.util.ParsePoemsTask;
+import com.almoturg.sprog.R;
+import com.almoturg.sprog.SprogApplication;
+import com.almoturg.sprog.util.Util;
+import com.almoturg.sprog.model.Poem;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
@@ -51,8 +56,8 @@ public class MainActivity extends AppCompatActivity {
     private Tracker mTracker;
     private boolean updating = false; // after processing set last update time if this is true
     private boolean processing = false;
-    SharedPreferences prefs;
-    ArrayList<String> new_read_poems; // Poems newly marked as read
+    public SharedPreferences prefs;
+    public ArrayList<String> new_read_poems; // Poems newly marked as read
 
     // for analytics tracking of search queries
     private String last_search_string = "";

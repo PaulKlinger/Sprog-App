@@ -20,6 +20,8 @@ package com.almoturg.sprog;
 import android.app.Application;
 import android.content.Context;
 
+import com.almoturg.sprog.model.Poem;
+import com.almoturg.sprog.util.SprogDbHelper;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 

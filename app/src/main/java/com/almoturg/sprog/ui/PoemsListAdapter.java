@@ -1,4 +1,4 @@
-package com.almoturg.sprog;
+package com.almoturg.sprog.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.almoturg.sprog.R;
+import com.almoturg.sprog.util.Util;
+import com.almoturg.sprog.model.Poem;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.util.Calendar;
@@ -19,7 +22,7 @@ import java.util.Locale;
 import static com.almoturg.sprog.SprogApplication.filtered_poems;
 
 
-class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.ViewHolder>
+public class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.ViewHolder>
         implements FastScrollRecyclerView.SectionedAdapter {
     private Context context;
     private Calendar cal;

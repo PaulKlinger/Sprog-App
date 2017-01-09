@@ -1,9 +1,8 @@
-package com.almoturg.sprog;
+package com.almoturg.sprog.ui;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -19,11 +18,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.almoturg.sprog.R;
+import com.almoturg.sprog.SprogApplication;
+import com.almoturg.sprog.util.Util;
+import com.almoturg.sprog.model.ParentComment;
+import com.almoturg.sprog.model.Poem;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import static com.almoturg.sprog.SprogApplication.filtered_poems;
-import static com.almoturg.sprog.SprogApplication.poems;
 
 public class PoemActivity extends AppCompatActivity {
     private Poem poem; // The mainpoem corresponding to the selected one.

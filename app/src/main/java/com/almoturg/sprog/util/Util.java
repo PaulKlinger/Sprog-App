@@ -1,4 +1,4 @@
-package com.almoturg.sprog;
+package com.almoturg.sprog.util;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -9,6 +9,11 @@ import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.TextView;
 
+import com.almoturg.sprog.R;
+import com.almoturg.sprog.SprogApplication;
+import com.almoturg.sprog.model.Poem;
+import com.almoturg.sprog.ui.MainActivity;
+
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -16,7 +21,7 @@ import java.util.TimeZone;
 import in.uncod.android.bypass.Bypass;
 
 
-final class Util {
+public final class Util {
     private static Calendar cal = null;
     // These are the times when an update should be available on the server
     private static int FIRST_UPDATE_HOUR = 2;
@@ -24,7 +29,7 @@ final class Util {
 
     private static Bypass bypass;
 
-    static void update_poem_row(Poem poem, View poem_row, boolean border,
+    public static void update_poem_row(Poem poem, View poem_row, boolean border,
                                 boolean main_list, Context context) {
         if (cal == null) {
             cal = Calendar.getInstance(Locale.ENGLISH);
@@ -73,11 +78,11 @@ final class Util {
                 DateFormat.format("yyyy-MM-dd HH:mm:ss", cal).toString());
     }
 
-    static <T> T last(T[] array) {
+    public static <T> T last(T[] array) {
         return array[array.length - 1];
     }
 
-    static boolean isConnected(Context context) {
+    public static boolean isConnected(Context context) {
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -86,7 +91,7 @@ final class Util {
                 activeNetwork.isConnected();
     }
 
-    static boolean isUpdateTime(long last_update_tstamp) {
+    public static boolean isUpdateTime(long last_update_tstamp) {
         Calendar last_update_cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
@@ -104,7 +109,7 @@ final class Util {
                         && diff_in_ms > ms_today - SECOND_UPDATE_HOUR * 60 * 60 * 1000);
     }
 
-    static CharSequence convertMarkdown(String markdown, Context context) {
+    public static CharSequence convertMarkdown(String markdown, Context context) {
         if (bypass == null) {
             synchronized (SprogApplication.bypassLock) {
                 bypass = new Bypass(context);
