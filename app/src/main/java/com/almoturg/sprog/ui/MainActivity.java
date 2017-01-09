@@ -239,9 +239,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updatePoems(View view) {
-        if (downloadPoemsComplete != null) {
-            return;
-        }
         updating = true;
 
         File poems_file = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems.json");
