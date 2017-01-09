@@ -30,11 +30,11 @@
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".MainActivity" />
-        <activity android:name=".PoemActivity" />
+        <activity android:name=".ui.MainActivity" />
+        <activity android:name=".ui.PoemActivity" />
 
         <activity
-            android:name=".SplashActivity"
+            android:name=".ui.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

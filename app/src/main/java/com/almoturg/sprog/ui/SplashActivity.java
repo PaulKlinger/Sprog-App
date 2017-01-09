@@ -1,4 +1,4 @@
-package com.almoturg.sprog;
+package com.almoturg.sprog.ui;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;

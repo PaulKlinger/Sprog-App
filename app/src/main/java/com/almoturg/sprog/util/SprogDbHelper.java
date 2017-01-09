@@ -1,4 +1,4 @@
-package com.almoturg.sprog;
+package com.almoturg.sprog.util;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,7 +9,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-class SprogDbHelper extends SQLiteOpenHelper {
+public class SprogDbHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "Sprog.db";
@@ -56,7 +56,7 @@ class SprogDbHelper extends SQLiteOpenHelper {
         return read_poems;
     }
 
-    void addReadPoems(ArrayList<String> new_read_poems) {
+    public void addReadPoems(ArrayList<String> new_read_poems) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
 
@@ -72,7 +72,7 @@ class SprogDbHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    void clearReadPoems() {
+    public void clearReadPoems() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(SQL_CLEAR_READ_POEMS);
     }

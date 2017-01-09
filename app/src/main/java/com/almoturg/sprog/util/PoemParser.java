@@ -1,8 +1,12 @@
-package com.almoturg.sprog;
+package com.almoturg.sprog.util;
 
 import android.content.Context;
 import android.util.JsonReader;
 import android.util.JsonToken;
+
+import com.almoturg.sprog.SprogApplication;
+import com.almoturg.sprog.model.ParentComment;
+import com.almoturg.sprog.model.Poem;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,13 +18,13 @@ import java.util.List;
 import in.uncod.android.bypass.Bypass;
 
 
-class PoemParser {
+public class PoemParser {
     private JsonReader reader;
     private HashMap<String, Poem> mainpoem_links;
     private Bypass bypass;
     private ArrayList<String> read_poems;
 
-    PoemParser(InputStream in, Context context) throws IOException {
+    public PoemParser(InputStream in, Context context) throws IOException {
         synchronized (SprogApplication.bypassLock) {
             bypass = new Bypass(context, new Bypass.Options());
         }
@@ -30,7 +34,7 @@ class PoemParser {
         reader.beginArray();
     }
 
-    List<Poem> getPoems(int n) throws IOException {
+    public List<Poem> getPoems(int n) throws IOException {
         if (reader == null) {
             return null;
         }
