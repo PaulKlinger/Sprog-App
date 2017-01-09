@@ -1,21 +1,17 @@
 package com.almoturg.sprog.ui;
 
-import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.net.Uri;
-import android.os.Environment;
 import android.os.Bundle;
-import android.content.Intent;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,13 +21,14 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.util.Log;
 
-import com.almoturg.sprog.util.ParsePoemsTask;
 import com.almoturg.sprog.R;
 import com.almoturg.sprog.SprogApplication;
-import com.almoturg.sprog.util.Util;
+import com.almoturg.sprog.api.SprogApiClient;
 import com.almoturg.sprog.model.Poem;
+import com.almoturg.sprog.util.ParsePoemsTask;
+import com.almoturg.sprog.util.Util;
+import com.android.volley.VolleyError;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
@@ -51,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     public String sort_order = "Date";
-    private BroadcastReceiver downloadPoemsComplete;
     public TextView statusView;
     private Tracker mTracker;
     private boolean updating = false; // after processing set last update time if this is true
@@ -254,29 +250,18 @@ public class MainActivity extends AppCompatActivity {
             poems_file.renameTo(poems_old_file);
         }
 
-        String url = "https://almoturg.com/poems.json";
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-        request.setDescription("Sprog poems");
-        request.setTitle("Sprog");
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
-
-        request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, "poems.json");
-
-        // get download service and enqueue file
-        DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-        downloadPoemsComplete = new BroadcastReceiver() {
-            public void onReceive(Context ctxt, Intent intent) {
-
-                statusView.setText("poems downloaded");
-                processPoems();
-                unregisterReceiver(downloadPoemsComplete);
-                downloadPoemsComplete = null;
-            }
-        };
-        registerReceiver(downloadPoemsComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-
         statusView.setText("loading poems");
-        manager.enqueue(request);
+        SprogApiClient.getInstance(this).getPoems(new SprogApiClient.OnGetPoemsCompletionListener() {
+            @Override
+            public void onComplete(VolleyError error) {
+                if (error == null) {
+                    statusView.setText("poems downloaded");
+                    processPoems();
+                } else {
+                    statusView.setText(error.getLocalizedMessage());
+                }
+            }
+        });
     }
 
     public void toggleSearch(View view) {
