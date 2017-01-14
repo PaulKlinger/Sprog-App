@@ -9,4 +9,5 @@
     <color name="colorUnReadPoem">#fcfcfc</color>
     <color name="colorBackground">#eaeaea</color>
     <color name="colorToolbarIcon">#9A343434</color>
+    <color name="colorLauncherIcon">#FF8BC34A</color>
 </resources>

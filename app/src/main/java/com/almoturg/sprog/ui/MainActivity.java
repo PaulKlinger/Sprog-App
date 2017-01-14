@@ -1,8 +1,10 @@
 package com.almoturg.sprog.ui;
 
 import android.app.DownloadManager;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -10,6 +12,9 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Bundle;
 import android.content.Intent;
+import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,6 +39,7 @@ import com.almoturg.sprog.util.Util;
 import com.almoturg.sprog.model.Poem;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -125,8 +131,8 @@ public class MainActivity extends AppCompatActivity {
         // use a linear layout manager
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        prefs = getPreferences(MODE_PRIVATE);
-
+        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        Log.d("SPROG", "mainactivity preferences:" + prefs.toString());
         new_read_poems = new ArrayList<>();
     }
 
@@ -136,7 +142,15 @@ public class MainActivity extends AppCompatActivity {
         mTracker.setScreenName("PoemsList");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
-        // I don't actually konw why this doesn't work in onCreate
+        // A dialog asking whether to enable new poem notifications is shown
+        // the second time MainActivity is started.
+        if (Util.timeToShowNotifyDialog(prefs)){
+            NotifyDialog notifyDialog = new NotifyDialog();
+            FragmentManager fm = this.getSupportFragmentManager();
+            notifyDialog.show(fm, "DIALOG_NOTIFY");
+        }
+
+        // I don't actually know why this doesn't work in onCreate
         // but everything else to do with the recyclerview does.
         // Maybe it would work there??
         if (mAdapter == null) {
@@ -146,7 +160,15 @@ public class MainActivity extends AppCompatActivity {
                 statusView.setText(String.format("%d poems", filtered_poems.size()));
             }
         }
-        preparePoems();
+        NotificationManager nm = (NotificationManager) getSystemService(this.NOTIFICATION_SERVICE);
+        nm.cancelAll();
+        boolean update = prefs.getBoolean(Util.PREF_UPDATE_NEXT, false);
+        if (update){
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean(Util.PREF_UPDATE_NEXT, false);
+            editor.apply();
+        }
+        preparePoems(update);
     }
 
     @Override
@@ -156,7 +178,44 @@ public class MainActivity extends AppCompatActivity {
         new_read_poems.clear();
     }
 
-    private void preparePoems() { // not sure about the name...
+    private void showNotifyDialog(){
+        Log.d("Sprog", "showing notify dialog");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Do you want to receive a notification when new poems are available?" +
+                "\nThis can be changed later in the overflow menu in the top right.")
+                .setTitle("New Poem Notifications");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                FirebaseMessaging.getInstance().subscribeToTopic("PoemUpdates");
+                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(
+                        getApplicationContext()).edit();
+                editor.putBoolean(Util.PREF_NOTIFY_NEW, true);
+                editor.apply();
+                findViewById(R.id.action_notify_new).setSelected(true);
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("notificationDialog")
+                        .setAction("yes")
+                        .build());
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                FirebaseMessaging.getInstance().unsubscribeFromTopic("PoemUpdates");
+                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(
+                        getApplicationContext()).edit();
+                editor.putBoolean(Util.PREF_NOTIFY_NEW, false);
+                editor.apply();
+                findViewById(R.id.action_notify_new).setSelected(false);
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("notificationDialog")
+                        .setAction("no")
+                        .build());
+            }
+        });
+        builder.show();
+    }
+
+    private void preparePoems(boolean update) { // not sure about the name...
         long last_update_tstamp = prefs.getLong("LAST_UPDATE_TIME", -1);
         boolean internet_access = Util.isConnected(this);
 
@@ -168,9 +227,11 @@ public class MainActivity extends AppCompatActivity {
                 statusView.setText("no internet");
             }
         } else {
-            boolean is_update_time = Util.isUpdateTime(last_update_tstamp);
+            if (!update) {
+                update = Util.isUpdateTime(last_update_tstamp);
+            }
 
-            if (is_update_time && internet_access) {
+            if (update && internet_access) {
                 updatePoems(null);
             } else if (poems.size() == 0) { // file exists by above (except race)
                 processPoems();
@@ -232,7 +293,10 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = prefs.edit();
 
                 Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-                editor.putLong("LAST_UPDATE_TIME", now.getTimeInMillis());
+                editor.putLong(Util.PREF_LAST_UPDATE_TIME, now.getTimeInMillis());
+                // Store timestamp of last poem for new poem notifications
+                // Can't store double in sharedprefs so store timestamp in milliseconds as long
+                editor.putLong(Util.PREF_LAST_POEM_TIME, (long) poems.get(0).timestamp * 1000);
                 editor.apply();
             }
         }
@@ -307,7 +371,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void searchPoems() {
-        if (mAdapter == null) { // afterTextChanged gets called when EditText is created...
+        if (mAdapter == null || updating) { // afterTextChanged gets called when EditText is created...
             return;
         }
         String search_string = ((EditText) findViewById(R.id.search_box))
@@ -341,7 +405,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_toolbar, menu);
-        menu.findItem(R.id.action_mark_read).setChecked(prefs.getBoolean("MARK_READ_ENABLED", true));
+        menu.findItem(R.id.action_mark_read).setChecked(prefs.getBoolean(Util.PREF_MARK_READ, true));
+        menu.findItem(R.id.action_notify_new).setChecked(prefs.getBoolean(Util.PREF_NOTIFY_NEW, false));
         return true;
     }
 
@@ -359,7 +424,7 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_mark_read) {
             item.setChecked(!item.isChecked());
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean("MARK_READ_ENABLED", item.isChecked());
+            editor.putBoolean(Util.PREF_MARK_READ, item.isChecked());
             editor.apply();
             mAdapter.notifyDataSetChanged();
         } else if (id == R.id.action_reset_read) {
@@ -369,6 +434,18 @@ public class MainActivity extends AppCompatActivity {
                 p.read = false;
             }
             mAdapter.notifyDataSetChanged();
+        } else if (id == R.id.action_notify_new) {
+            item.setChecked(!item.isChecked());
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean(Util.PREF_NOTIFY_NEW, item.isChecked());
+            // if the user set the notification manually we don't need to show the dialog
+            editor.putInt(Util.PREF_DISPLAYED_NOTIFICATION_DIALOG, 1);
+            editor.apply();
+            if (item.isChecked()){
+                FirebaseMessaging.getInstance().subscribeToTopic("PoemUpdates");
+            } else {
+                FirebaseMessaging.getInstance().unsubscribeFromTopic("PoemUpdates");
+            }
         }
 
         return super.onOptionsItemSelected(item);

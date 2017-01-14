@@ -1,11 +1,13 @@
 package com.almoturg.sprog.util;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.CardView;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -27,6 +29,14 @@ public final class Util {
     private static int FIRST_UPDATE_HOUR = 2;
     private static int SECOND_UPDATE_HOUR = 14;
 
+    public static int NEW_POEMS_NOTIFICATION_ID = 1;
+    public static String PREF_NOTIFY_NEW = "NOTIFY_NEW";
+    public static String PREF_DISPLAYED_NOTIFICATION_DIALOG = "DISPLAYED_NOTIFICATION_DIALOG";
+    public static String PREF_MARK_READ = "PREF_MARK_READ";
+    public static String PREF_LAST_UPDATE_TIME = "LAST_UPDATE_TIME";
+    public static String PREF_LAST_POEM_TIME = "LAST_POEM_TIME";
+    public static String PREF_UPDATE_NEXT = "UPDATE_NEXT";
+
     private static Bypass bypass;
 
     public static void update_poem_row(Poem poem, View poem_row, boolean border,
@@ -47,7 +57,7 @@ public final class Util {
             poem_row.findViewById(R.id.first_line).setVisibility(View.VISIBLE);
             poem_row.findViewById(R.id.content_wrapper).setVisibility(View.GONE);
             ((TextView) poem_row.findViewById(R.id.first_line)).setText(poem.first_line);
-            if (poem.read && ((MainActivity) context).prefs.getBoolean("MARK_READ_ENABLED", true)) {
+            if (poem.read && ((MainActivity) context).prefs.getBoolean(Util.PREF_MARK_READ, true)) {
                 ((CardView) poem_row).setCardBackgroundColor(
                         ResourcesCompat.getColor(context.getResources(),
                                 R.color.colorReadPoem, null));
@@ -122,5 +132,26 @@ public final class Util {
             converted = bypass.markdownToSpannable(markdown);
         }
         return converted;
+    }
+
+    public static boolean timeToShowNotifyDialog(SharedPreferences prefs){
+        // This checks whether it's time to show the dialog asking whether to enable
+        // notifications for new poems.
+        // The state is stored in the "DISPLAY_NOTIFICATION_DIALOG" pref
+        // not set: never launched, 0: launched once, 1: dialog shown
+        Log.d("SPROG", String.format("notify_pref: %d", prefs.getInt(Util.PREF_DISPLAYED_NOTIFICATION_DIALOG, -1)));
+        if (prefs.getInt(Util.PREF_DISPLAYED_NOTIFICATION_DIALOG, -1) == -1){
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt(Util.PREF_DISPLAYED_NOTIFICATION_DIALOG, 0);
+            editor.apply();
+            return false;
+        } else if (prefs.getInt(Util.PREF_DISPLAYED_NOTIFICATION_DIALOG, -1) == 0) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt(Util.PREF_DISPLAYED_NOTIFICATION_DIALOG, 1);
+            editor.apply();
+            return true;
+        } else {
+            return false;
+        }
     }
 }

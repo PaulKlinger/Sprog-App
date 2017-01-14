@@ -2,7 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.MainActivity">
+    tools:context=".ui.MainActivity"
+    android:id="@+id/main_toolbar_menu">
     <!--<item
         android:id="@+id/action_force_refresh"
         android:orderInCategory="100"
@@ -18,5 +19,11 @@
         android:id="@+id/action_reset_read"
         android:orderInCategory="200"
         android:title="mark all unread"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_notify_new"
+        android:orderInCategory="300"
+        android:title="new poem notifications"
+        android:checkable="true"
         app:showAsAction="never"/>
 </menu>

@@ -6,7 +6,6 @@ import android.os.Environment;
 
 import com.almoturg.sprog.model.Poem;
 import com.almoturg.sprog.ui.MainActivity;
-import com.almoturg.sprog.util.PoemParser;
 
 import java.io.File;
 import java.io.FileInputStream;
