@@ -178,43 +178,6 @@ public class MainActivity extends AppCompatActivity {
         new_read_poems.clear();
     }
 
-    private void showNotifyDialog(){
-        Log.d("Sprog", "showing notify dialog");
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Do you want to receive a notification when new poems are available?" +
-                "\nThis can be changed later in the overflow menu in the top right.")
-                .setTitle("New Poem Notifications");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                FirebaseMessaging.getInstance().subscribeToTopic("PoemUpdates");
-                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(
-                        getApplicationContext()).edit();
-                editor.putBoolean(Util.PREF_NOTIFY_NEW, true);
-                editor.apply();
-                findViewById(R.id.action_notify_new).setSelected(true);
-                mTracker.send(new HitBuilders.EventBuilder()
-                        .setCategory("notificationDialog")
-                        .setAction("yes")
-                        .build());
-            }
-        });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                FirebaseMessaging.getInstance().unsubscribeFromTopic("PoemUpdates");
-                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(
-                        getApplicationContext()).edit();
-                editor.putBoolean(Util.PREF_NOTIFY_NEW, false);
-                editor.apply();
-                findViewById(R.id.action_notify_new).setSelected(false);
-                mTracker.send(new HitBuilders.EventBuilder()
-                        .setCategory("notificationDialog")
-                        .setAction("no")
-                        .build());
-            }
-        });
-        builder.show();
-    }
-
     private void preparePoems(boolean update) { // not sure about the name...
         long last_update_tstamp = prefs.getLong("LAST_UPDATE_TIME", -1);
         boolean internet_access = Util.isConnected(this);
