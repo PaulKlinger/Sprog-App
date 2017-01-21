@@ -8,18 +8,24 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 public class SprogDbHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "Sprog.db";
     private static final String READ_TABLE = "read_poems";
+    private static final String FAVORITES_TABLE = "favorite_poems";
 
-    private static final String SQL_CREATE_ENTRIES =
-            "CREATE TABLE " + READ_TABLE + " (link TEXT PRIMARY KEY NOT NULL ON CONFLICT IGNORE)";
+    private static final String SQL_CREATE_READ_TABLE =
+            "CREATE TABLE " + READ_TABLE + " (link TEXT PRIMARY KEY NOT NULL ON CONFLICT IGNORE);";
+    private static final String SQL_CREATE_FAVORITES_TABLE =
+            "CREATE TABLE " + FAVORITES_TABLE + " (link TEXT PRIMARY KEY NOT NULL);";
 
     private static final String SQL_DELETE_ENTRIES =
-            "DROP TABLE IF EXISTS " + READ_TABLE;
+            "DROP TABLE IF EXISTS " + READ_TABLE + ";" +
+            "DROP TABLE IF EXISTS " + FAVORITES_TABLE + ";";
 
     private static final String SQL_CLEAR_READ_POEMS =
             "DELETE FROM " + READ_TABLE;
@@ -29,24 +35,24 @@ public class SprogDbHelper extends SQLiteOpenHelper {
     }
 
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(SQL_CREATE_ENTRIES);
+        db.execSQL(SQL_CREATE_READ_TABLE);
+        db.execSQL(SQL_CREATE_FAVORITES_TABLE);
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // This database is only a cache for online data, so its upgrade policy is
-        // to simply to discard the data and start over
-        db.execSQL(SQL_DELETE_ENTRIES);
-        onCreate(db);
+        if (newVersion==2){
+            db.execSQL(SQL_CREATE_FAVORITES_TABLE);
+        }
     }
 
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
     }
 
-    ArrayList<String> getReadPoems() {
+    HashSet<String> getReadPoems() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cur = db.rawQuery("SELECT link from " + READ_TABLE, null);
-        ArrayList<String> read_poems = new ArrayList<>();
+        HashSet<String> read_poems = new HashSet<>();
         while (cur.moveToNext()) {
             String link = cur.getString(cur.getColumnIndexOrThrow("link"));
             read_poems.add(link);
@@ -75,5 +81,43 @@ public class SprogDbHelper extends SQLiteOpenHelper {
     public void clearReadPoems() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(SQL_CLEAR_READ_POEMS);
+    }
+
+    public HashSet<String> getFavoritePoems() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cur = db.rawQuery("SELECT link from " + FAVORITES_TABLE, null);
+        HashSet<String> favorite_poems = new HashSet<>();
+        while (cur.moveToNext()) {
+            String link = cur.getString(cur.getColumnIndexOrThrow("link"));
+            favorite_poems.add(link);
+        }
+        cur.close();
+        db.close();
+        return favorite_poems;
+    }
+
+    public void addFavoritePoem(String link) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+
+        ContentValues values = new ContentValues();
+        values.put("link", link);
+        db.insert(FAVORITES_TABLE, null, values);
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+    }
+
+    public void removeFavoritePoem(String link) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+
+        ContentValues values = new ContentValues();
+        db.delete(FAVORITES_TABLE, "link=?", new String[]{link});
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
     }
 }

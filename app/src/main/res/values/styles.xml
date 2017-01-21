@@ -23,5 +23,14 @@
 
         <!-- color of the menu overflow icon -->
         <item name="android:textColorSecondary">@color/colorToolbarIcon</item>
+        <item name="actionButtonStyle">@style/ActionButtonStyle</item>
+    </style>
+    <style name="ActionButtonStyle" parent="@style/Widget.AppCompat.ActionButton">
+        <!-- this is used to reduce padding of action items to make them fit on the poem page
+             setting minWidth instead of width doesn't seem to do anything for some reason -->
+        <item name="android:width">0dp</item>
+
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
     </style>
 </resources>

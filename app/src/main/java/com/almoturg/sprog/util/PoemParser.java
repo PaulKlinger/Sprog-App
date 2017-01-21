@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import in.uncod.android.bypass.Bypass;
@@ -22,13 +23,15 @@ public class PoemParser {
     private JsonReader reader;
     private HashMap<String, Poem> mainpoem_links;
     private Bypass bypass;
-    private ArrayList<String> read_poems;
+    private HashSet<String> read_poems;
+    private HashSet<String> favorite_poems;
 
     public PoemParser(InputStream in, Context context) throws IOException {
         synchronized (SprogApplication.bypassLock) {
             bypass = new Bypass(context, new Bypass.Options());
         }
         read_poems = SprogApplication.getDbHelper(context).getReadPoems();
+        favorite_poems = SprogApplication.getDbHelper(context).getFavoritePoems();
         reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
         mainpoem_links = new HashMap<>();
         reader.beginArray();
@@ -62,6 +65,7 @@ public class PoemParser {
         String link = null;
         Poem main_poem = null;
         boolean read = false;
+        boolean favorite = false;
 
         reader.beginObject();
         while (reader.hasNext()) {
@@ -113,10 +117,13 @@ public class PoemParser {
         if (read_poems.contains(link)) {
             read = true;
         }
+        if (favorite_poems.contains(link)) {
+            favorite = true;
+        }
 
         Poem poem = new Poem(gold, score, content, first_line, timestamp,
                 post_title, post_author, post_content,
-                parents, link, main_poem, read);
+                parents, link, main_poem, read, favorite);
 
         if (main_poem == null) {
             // add parent comments of this poem which are poems to mainpoem_links

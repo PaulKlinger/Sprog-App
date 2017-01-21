@@ -4,7 +4,6 @@ import android.app.DownloadManager;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -14,7 +13,6 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +29,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.util.Log;
+import android.widget.ViewFlipper;
 
 import com.almoturg.sprog.util.ParsePoemsTask;
 import com.almoturg.sprog.R;
@@ -62,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private Tracker mTracker;
     private boolean updating = false; // after processing set last update time if this is true
     private boolean processing = false;
+    private boolean show_only_favorites = false;
     public SharedPreferences prefs;
     public ArrayList<String> new_read_poems; // Poems newly marked as read
 
@@ -157,8 +157,11 @@ public class MainActivity extends AppCompatActivity {
             mAdapter = new PoemsListAdapter(this);
             mRecyclerView.setAdapter(mAdapter);
             if (filtered_poems.size() > 0) {
-                statusView.setText(String.format("%d poems", filtered_poems.size()));
+                statusView.setText(String.format("× %d", filtered_poems.size()));
             }
+        } else{
+            // E.g. if we come from poem page and it was set to favorite
+            sortPoems();
         }
         NotificationManager nm = (NotificationManager) getSystemService(this.NOTIFICATION_SERVICE);
         nm.cancelAll();
@@ -168,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
             editor.putBoolean(Util.PREF_UPDATE_NEXT, false);
             editor.apply();
         }
+
         preparePoems(update);
     }
 
@@ -181,6 +185,11 @@ public class MainActivity extends AppCompatActivity {
     private void preparePoems(boolean update) { // not sure about the name...
         long last_update_tstamp = prefs.getLong("LAST_UPDATE_TIME", -1);
         boolean internet_access = Util.isConnected(this);
+
+        // cancel already running downloads
+        Util.cancelAllDownloads(this);
+        updating = false;
+        // TODO: consider also setting processing to false but would need to cancel task if running
 
         File file = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems.json");
         if (last_update_tstamp == -1 || !file.exists()) {
@@ -245,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
     public void addPoems(List<Poem> poems_set) {
         poems.addAll(poems_set);
         filtered_poems.addAll(poems_set);
-        statusView.setText(String.format("%d poems", poems.size()));
+        statusView.setText(String.format("× %d", poems.size()));
         mAdapter.notifyItemRangeInserted(filtered_poems.size(), poems_set.size());
     }
 
@@ -294,16 +303,37 @@ public class MainActivity extends AppCompatActivity {
         downloadPoemsComplete = new BroadcastReceiver() {
             public void onReceive(Context ctxt, Intent intent) {
 
-                statusView.setText("poems downloaded");
+                statusView.setText("poems\nloaded");
                 processPoems();
                 unregisterReceiver(downloadPoemsComplete);
                 downloadPoemsComplete = null;
             }
         };
-        registerReceiver(downloadPoemsComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        registerReceiver(downloadPoemsComplete,
+                new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
-        statusView.setText("loading poems");
+        statusView.setText("loading\npoems");
         manager.enqueue(request);
+    }
+
+    public void toggleFavorites(View view){
+        show_only_favorites = !show_only_favorites;
+        searchPoems();
+        if (show_only_favorites){
+            findViewById(R.id.toggle_favorites).setBackgroundResource(
+                    R.drawable.favorites_button_background);
+
+        } else {
+            findViewById(R.id.toggle_favorites).setBackgroundColor(Color.TRANSPARENT);
+            int toggle_favorites_padding = getResources().getDimensionPixelSize(R.dimen.toggle_favorites_padding);
+            findViewById(R.id.toggle_favorites).setPadding(
+                    toggle_favorites_padding, toggle_favorites_padding,
+                    toggle_favorites_padding, toggle_favorites_padding);
+            ((ViewFlipper) findViewById(R.id.poemsListEmptyFlipper)).setDisplayedChild(0);
+        }
+        if (show_only_favorites && last_search_string.length() == 0 && filtered_poems.size() == 0){
+            ((ViewFlipper) findViewById(R.id.poemsListEmptyFlipper)).setDisplayedChild(1);
+        }
     }
 
     public void toggleSearch(View view) {
@@ -356,11 +386,12 @@ public class MainActivity extends AppCompatActivity {
         filtered_poems = new ArrayList<>();
         for (Poem p : poems) {
             String content = p.content.toLowerCase();
-            if (content.contains(search_string)) {
+            if (content.contains(search_string) &&
+                    (!show_only_favorites || p.favorite)) {
                 filtered_poems.add(p);
             }
         }
-        statusView.setText(filtered_poems.size() + " poems");
+        statusView.setText("× " + filtered_poems.size());
         mAdapter.notifyDataSetChanged();
     }
 

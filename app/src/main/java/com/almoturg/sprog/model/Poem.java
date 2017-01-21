@@ -1,5 +1,11 @@
 package com.almoturg.sprog.model;
 
+import android.app.Application;
+import android.content.Context;
+
+import com.almoturg.sprog.SprogApplication;
+import com.almoturg.sprog.util.SprogDbHelper;
+
 import java.util.List;
 
 
@@ -16,10 +22,12 @@ public class Poem {
     public String link;
     public Poem main_poem;
     public boolean read;
+    public boolean favorite;
 
     public Poem(int gold, int score, String content, CharSequence first_line, double timestamp,
                 String post_title, String post_author, String post_content,
-                List<ParentComment> parents, String link, Poem main_poem, boolean is_read) {
+                List<ParentComment> parents, String link, Poem main_poem,
+                boolean is_read, boolean is_favorite) {
         this.content = content;
         this.gold = gold;
         this.score = score;
@@ -33,5 +41,17 @@ public class Poem {
 
         this.first_line = first_line;
         this.read = is_read;
+        this.favorite = is_favorite;
+    }
+
+    public void toggleFavorite(Context context){
+        this.favorite = !this.favorite;
+        SprogDbHelper db = SprogApplication.getDbHelper(context);
+        if (this.favorite) {
+            db.addFavoritePoem(this.link);
+        } else {
+            db.removeFavoritePoem(this.link);
+        }
+
     }
 }

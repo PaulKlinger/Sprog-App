@@ -4,22 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.PoemActivity">
     <item
+        android:id="@+id/action_addToFavorites"
+        android:title="add to favorites"
+        android:icon="@drawable/ic_star_empty"
+        android:orderInCategory="100"
+        app:showAsAction="always"/>
+    <item
         android:id="@+id/action_toReddit"
         android:title="Reddit comment"
         android:icon="@drawable/link"
-        android:orderInCategory="100"
+        android:orderInCategory="200"
         app:showAsAction="always"/>
     <item
         android:id="@+id/action_share"
         app:showAsAction="always"
         android:title="share"
-        android:orderInCategory="200"
+        android:orderInCategory="300"
         app:actionProviderClass=
             "android.support.v7.widget.ShareActionProvider" />
     <item
         android:id="@+id/action_copy"
-        android:title="copy"
+        android:title="copy to clipboard"
         android:icon="@drawable/ic_copy"
-        android:orderInCategory="300"
+        android:orderInCategory="400"
         app:showAsAction="always"/>
 </menu>

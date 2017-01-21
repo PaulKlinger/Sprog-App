@@ -1,7 +1,9 @@
 package com.almoturg.sprog.util;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.content.res.ResourcesCompat;
@@ -81,6 +83,12 @@ public final class Util {
         } else {
             poem_row.findViewById(R.id.gold_display).setVisibility(View.INVISIBLE);
         }
+        if (poem.favorite && main_list){
+            poem_row.findViewById(R.id.favorite_icon).setVisibility(View.VISIBLE);
+        } else {
+            poem_row.findViewById(R.id.favorite_icon).setVisibility(View.INVISIBLE);
+        }
+
         ((TextView) poem_row.findViewById(R.id.score)).setText(Long.toString(poem.score));
 
         cal.setTimeInMillis((long) poem.timestamp * 1000);
@@ -152,6 +160,17 @@ public final class Util {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public static void cancelAllDownloads(Context context){
+        DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Query query = new DownloadManager.Query();
+        query.setFilterByStatus (DownloadManager.STATUS_FAILED|DownloadManager.STATUS_PENDING|
+                DownloadManager.STATUS_PAUSED|DownloadManager.STATUS_RUNNING);
+        Cursor cur = manager.query(query);
+        while (cur.moveToNext()){
+            manager.remove(cur.getLong(cur.getColumnIndex(DownloadManager.COLUMN_ID)));
         }
     }
 }

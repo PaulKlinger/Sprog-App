@@ -33,6 +33,8 @@ public class PoemActivity extends AppCompatActivity {
     private Poem selectedPoem; // The selected poem.
     private Tracker mTracker;
 
+    private MenuItem favoriteItem;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,6 +111,7 @@ public class PoemActivity extends AppCompatActivity {
                 .setCategory("PoemPage")
                 .setAction(Util.last(poem.link.split("/")))
                 .build());
+
     }
 
     @Override
@@ -138,6 +141,13 @@ public class PoemActivity extends AppCompatActivity {
         } else if (item.getItemId() == R.id.action_share) {
             Toast toast = Toast.makeText(this, "sharing", Toast.LENGTH_SHORT);
             toast.show();
+        } else if (item.getItemId() == R.id.action_addToFavorites){
+            selectedPoem.toggleFavorite(this);
+            if (selectedPoem.favorite){
+                item.setIcon(R.drawable.ic_star_full);
+            } else {
+                item.setIcon(R.drawable.ic_star_empty);
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -147,6 +157,11 @@ public class PoemActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.poem_toolbar, menu);
+
+        favoriteItem = menu.findItem(R.id.action_addToFavorites);
+        if (selectedPoem.favorite){
+            favoriteItem.setIcon(R.drawable.ic_star_full);
+        }
 
         MenuItem item = menu.findItem(R.id.action_share);
 
