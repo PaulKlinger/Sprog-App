@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private Tracker mTracker;
     private boolean updating = false; // after processing set last update time if this is true
     private boolean processing = false;
-    private boolean show_only_favorites = false;
+    public boolean show_only_favorites = false;
     public SharedPreferences prefs;
     public ArrayList<String> new_read_poems; // Poems newly marked as read
 

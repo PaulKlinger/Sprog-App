@@ -59,7 +59,8 @@ public final class Util {
             poem_row.findViewById(R.id.first_line).setVisibility(View.VISIBLE);
             poem_row.findViewById(R.id.content_wrapper).setVisibility(View.GONE);
             ((TextView) poem_row.findViewById(R.id.first_line)).setText(poem.first_line);
-            if (poem.read && ((MainActivity) context).prefs.getBoolean(Util.PREF_MARK_READ, true)) {
+            if (poem.read && ((MainActivity) context).prefs.getBoolean(Util.PREF_MARK_READ, true)
+                    && !((MainActivity) context).show_only_favorites) {
                 ((CardView) poem_row).setCardBackgroundColor(
                         ResourcesCompat.getColor(context.getResources(),
                                 R.color.colorReadPoem, null));
