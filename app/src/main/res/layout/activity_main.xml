@@ -120,7 +120,7 @@
             android:layout_width="250dp"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="You have no favorite poems yet :(\n\nTap the star icon on a poems individual page to add it to your favorites."
+            android:text="You have no favorite poems yet :(\n\nTap the star icon on a poem's individual page to add it to your favorites."
             android:layout_gravity="center"
             android:id="@+id/emptyFavoritesText"/>
 
