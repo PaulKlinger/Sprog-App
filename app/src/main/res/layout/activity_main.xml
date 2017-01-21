@@ -62,7 +62,8 @@
                 android:paddingTop="@dimen/toggle_favorites_padding"
                 android:paddingRight="@dimen/toggle_favorites_padding"
                 android:paddingLeft="@dimen/toggle_favorites_padding"
-                android:layout_marginRight="5dp"/>
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="1dp"/>
 
             <Button
                 android:id="@+id/toggle_search"
@@ -74,7 +75,8 @@
                 android:drawableStart="@drawable/search"
                 android:minWidth="0dp"
                 android:onClick="toggleSearch"
-                android:padding="0dp"/>
+                android:padding="0dp"
+                android:layout_marginBottom="1dp"/>
             <LinearLayout
                 android:layout_width="5dp"
                 android:layout_height="match_parent"/>
@@ -86,7 +88,8 @@
                 android:layout_gravity="end|bottom"
                 android:dropDownWidth="wrap_content"
                 android:gravity="bottom"
-                android:minWidth="0dp"/>
+                android:minWidth="0dp"
+                android:layout_marginBottom="1dp"/>
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
 
