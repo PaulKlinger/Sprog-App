@@ -181,16 +181,16 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         SprogApplication.getDbHelper(this).addReadPoems(new_read_poems);
         new_read_poems.clear();
-    }
-
-    private void preparePoems(boolean update) { // not sure about the name...
-        long last_update_tstamp = prefs.getLong("LAST_UPDATE_TIME", -1);
-        boolean internet_access = Util.isConnected(this);
 
         // cancel already running downloads
         Util.cancelAllDownloads(this);
         updating = false;
         // TODO: consider also setting processing to false but would need to cancel task if running
+    }
+
+    private void preparePoems(boolean update) { // not sure about the name...
+        long last_update_tstamp = prefs.getLong("LAST_UPDATE_TIME", -1);
+        boolean internet_access = Util.isConnected(this);
 
         File file = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems.json");
         if (last_update_tstamp == -1 || !file.exists()) {
