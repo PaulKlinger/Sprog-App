@@ -34,6 +34,7 @@ import android.widget.ViewFlipper;
 import com.almoturg.sprog.util.ParsePoemsTask;
 import com.almoturg.sprog.R;
 import com.almoturg.sprog.SprogApplication;
+import com.almoturg.sprog.util.PoemsLoader;
 import com.almoturg.sprog.util.Util;
 import com.almoturg.sprog.model.Poem;
 import com.google.android.gms.analytics.HitBuilders;
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     public String sort_order = "Date";
-    private BroadcastReceiver downloadPoemsComplete;
+    public BroadcastReceiver downloadPoemsComplete;
     public TextView statusView;
     private Tracker mTracker;
     private boolean updating = false; // after processing set last update time if this is true
@@ -283,37 +284,8 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         updating = true;
-
-        File poems_file = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems.json");
-        File poems_old_file = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems_old.json");
-        if (poems_file.exists()) {
-            poems_file.renameTo(poems_old_file);
-        }
-
-        String url = "https://almoturg.com/poems.json";
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-        request.setDescription("Sprog poems");
-        request.setTitle("Sprog");
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
-
-        request.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, "poems.json");
-
-        // get download service and enqueue file
-        DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-        downloadPoemsComplete = new BroadcastReceiver() {
-            public void onReceive(Context ctxt, Intent intent) {
-
-                statusView.setText("poems\nloaded");
-                processPoems();
-                unregisterReceiver(downloadPoemsComplete);
-                downloadPoemsComplete = null;
-            }
-        };
-        registerReceiver(downloadPoemsComplete,
-                new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-
         statusView.setText("loading\npoems");
-        manager.enqueue(request);
+        PoemsLoader.loadPoems(this);
     }
 
     public void toggleFavorites(View view){
