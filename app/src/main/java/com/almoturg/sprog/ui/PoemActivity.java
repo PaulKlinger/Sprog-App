@@ -144,8 +144,16 @@ public class PoemActivity extends AppCompatActivity {
         } else if (item.getItemId() == R.id.action_addToFavorites){
             selectedPoem.toggleFavorite(this);
             if (selectedPoem.favorite){
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("favorite")
+                        .setAction(Util.last(selectedPoem.link.split("/")))
+                        .build());
+                Toast toast = Toast.makeText(this, "added to favorites", Toast.LENGTH_SHORT);
+                toast.show();
                 item.setIcon(R.drawable.ic_star_full);
             } else {
+                Toast toast = Toast.makeText(this, "removed from favorites", Toast.LENGTH_SHORT);
+                toast.show();
                 item.setIcon(R.drawable.ic_star_empty);
             }
         }
