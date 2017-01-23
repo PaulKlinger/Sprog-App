@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 
@@ -45,5 +46,16 @@ public class PoemsLoader {
         activity.registerReceiver(activity.downloadPoemsComplete,
                 new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         manager.enqueue(request);
+    }
+
+    public static void cancelAllDownloads(Context context){
+        DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Query query = new DownloadManager.Query();
+        query.setFilterByStatus (DownloadManager.STATUS_FAILED|DownloadManager.STATUS_PENDING|
+                DownloadManager.STATUS_PAUSED|DownloadManager.STATUS_RUNNING);
+        Cursor cur = manager.query(query);
+        while (cur.moveToNext()){
+            manager.remove(cur.getLong(cur.getColumnIndex(DownloadManager.COLUMN_ID)));
+        }
     }
 }

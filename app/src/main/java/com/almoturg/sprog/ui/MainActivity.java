@@ -1,16 +1,11 @@
 package com.almoturg.sprog.ui;
 
-import android.app.DownloadManager;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Environment;
 import android.os.Bundle;
-import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -183,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
         new_read_poems.clear();
 
         // cancel already running downloads
-        Util.cancelAllDownloads(this);
+        PoemsLoader.cancelAllDownloads(this);
         updating = false;
         // TODO: consider also setting processing to false but would need to cancel task if running
     }
