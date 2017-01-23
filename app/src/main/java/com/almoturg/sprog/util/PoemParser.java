@@ -92,7 +92,7 @@ public class PoemParser {
                     post_title = reader.nextString();
                     break;
                 case "submission_user":
-                    post_author = "/u/" + reader.nextString().replace("\\_", "_");
+                    post_author = formatUsername(reader.nextString());
                     break;
                 case "orig_submission_content":
                     post_content = reader.nextString().replace("^", "");
@@ -169,7 +169,7 @@ public class PoemParser {
             }
             switch (name) {
                 case "author":
-                    author = "/u/" + reader.nextString().replace("\\_", "_");
+                    author = formatUsername(reader.nextString());
                     break;
                 case "orig_body":
                     content = reader.nextString().replace("^", "");
@@ -184,5 +184,14 @@ public class PoemParser {
         }
         reader.endObject();
         return new ParentComment(content, author, link);
+    }
+
+    private static String formatUsername(String username) {
+        username = username.replace("\\_", "_");
+        if (username.equals("(deleted user)")) {
+            return username;
+        } else {
+            return "/u/" + username;
+        }
     }
 }
