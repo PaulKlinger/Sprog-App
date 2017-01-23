@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
             mAdapter = new PoemsListAdapter(this);
             mRecyclerView.setAdapter(mAdapter);
             if (filtered_poems.size() > 0) {
-                statusView.setText(String.format("× %d", filtered_poems.size()));
+                setStatusNumPoems(filtered_poems.size());
             }
         } else{
             // E.g. if we come from poem page and it was set to favorite
@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
     public void addPoems(List<Poem> poems_set) {
         poems.addAll(poems_set);
         filtered_poems.addAll(poems_set);
-        statusView.setText(String.format("× %d", poems.size()));
+        setStatusNumPoems(poems.size());
         mAdapter.notifyItemRangeInserted(filtered_poems.size(), poems_set.size());
     }
 
@@ -363,8 +363,12 @@ public class MainActivity extends AppCompatActivity {
                 filtered_poems.add(p);
             }
         }
-        statusView.setText("× " + filtered_poems.size());
+        setStatusNumPoems(filtered_poems.size());
         mAdapter.notifyDataSetChanged();
+    }
+
+    private void setStatusNumPoems(int numPoems){
+        statusView.setText(String.format("× %d", numPoems));
     }
 
     @Override
