@@ -42,12 +42,14 @@ public class MessagingService extends FirebaseMessagingService {
 
             long last_poem_time = prefs.getLong(Util.PREF_LAST_POEM_TIME, Long.MAX_VALUE);
             int new_poems_count = getNewPoemCount(last_update_timestamps, last_poem_time);
+
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putLong(Util.PREF_LAST_FCM_TSTAMP, remoteMessage.getSentTime());
             if (new_poems_count>0){
-                SharedPreferences.Editor editor = prefs.edit();
                 editor.putBoolean(Util.PREF_UPDATE_NEXT, true);
-                editor.apply();
                 createNotification(new_poems_count);
             }
+            editor.apply();
 
         }
     }

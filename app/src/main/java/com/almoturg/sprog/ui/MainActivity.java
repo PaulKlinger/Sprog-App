@@ -185,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void preparePoems(boolean update) { // not sure about the name...
         long last_update_tstamp = prefs.getLong("LAST_UPDATE_TIME", -1);
+        long last_fcm_tstamp = prefs.getLong(Util.PREF_LAST_FCM_TSTAMP, -1);
         boolean internet_access = Util.isConnected(this);
 
         File file = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems.json");
@@ -196,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             if (!update) {
-                update = Util.isUpdateTime(last_update_tstamp);
+                update = Util.isUpdateTime(last_update_tstamp, last_fcm_tstamp);
             }
 
             if (update && internet_access) {

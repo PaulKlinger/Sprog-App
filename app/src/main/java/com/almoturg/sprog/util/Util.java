@@ -28,16 +28,18 @@ import in.uncod.android.bypass.Bypass;
 public final class Util {
     private static Calendar cal = null;
     // These are the times when an update should be available on the server
-    private static int FIRST_UPDATE_HOUR = 2;
-    private static int SECOND_UPDATE_HOUR = 14;
+    private static final int FIRST_UPDATE_HOUR = 2;
+    private static final int SECOND_UPDATE_HOUR = 14;
+    private static final int MIN_HOURS_BETWEEN_UPDATES= 11; // some margin if it runs faster
 
-    public static int NEW_POEMS_NOTIFICATION_ID = 1;
-    public static String PREF_NOTIFY_NEW = "NOTIFY_NEW";
-    public static String PREF_DISPLAYED_NOTIFICATION_DIALOG = "DISPLAYED_NOTIFICATION_DIALOG";
-    public static String PREF_MARK_READ = "PREF_MARK_READ";
-    public static String PREF_LAST_UPDATE_TIME = "LAST_UPDATE_TIME";
-    public static String PREF_LAST_POEM_TIME = "LAST_POEM_TIME";
-    public static String PREF_UPDATE_NEXT = "UPDATE_NEXT";
+    public static final int NEW_POEMS_NOTIFICATION_ID = 1;
+    public static final String PREF_NOTIFY_NEW = "NOTIFY_NEW";
+    public static final String PREF_DISPLAYED_NOTIFICATION_DIALOG = "DISPLAYED_NOTIFICATION_DIALOG";
+    public static final String PREF_MARK_READ = "PREF_MARK_READ";
+    public static final String PREF_LAST_UPDATE_TIME = "LAST_UPDATE_TIME";
+    public static final String PREF_LAST_POEM_TIME = "LAST_POEM_TIME";
+    public static final String PREF_UPDATE_NEXT = "UPDATE_NEXT";
+    public static final String PREF_LAST_FCM_TSTAMP = "LAST_FCM_TSTAMP";
 
     private static Bypass bypass;
 
@@ -110,10 +112,15 @@ public final class Util {
                 activeNetwork.isConnected();
     }
 
-    public static boolean isUpdateTime(long last_update_tstamp) {
-        Calendar last_update_cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    public static boolean isUpdateTime(long last_update_tstamp, long last_fcm_tstamp) {
         Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        // last_fcm_tstamp is the time when the last FCM message was sent
+        // if it showed that updates were available this function would not have been called
+        if (now.getTimeInMillis() - last_fcm_tstamp < MIN_HOURS_BETWEEN_UPDATES * 60 * 60 * 1000){
+            return false;
+        }
 
+        Calendar last_update_cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         last_update_cal.setTimeInMillis(last_update_tstamp);
         long diff_in_ms = now.getTimeInMillis() - last_update_tstamp;
         long ms_today = now.get(Calendar.HOUR_OF_DAY) * 60 * 60 * 1000
