@@ -130,6 +130,8 @@ public class MainActivity extends AppCompatActivity {
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Log.d("SPROG", "mainactivity preferences:" + prefs.toString());
         new_read_poems = new ArrayList<>();
+
+        FirebaseMessaging.getInstance().subscribeToTopic("PoemUpdates");
     }
 
     @Override
@@ -404,11 +406,6 @@ public class MainActivity extends AppCompatActivity {
             // if the user set the notification manually we don't need to show the dialog
             editor.putInt(Util.PREF_DISPLAYED_NOTIFICATION_DIALOG, 1);
             editor.apply();
-            if (item.isChecked()){
-                FirebaseMessaging.getInstance().subscribeToTopic("PoemUpdates");
-            } else {
-                FirebaseMessaging.getInstance().unsubscribeFromTopic("PoemUpdates");
-            }
             mTracker.send(new HitBuilders.EventBuilder()
                     .setCategory("notificationOption")
                     .setAction(item.isChecked() ? "yes" : "no")

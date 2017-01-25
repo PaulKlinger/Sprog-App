@@ -47,7 +47,9 @@ public class MessagingService extends FirebaseMessagingService {
             editor.putLong(Util.PREF_LAST_FCM_TSTAMP, remoteMessage.getSentTime());
             if (new_poems_count>0){
                 editor.putBoolean(Util.PREF_UPDATE_NEXT, true);
-                createNotification(new_poems_count);
+                if (prefs.getBoolean(Util.PREF_NOTIFY_NEW, false)) {
+                    createNotification(new_poems_count);
+                }
             }
             editor.apply();
 
