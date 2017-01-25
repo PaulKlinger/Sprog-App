@@ -290,6 +290,12 @@ public class MainActivity extends AppCompatActivity {
         show_only_favorites = !show_only_favorites;
         searchPoems();
         if (show_only_favorites){
+            // track number of favorites (if search is active add "s" in front)
+            mTracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("showFavorites")
+                    .setAction((last_search_string.length() > 0 ? "s": "") +
+                            Integer.toString(filtered_poems.size()))
+                    .build());
             findViewById(R.id.toggle_favorites).setBackgroundResource(
                     R.drawable.favorites_button_background);
 
