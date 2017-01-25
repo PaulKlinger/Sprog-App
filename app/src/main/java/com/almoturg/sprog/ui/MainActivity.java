@@ -237,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }
         searchPoems();
+        mRecyclerView.scrollToPosition(0);
     }
 
     public void processPoems() {
