@@ -54,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
     public BroadcastReceiver downloadPoemsComplete;
     public TextView statusView;
     private Tracker mTracker;
-    private boolean updating = false; // after processing set last update time if this is true
-    private boolean processing = false;
+    public boolean updating = false; // after processing set last update time if this is true
+    public boolean processing = false;
     public boolean show_only_favorites = false;
     public SharedPreferences prefs;
     public ArrayList<String> new_read_poems; // Poems newly marked as read
