@@ -126,6 +126,13 @@
             android:text="You have no favorite poems yet :(\n\nTap the star icon on a poem's individual page to add it to your favorites."
             android:layout_gravity="center"
             android:id="@+id/emptyFavoritesText"/>
+        <Button
+            android:id="@+id/action_cancelUpdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="cancel updating poems"
+            android:onClick="cancelButton"/>
 
     </ViewFlipper>
 

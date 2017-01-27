@@ -18,29 +18,44 @@ public class ParsePoemsTask extends AsyncTask<Context, List<Poem>, Boolean> {
 
     @Override
     protected Boolean doInBackground(Context... context) {
-        List<Poem> poems;
-
         File poems_file = new File(activity.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems.json");
         File poems_old_file = new File(activity.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems_old.json");
+        File used_file = poems_file;
         if (!poems_file.exists()) {
-            poems_old_file.renameTo(poems_file);
+            if (poems_old_file.exists()){
+                    used_file = poems_old_file;
+            } else {return false;}
         }
 
         try {
-            PoemParser parser = new PoemParser(new FileInputStream(poems_file), context[0]);
-            while (true) {
-                poems = parser.getPoems(10);
-                if (poems == null) {
-                    break;
-                }
-                publishProgress(poems);
-            }
+            processFile(context[0], used_file);
 
         } catch (IOException e) {
-            return false;
+            used_file.delete();
+            if (used_file != poems_old_file){
+                try {
+                    processFile(context[0], poems_old_file);
+                } catch (IOException e2){
+                    poems_old_file.delete();
+                    return false;
+                }
+            } else {
+                return false;
+            }
         }
-
         return true;
+    }
+
+    private void processFile(Context context, File poems_file) throws IOException {
+        List<Poem> poems;
+        PoemParser parser = new PoemParser(new FileInputStream(poems_file), context);
+        while (true) {
+            poems = parser.getPoems(10);
+            if (poems == null) {
+                break;
+            }
+            publishProgress(poems);
+        }
     }
 
     @Override

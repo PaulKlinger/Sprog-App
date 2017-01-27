@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Environment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.CardView;
 import android.text.format.DateFormat;
@@ -16,6 +17,7 @@ import com.almoturg.sprog.SprogApplication;
 import com.almoturg.sprog.model.Poem;
 import com.almoturg.sprog.ui.MainActivity;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -30,6 +32,14 @@ public final class Util {
     private static final int SECOND_UPDATE_HOUR = 14;
     private static final int MIN_HOURS_BETWEEN_UPDATES = 11; // some margin if it runs faster
     private static final int MAX_DAYS_BETWEEN_LOADING_POEMS = 3;
+
+    // minimum length of poems.json file in bytes such that it is assumed to be complete
+    // and therefore the cancel button is shown when updating
+    private static final int MIN_FILE_LENGTH = 1000 * 1000;
+
+    public static final int VIEWFLIPPER_RECYCLERVIEW = 0;
+    public static final int VIEWFLIPPER_EMPTY_FAVORITES = 1;
+    public static final int VIEWFLIPPER_CANCEL_UPDATE = 2;
 
     public static final int NEW_POEMS_NOTIFICATION_ID = 1;
     public static final String PREF_NOTIFY_NEW = "NOTIFY_NEW";
@@ -177,4 +187,12 @@ public final class Util {
         }
     }
 
+    public static boolean poemsFileExists(Context context) {
+        File file = new File(context.getExternalFilesDir(
+                Environment.DIRECTORY_DOWNLOADS), "poems.json");
+        File old_file = new File(context.getExternalFilesDir(
+                Environment.DIRECTORY_DOWNLOADS), "poems_old.json");
+        return (file.exists() && file.length() > MIN_FILE_LENGTH) ||
+                (old_file.exists() && old_file.length() > MIN_FILE_LENGTH);
+    }
 }

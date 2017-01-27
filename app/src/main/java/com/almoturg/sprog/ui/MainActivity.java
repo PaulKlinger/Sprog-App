@@ -4,8 +4,8 @@ import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.Environment;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -36,7 +36,6 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -179,14 +178,17 @@ public class MainActivity extends AppCompatActivity {
         SprogApplication.getDbHelper(this).addReadPoems(new_read_poems);
         new_read_poems.clear();
 
-        // cancel already running downloads
+        cancelLoadingPoems();
+        // TODO: consider also setting processing to false but would need to cancel task if running
+    }
+
+    private void cancelLoadingPoems() {
         PoemsLoader.cancelAllDownloads(this);
         updating = false;
         if (downloadPoemsComplete != null){
             unregisterReceiver(downloadPoemsComplete);
             downloadPoemsComplete = null;
         }
-        // TODO: consider also setting processing to false but would need to cancel task if running
     }
 
     private void preparePoems(boolean update) { // not sure about the name...
@@ -194,8 +196,7 @@ public class MainActivity extends AppCompatActivity {
         long last_fcm_tstamp = prefs.getLong(Util.PREF_LAST_FCM_TSTAMP, -1);
         boolean internet_access = Util.isConnected(this);
 
-        File file = new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems.json");
-        if (last_update_tstamp == -1 || !file.exists()) {
+        if (last_update_tstamp == -1 || !Util.poemsFileExists(this)) {
             if (internet_access) {
                 updatePoems(null);
             } else {
@@ -249,6 +250,8 @@ public class MainActivity extends AppCompatActivity {
         sort_order = "Date";
         ((Spinner) findViewById(R.id.sort_spinner)).setSelection(0); // 0 is Date (is there a better way to do this??)
         statusView.setText("processing");
+        ((ViewFlipper) findViewById(R.id.poemsListEmptyFlipper))
+                .setDisplayedChild(Util.VIEWFLIPPER_RECYCLERVIEW);
         poems = new ArrayList<>();
         filtered_poems = new ArrayList<>();
         toggleSearch(null); // hide search box (checks processing)
@@ -283,15 +286,43 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updatePoems(View view) {
-        if (downloadPoemsComplete != null) {
+        if (processing || downloadPoemsComplete != null) {
             return;
         }
         updating = true;
         statusView.setText("loading\npoems");
+        disableFavorites();
+        poems.clear();
+        filtered_poems.clear();
+        mAdapter.notifyDataSetChanged();
+
+        if (Util.poemsFileExists(this)) {
+            // If loading poems takes more than 3s and an old poems file is available
+            // show a button to allow cancelling the download
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (downloadPoemsComplete != null) {
+                        ((ViewFlipper) findViewById(R.id.poemsListEmptyFlipper))
+                                .setDisplayedChild(Util.VIEWFLIPPER_CANCEL_UPDATE);}
+                }
+            }, 3000);
+
+        }
         PoemsLoader.loadPoems(this);
+
+    }
+
+    public void cancelButton(View view) {
+        cancelLoadingPoems();
+        processPoems();
     }
 
     public void toggleFavorites(View view){
+        if (updating){
+            return;
+        }
         show_only_favorites = !show_only_favorites;
         searchPoems();
         if (show_only_favorites){
@@ -305,16 +336,23 @@ public class MainActivity extends AppCompatActivity {
                     R.drawable.favorites_button_background);
 
         } else {
-            findViewById(R.id.toggle_favorites).setBackgroundColor(Color.TRANSPARENT);
-            int toggle_favorites_padding = getResources().getDimensionPixelSize(R.dimen.toggle_favorites_padding);
-            findViewById(R.id.toggle_favorites).setPadding(
-                    toggle_favorites_padding, toggle_favorites_padding,
-                    toggle_favorites_padding, toggle_favorites_padding);
-            ((ViewFlipper) findViewById(R.id.poemsListEmptyFlipper)).setDisplayedChild(0);
+            disableFavorites();
         }
         if (show_only_favorites && last_search_string.length() == 0 && filtered_poems.size() == 0){
-            ((ViewFlipper) findViewById(R.id.poemsListEmptyFlipper)).setDisplayedChild(1);
+            ((ViewFlipper) findViewById(R.id.poemsListEmptyFlipper))
+                    .setDisplayedChild(Util.VIEWFLIPPER_EMPTY_FAVORITES);
         }
+    }
+
+    public void disableFavorites() {
+        show_only_favorites = false;
+        findViewById(R.id.toggle_favorites).setBackgroundColor(Color.TRANSPARENT);
+        int toggle_favorites_padding = getResources().getDimensionPixelSize(R.dimen.toggle_favorites_padding);
+        findViewById(R.id.toggle_favorites).setPadding(
+                toggle_favorites_padding, toggle_favorites_padding,
+                toggle_favorites_padding, toggle_favorites_padding);
+        ((ViewFlipper) findViewById(R.id.poemsListEmptyFlipper))
+                .setDisplayedChild(Util.VIEWFLIPPER_RECYCLERVIEW);
     }
 
     public void toggleSearch(View view) {
