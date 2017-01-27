@@ -182,6 +182,10 @@ public class MainActivity extends AppCompatActivity {
         // cancel already running downloads
         PoemsLoader.cancelAllDownloads(this);
         updating = false;
+        if (downloadPoemsComplete != null){
+            unregisterReceiver(downloadPoemsComplete);
+            downloadPoemsComplete = null;
+        }
         // TODO: consider also setting processing to false but would need to cancel task if running
     }
 
