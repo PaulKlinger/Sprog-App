@@ -1,9 +1,7 @@
 package com.almoturg.sprog.util;
 
-import android.app.DownloadManager;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.content.res.ResourcesCompat;
@@ -30,7 +28,8 @@ public final class Util {
     // These are the times when an update should be available on the server
     private static final int FIRST_UPDATE_HOUR = 2;
     private static final int SECOND_UPDATE_HOUR = 14;
-    private static final int MIN_HOURS_BETWEEN_UPDATES= 11; // some margin if it runs faster
+    private static final int MIN_HOURS_BETWEEN_UPDATES = 11; // some margin if it runs faster
+    private static final int MAX_DAYS_BETWEEN_LOADING_POEMS = 3;
 
     public static final int NEW_POEMS_NOTIFICATION_ID = 1;
     public static final String PREF_NOTIFY_NEW = "NOTIFY_NEW";
@@ -114,6 +113,13 @@ public final class Util {
 
     public static boolean isUpdateTime(long last_update_tstamp, long last_fcm_tstamp) {
         Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        // Always load JSON when more than MAX_DAYS_BETWEEN_LOADING_POEMS days have passed
+        // This is mainly to get updated scores/gold counts and to remove deleted poems.
+        if (now.getTimeInMillis() - last_update_tstamp >
+                MAX_DAYS_BETWEEN_LOADING_POEMS * 24 * 60 * 60 * 1000){
+            return true;
+        }
+
         // last_fcm_tstamp is the time when the last FCM message was sent
         // if it showed that updates were available this function would not have been called
         if (now.getTimeInMillis() - last_fcm_tstamp < MIN_HOURS_BETWEEN_UPDATES * 60 * 60 * 1000){
