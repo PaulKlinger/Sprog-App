@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final EditText search_box = (EditText) findViewById(R.id.search_box);
+        final EditText search_box = (EditText) findViewById(R.id.search_text);
         search_box.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -355,13 +355,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void toggleSearch(View view) {
-        EditText search_box = (EditText) findViewById(R.id.search_box);
+        View search_box = findViewById(R.id.search_box);
+        EditText search_text = (EditText) findViewById(R.id.search_text);
         if (search_box.getVisibility() == View.GONE && !processing) {
             search_box.setVisibility(View.VISIBLE);
             findViewById(R.id.toggle_search).setBackgroundResource(R.drawable.search_button_background);
-            search_box.requestFocus();
+            search_text.requestFocus();
             ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
-                    .showSoftInput(search_box, InputMethodManager.SHOW_IMPLICIT);
+                    .showSoftInput(search_text, InputMethodManager.SHOW_IMPLICIT);
         } else {
             search_box.setVisibility(View.GONE);
             if ((!sent_search) && last_search_string.length() > 0) {
@@ -373,7 +374,7 @@ public class MainActivity extends AppCompatActivity {
             }
             last_search_string = "";
             sent_search = false;
-            search_box.setText("");
+            search_text.setText("");
             findViewById(R.id.toggle_search).setBackgroundColor(Color.TRANSPARENT);
             ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
                     .hideSoftInputFromWindow(search_box.getWindowToken(), 0);
@@ -381,11 +382,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void clearSearch(View view) {
+        ((EditText) findViewById(R.id.search_text)).setText("");
+        searchPoems();
+    }
+
     public void searchPoems() {
         if (mAdapter == null || updating) { // afterTextChanged gets called when EditText is created...
             return;
         }
-        String search_string = ((EditText) findViewById(R.id.search_box))
+        String search_string = ((EditText) findViewById(R.id.search_text))
                 .getText().toString().toLowerCase();
         if (!search_string.contains(last_search_string)) {
             if (!sent_search) {

@@ -93,17 +93,36 @@
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
 
-    <EditText
+    <RelativeLayout
         android:id="@+id/search_box"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/cardview_light_background"
         android:elevation="4dp"
-        android:imeOptions="actionDone"
-        android:inputType="textFilter"
-        android:padding="4dp"
-        android:textColor="#333"
-        android:visibility="gone" />
+        android:background="#fff">
+        <EditText
+            android:id="@+id/search_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:background="@color/cardview_light_background"
+            android:imeOptions="actionDone"
+            android:inputType="textFilter"
+            android:padding="4dp"
+            android:textColor="#333"/>
+        <Button
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center_vertical"
+            android:drawableLeft="@drawable/ic_cancel"
+            android:drawableStart="@drawable/ic_cancel"
+            android:minWidth="0dp"
+            android:onClick="clearSearch"
+            android:padding="0dp" />
+    </RelativeLayout>
+
     <ViewFlipper
         android:layout_width="match_parent"
         android:layout_height="match_parent"
