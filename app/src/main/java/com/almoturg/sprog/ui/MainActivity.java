@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } else{
             // E.g. if we come from poem page and it was set to favorite
-            sortPoems();
+            searchPoems();
         }
         NotificationManager nm = (NotificationManager) getSystemService(this.NOTIFICATION_SERVICE);
         nm.cancelAll();
