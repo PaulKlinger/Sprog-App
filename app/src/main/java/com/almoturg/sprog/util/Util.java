@@ -39,7 +39,8 @@ public final class Util {
 
     public static final int VIEWFLIPPER_RECYCLERVIEW = 0;
     public static final int VIEWFLIPPER_EMPTY_FAVORITES = 1;
-    public static final int VIEWFLIPPER_CANCEL_UPDATE = 2;
+    public static final int VIEWFLIPPER_UPDATING = 2;
+    public static final int VIEWFLIPPER_ERROR = 3;
 
     public static final int NEW_POEMS_NOTIFICATION_ID = 1;
     public static final String PREF_NOTIFY_NEW = "NOTIFY_NEW";

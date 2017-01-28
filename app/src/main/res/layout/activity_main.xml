@@ -126,14 +126,40 @@
             android:text="You have no favorite poems yet :(\n\nTap the star icon on a poem's individual page to add it to your favorites."
             android:layout_gravity="center"
             android:id="@+id/emptyFavoritesText"/>
-        <Button
-            android:id="@+id/action_cancelUpdate"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="cancel updating poems"
-            android:onClick="cancelButton"/>
-
+            android:orientation="vertical">
+            <ProgressBar
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/ctrlActivityIndicator"
+                android:indeterminateOnly="true"
+                android:keepScreenOn="true"
+                android:layout_gravity="center_horizontal"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="loading poems"
+                android:textSize="17sp"
+                android:paddingBottom="10dp"/>
+            <Button
+                android:id="@+id/action_cancelUpdate"
+                android:visibility="invisible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="cancel"
+                android:onClick="cancelButton"/>
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Error loading poems. Restart app to try again."/>
     </ViewFlipper>
 
 </LinearLayout>

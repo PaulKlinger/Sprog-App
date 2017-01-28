@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     public String sort_order = "Date";
     public BroadcastReceiver downloadPoemsComplete;
     public TextView statusView;
+    public ViewFlipper viewFlipper;
     private Tracker mTracker;
     public boolean updating = false; // after processing set last update time if this is true
     public boolean processing = false;
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         myToolbar.setTitle(null);
 
         statusView = (TextView) findViewById(R.id.status);
+        viewFlipper = (ViewFlipper) findViewById(R.id.poemsListEmptyFlipper);
 
         final Spinner sortSpinner = (Spinner) findViewById(R.id.sort_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -250,8 +252,7 @@ public class MainActivity extends AppCompatActivity {
         sort_order = "Date";
         ((Spinner) findViewById(R.id.sort_spinner)).setSelection(0); // 0 is Date (is there a better way to do this??)
         statusView.setText("processing");
-        ((ViewFlipper) findViewById(R.id.poemsListEmptyFlipper))
-                .setDisplayedChild(Util.VIEWFLIPPER_RECYCLERVIEW);
+        viewFlipper.setDisplayedChild(Util.VIEWFLIPPER_RECYCLERVIEW);
         poems = new ArrayList<>();
         filtered_poems = new ArrayList<>();
         toggleSearch(null); // hide search box (checks processing)
@@ -268,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
     public void finishedProcessing(boolean status) {
         if (updating) {
             updating = false;
-            if (poems.size() > 1000) {
+            if (poems.size() > 1000 && status) {
                 SharedPreferences.Editor editor = prefs.edit();
 
                 Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -281,6 +282,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if (!status) {
             statusView.setText("error");
+            viewFlipper.setDisplayedChild(Util.VIEWFLIPPER_ERROR);
         }
         processing = false;
     }
@@ -290,12 +292,13 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         updating = true;
-        statusView.setText("loading\npoems");
+        statusView.setText("");
         disableFavorites();
         poems.clear();
         filtered_poems.clear();
         mAdapter.notifyDataSetChanged();
-
+        findViewById(R.id.action_cancelUpdate).setVisibility(View.INVISIBLE);
+        viewFlipper.setDisplayedChild(Util.VIEWFLIPPER_UPDATING);
         if (Util.poemsFileExists(this)) {
             // If loading poems takes more than 3s and an old poems file is available
             // show a button to allow cancelling the download
@@ -304,14 +307,12 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     if (downloadPoemsComplete != null) {
-                        ((ViewFlipper) findViewById(R.id.poemsListEmptyFlipper))
-                                .setDisplayedChild(Util.VIEWFLIPPER_CANCEL_UPDATE);}
+                        findViewById(R.id.action_cancelUpdate).setVisibility(View.VISIBLE);}
                 }
-            }, 3000);
+            }, 5000);
 
         }
         PoemsLoader.loadPoems(this);
-
     }
 
     public void cancelButton(View view) {
@@ -339,8 +340,7 @@ public class MainActivity extends AppCompatActivity {
             disableFavorites();
         }
         if (show_only_favorites && last_search_string.length() == 0 && filtered_poems.size() == 0){
-            ((ViewFlipper) findViewById(R.id.poemsListEmptyFlipper))
-                    .setDisplayedChild(Util.VIEWFLIPPER_EMPTY_FAVORITES);
+            viewFlipper.setDisplayedChild(Util.VIEWFLIPPER_EMPTY_FAVORITES);
         }
     }
 
@@ -351,8 +351,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.toggle_favorites).setPadding(
                 toggle_favorites_padding, toggle_favorites_padding,
                 toggle_favorites_padding, toggle_favorites_padding);
-        ((ViewFlipper) findViewById(R.id.poemsListEmptyFlipper))
-                .setDisplayedChild(Util.VIEWFLIPPER_RECYCLERVIEW);
+        viewFlipper.setDisplayedChild(Util.VIEWFLIPPER_RECYCLERVIEW);
     }
 
     public void toggleSearch(View view) {
