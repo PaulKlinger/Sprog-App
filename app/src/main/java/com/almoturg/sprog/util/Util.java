@@ -96,7 +96,7 @@ public final class Util {
         } else {
             poem_row.findViewById(R.id.gold_display).setVisibility(View.INVISIBLE);
         }
-        if (poem.favorite && main_list){
+        if (poem.favorite){
             poem_row.findViewById(R.id.favorite_icon).setVisibility(View.VISIBLE);
         } else {
             poem_row.findViewById(R.id.favorite_icon).setVisibility(View.INVISIBLE);

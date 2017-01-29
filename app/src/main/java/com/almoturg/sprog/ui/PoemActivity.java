@@ -32,6 +32,7 @@ public class PoemActivity extends AppCompatActivity {
     private Poem poem; // The mainpoem corresponding to the selected one.
     private Poem selectedPoem; // The selected poem.
     private Tracker mTracker;
+    private View selectedPoemView;
 
     private MenuItem favoriteItem;
 
@@ -90,6 +91,7 @@ public class PoemActivity extends AppCompatActivity {
                 ((TextView) v.findViewById(R.id.author)).setText(parent.author);
             }
             mainlist.addView(v);
+            if (parent.link.equals(selectedPoem.link)){selectedPoemView = v;}
         }
 
         if (poem.content != null && poem.content.length() > 0) {
@@ -98,6 +100,7 @@ public class PoemActivity extends AppCompatActivity {
                     .setMovementMethod(LinkMovementMethod.getInstance());
             Util.update_poem_row(poem, v, true, false, this);
             mainlist.addView(v);
+            if (poem.link.equals(selectedPoem.link)){selectedPoemView = v;}
         }
 
     }
@@ -156,6 +159,7 @@ public class PoemActivity extends AppCompatActivity {
                 toast.show();
                 item.setIcon(R.drawable.ic_star_empty);
             }
+            Util.update_poem_row(selectedPoem, selectedPoemView, true, false, this);
         }
 
         return super.onOptionsItemSelected(item);
