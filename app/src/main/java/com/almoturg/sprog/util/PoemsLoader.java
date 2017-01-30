@@ -53,9 +53,13 @@ public class PoemsLoader {
     public static void cancelAllDownloads(Context context){
         DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Query query = new DownloadManager.Query();
+        query.setFilterByStatus(
+                DownloadManager.STATUS_FAILED|DownloadManager.STATUS_PAUSED|
+                DownloadManager.STATUS_PENDING|DownloadManager.STATUS_RUNNING);
         Cursor cur = manager.query(query);
         while (cur.moveToNext()){
             manager.remove(cur.getLong(cur.getColumnIndex(DownloadManager.COLUMN_ID)));
         }
+        cur.close();
     }
 }
