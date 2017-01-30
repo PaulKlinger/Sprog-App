@@ -86,7 +86,7 @@ public final class Util {
             poem_row.findViewById(R.id.first_line).setVisibility(View.GONE);
             poem_row.findViewById(R.id.content_wrapper).setVisibility(View.VISIBLE);
             ((TextView) poem_row.findViewById(R.id.content))
-                    .setText(convertMarkdown(poem.content, context));
+                    .setText(convertPoemMarkdown(poem.content, poem.timestamp, context));
             poem_row.findViewById(R.id.author).setVisibility(View.VISIBLE);
         }
         ((TextView) poem_row.findViewById(R.id.gold_count))
@@ -150,6 +150,22 @@ public final class Util {
                 ||
                 (now.get(Calendar.HOUR_OF_DAY) >= SECOND_UPDATE_HOUR
                         && diff_in_ms > ms_today - SECOND_UPDATE_HOUR * 60 * 60 * 1000);
+    }
+
+    public static CharSequence convertPoemMarkdown(String markdown, double timestamp,
+                                                   Context context) {
+        if (timestamp <  1360540800){ // = 2013-02-11
+            // Sprog's early poems had paragraph breaks at the end of each line.
+            // This regex replaces them with single linebreaks, except between stanzas.
+            // (Stanza breaks are detected by checking if the line above is italicized (enclosed in
+            // "*"s) while the one below is not, or vice versa. Some lines look like
+            // "*lorem ipsum*," (punctuation after the closing "*").
+            // There is a special case for one poem with "2." on a single line (c6juhtd).)
+            markdown = markdown.replaceAll(
+                    "(?:(?<=(?<!\n)\\*[.,]?)\\n\\n(?=\\*))|(?:(?<!(?:\\*[.,]?)|(?:2\\.))\\n\\n(?!\\*))",
+                    "  \n");
+        }
+        return convertMarkdown(markdown, context);
     }
 
     public static CharSequence convertMarkdown(String markdown, Context context) {

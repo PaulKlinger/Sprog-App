@@ -130,7 +130,8 @@ public class PoemActivity extends AppCompatActivity {
             ClipboardManager clipboard = (ClipboardManager)
                     getSystemService(this.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText("simple text",
-                    Util.convertMarkdown(selectedPoem.content, this).toString());
+                    Util.convertPoemMarkdown(selectedPoem.content, selectedPoem.timestamp, this)
+                            .toString());
             clipboard.setPrimaryClip(clip);
             Toast toast = Toast.makeText(this, "Poem copied to clipboard", Toast.LENGTH_SHORT);
             toast.show();
@@ -182,7 +183,7 @@ public class PoemActivity extends AppCompatActivity {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
         shareIntent.putExtra(Intent.EXTRA_TEXT,
-                Util.convertMarkdown(selectedPoem.content, this));
+                Util.convertPoemMarkdown(selectedPoem.content, selectedPoem.timestamp, this));
         mShareActionProvider.setShareIntent(shareIntent);
         return true;
     }
