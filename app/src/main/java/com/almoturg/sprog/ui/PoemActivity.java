@@ -91,7 +91,7 @@ public class PoemActivity extends AppCompatActivity {
                 ((TextView) v.findViewById(R.id.author)).setText(parent.author);
             }
             mainlist.addView(v);
-            if (parent.link.equals(selectedPoem.link)){selectedPoemView = v;}
+            if (parent.link != null && parent.link.equals(selectedPoem.link)){selectedPoemView = v;}
         }
 
         if (poem.content != null && poem.content.length() > 0) {
