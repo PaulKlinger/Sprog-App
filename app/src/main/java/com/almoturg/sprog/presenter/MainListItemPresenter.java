@@ -37,7 +37,7 @@ public class MainListItemPresenter {
             }
             view.expand(mainPresenter.markdownConverter
                     .convertPoemMarkdown(poem.content, poem.timestamp));
-        } else if (!mainPresenter.updating && !mainPresenter.processing){
+        } else if (mainPresenter.poemsReady()){
             view.startPoemActivity(filtered_poems.indexOf(poem));
         }
     }

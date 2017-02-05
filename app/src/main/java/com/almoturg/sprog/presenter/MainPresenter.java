@@ -26,10 +26,10 @@ public class MainPresenter {
     public MarkdownConverter markdownConverter;
     private PoemsFileParser poemsFileParser;
 
-    public ArrayList<String> new_read_poems = new ArrayList<>(); // Poems newly marked as read
+    private ArrayList<String> new_read_poems = new ArrayList<>(); // Poems newly marked as read
 
-    public boolean processing = false;
-    public boolean updating = false;
+    private boolean processing = false;
+    private boolean updating = false;
     public boolean show_only_favorites = false;
 
     private boolean show_search_bar = false;
@@ -81,6 +81,10 @@ public class MainPresenter {
         if (update) {
             preferences.setUpdateNext(false);
         }
+        if (filtered_poems.size() > 0) {
+            activity.setStatusNumPoems(filtered_poems.size());
+            activity.adapterDatasetChanged(); // to update e.g. favorite status
+        }
         preparePoems(update);
     }
 
@@ -114,7 +118,7 @@ public class MainPresenter {
         }
     }
 
-    public void updatePoems() {
+    private void updatePoems() {
         if (processing || PoemsLoader.receiver != null) {
             return;
         }
@@ -143,7 +147,7 @@ public class MainPresenter {
         }
     }
 
-    public void sortPoems() {
+    private void sortPoems() {
         // sortPoems is automatically called when the spinner is created, poems might not be loaded yet
         if (poems.size() == 0) return;
 
@@ -200,7 +204,7 @@ public class MainPresenter {
         activity.adapterDatasetChanged();
     }
 
-    public void processPoems() {
+    private void processPoems() {
         processing = true;
         sort_order = "Date";
         activity.setProcessing();
@@ -219,19 +223,19 @@ public class MainPresenter {
         }, markdownConverter);
     }
 
-    public void addPoems(List<Poem> new_poems) {
+    private void addPoems(List<Poem> new_poems) {
         poems.addAll(new_poems);
         filtered_poems.addAll(new_poems);
         activity.setStatusNumPoems(poems.size());
         activity.adapterItemRangeInserted(filtered_poems.size(), new_poems.size());
     }
 
-    public void cancelLoadingPoems() {
+    private void cancelLoadingPoems() {
         PoemsLoader.cancelAllDownloads(activity);
         updating = false;
     }
 
-    public void finishedProcessing(boolean status) {
+    private void finishedProcessing(boolean status) {
         if (updating) {
             updating = false;
             if (poems.size() > 1000 && status) {
@@ -321,5 +325,9 @@ public class MainPresenter {
 
     public void addNewReadPoem(Poem poem){
         new_read_poems.add(poem.link);
+    }
+
+    public boolean poemsReady(){
+        return !updating && !processing;
     }
 }

@@ -34,8 +34,6 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import static com.almoturg.sprog.SprogApplication.filtered_poems;
-
 
 public class MainActivity extends AppCompatActivity {
     public static MainPresenter presenter;
@@ -135,23 +133,11 @@ public class MainActivity extends AppCompatActivity {
         mTracker.setScreenName("PoemsList");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
-        //TODO: move stuff from here to presenter
-
-        // I don't actually know why this doesn't work in onCreate
-        // but everything else to do with the recyclerview does.
-        // Maybe it would work there??
         if (mAdapter == null) {
             mAdapter = new PoemsListAdapter(this, presenter, preferences);
             mRecyclerView.setAdapter(mAdapter);
-            if (filtered_poems.size() > 0) {
-                setStatusNumPoems(filtered_poems.size());
-            }
-        } else{
-            // E.g. if we come from poem page and it was set to favorite
-            searchPoems();
         }
         presenter.onStart();
-
     }
 
     @Override
