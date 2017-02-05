@@ -1,6 +1,7 @@
 package com.almoturg.sprog.ui;
 
 import android.app.NotificationManager;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,7 +28,7 @@ import com.almoturg.sprog.model.PreferencesRepository;
 import com.almoturg.sprog.presenter.MainPresenter;
 import com.almoturg.sprog.R;
 import com.almoturg.sprog.SprogApplication;
-import com.almoturg.sprog.util.PoemsFileParser;
+import com.almoturg.sprog.data.PoemsFileParser;
 import com.almoturg.sprog.util.Util;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -57,8 +58,13 @@ public class MainActivity extends AppCompatActivity {
 
         preferences = ((SprogApplication) getApplication()).getPreferences();
         if (presenter == null) {
-            presenter = new MainPresenter(preferences, SprogApplication.getDbHelper(this),
-                    new MarkdownConverter(this), new PoemsFileParser(this));
+            // Passing appcontext seems a little dubious but if I pass this activity instance then
+            // the activity object leaks...
+            // It should hopefully be ok here because none of these use anything specific to this
+            // activity instance from Context.
+            Context appcontext = getApplicationContext();
+            presenter = new MainPresenter(preferences, SprogApplication.getDbHelper(appcontext),
+                    new MarkdownConverter(appcontext), new PoemsFileParser(appcontext));
         }
 
         SprogApplication application = (SprogApplication) getApplication();

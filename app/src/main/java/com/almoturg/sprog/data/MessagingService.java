@@ -1,4 +1,4 @@
-package com.almoturg.sprog.util;
+package com.almoturg.sprog.data;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;

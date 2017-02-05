@@ -1,11 +1,11 @@
-package com.almoturg.sprog.util;
+package com.almoturg.sprog.data;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
 
-import com.almoturg.sprog.data.MarkdownConverter;
 import com.almoturg.sprog.model.Poem;
+import com.almoturg.sprog.util.PoemParser;
 
 import java.io.File;
 import java.io.FileInputStream;
