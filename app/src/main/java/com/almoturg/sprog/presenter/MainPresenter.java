@@ -1,9 +1,10 @@
 package com.almoturg.sprog.presenter;
 
+import com.almoturg.sprog.data.MarkdownConverter;
 import com.almoturg.sprog.model.Poem;
 import com.almoturg.sprog.model.PreferencesRepository;
 import com.almoturg.sprog.ui.MainActivity;
-import com.almoturg.sprog.util.ParsePoemsTask;
+import com.almoturg.sprog.util.PoemsFileParser;
 import com.almoturg.sprog.util.PoemsLoader;
 import com.almoturg.sprog.util.SprogDbHelper;
 import com.almoturg.sprog.util.Util;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.TimeZone;
 
 import static com.almoturg.sprog.SprogApplication.filtered_poems;
@@ -21,6 +23,8 @@ public class MainPresenter {
     private MainActivity activity;
     private PreferencesRepository preferences;
     private SprogDbHelper dbhelper;
+    public MarkdownConverter markdownConverter;
+    private PoemsFileParser poemsFileParser;
 
     public ArrayList<String> new_read_poems = new ArrayList<>(); // Poems newly marked as read
 
@@ -37,9 +41,12 @@ public class MainPresenter {
     public String sort_order = "Date";
 
     public MainPresenter(PreferencesRepository preferences,
-                         SprogDbHelper dbhelper) {
+                         SprogDbHelper dbhelper, MarkdownConverter markdownConverter,
+                         PoemsFileParser poemsFileParser) {
         this.preferences = preferences;
         this.dbhelper = dbhelper;
+        this.markdownConverter = markdownConverter;
+        this.poemsFileParser = poemsFileParser;
     }
 
     public void attachView(MainActivity activity) {
@@ -199,7 +206,24 @@ public class MainPresenter {
         activity.setProcessing();
         poems = new ArrayList<>();
         filtered_poems = new ArrayList<>();
-        new ParsePoemsTask(activity).execute(activity);
+        poemsFileParser.parsePoems(new PoemsFileParser.ParsePoemsCallbackInterface() {
+            @Override
+            public void addPoems(List<Poem> poems) {
+                MainPresenter.this.addPoems(poems);
+            }
+
+            @Override
+            public void finishedProcessing(boolean status) {
+                MainPresenter.this.finishedProcessing(status);
+            }
+        }, markdownConverter);
+    }
+
+    public void addPoems(List<Poem> new_poems) {
+        poems.addAll(new_poems);
+        filtered_poems.addAll(new_poems);
+        activity.setStatusNumPoems(poems.size());
+        activity.adapterItemRangeInserted(filtered_poems.size(), new_poems.size());
     }
 
     public void cancelLoadingPoems() {
@@ -293,5 +317,9 @@ public class MainPresenter {
     public void downloadComplete() {
         processPoems();
         activity.setPoemsLoaded();
+    }
+
+    public void addNewReadPoem(Poem poem){
+        new_read_poems.add(poem.link);
     }
 }

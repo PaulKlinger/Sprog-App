@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.almoturg.sprog.R;
 import com.almoturg.sprog.SprogApplication;
+import com.almoturg.sprog.data.MarkdownConverter;
 import com.almoturg.sprog.util.Util;
 import com.almoturg.sprog.model.ParentComment;
 import com.almoturg.sprog.model.Poem;
@@ -35,6 +36,7 @@ public class PoemActivity extends AppCompatActivity {
     private View selectedPoemView;
 
     private MenuItem favoriteItem;
+    private MarkdownConverter markdownConverter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,8 @@ public class PoemActivity extends AppCompatActivity {
 
         SprogApplication application = (SprogApplication) getApplication();
         mTracker = application.getDefaultTracker();
+
+        markdownConverter = new MarkdownConverter(this);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.poem_toolbar);
         setSupportActionBar(myToolbar);
@@ -64,11 +68,11 @@ public class PoemActivity extends AppCompatActivity {
         View v;
         v = LayoutInflater.from(this).inflate(R.layout.post_row, mainlist, false);
         ((TextView) v.findViewById(R.id.title))
-                .setText(Util.convertMarkdown(poem.post_title, this));
+                .setText(markdownConverter.convertMarkdown(poem.post_title));
         ((TextView) v.findViewById(R.id.author)).setText(poem.post_author);
         if (poem.post_content != null && poem.post_content.length() > 0) {
             ((TextView) v.findViewById(R.id.content))
-                    .setText(Util.convertMarkdown(poem.post_content, this));
+                    .setText(markdownConverter.convertMarkdown(poem.post_content));
             ((TextView) v.findViewById(R.id.content))
                     .setMovementMethod(LinkMovementMethod.getInstance());
             v.findViewById(R.id.content).setVisibility(View.VISIBLE);
@@ -80,12 +84,12 @@ public class PoemActivity extends AppCompatActivity {
                 v = LayoutInflater.from(this).inflate(R.layout.poem_row, mainlist, false);
                 ((TextView) v.findViewById(R.id.content))
                         .setMovementMethod(LinkMovementMethod.getInstance());
-                Util.update_poem_row_poem_page(parent.is_poem, v, this);
+                Util.update_poem_row_poem_page(parent.is_poem, v, markdownConverter, this);
             } else {
                 v = LayoutInflater.from(this)
                         .inflate(R.layout.parents_list_row, mainlist, false);
                 ((TextView) v.findViewById(R.id.content))
-                        .setText(Util.convertMarkdown(parent.content, this));
+                        .setText(markdownConverter.convertMarkdown(parent.content));
                 ((TextView) v.findViewById(R.id.content))
                         .setMovementMethod(LinkMovementMethod.getInstance());
                 ((TextView) v.findViewById(R.id.author)).setText(parent.author);
@@ -98,7 +102,7 @@ public class PoemActivity extends AppCompatActivity {
             v = LayoutInflater.from(this).inflate(R.layout.poem_row, mainlist, false);
             ((TextView) v.findViewById(R.id.content))
                     .setMovementMethod(LinkMovementMethod.getInstance());
-            Util.update_poem_row_poem_page(poem, v, this);
+            Util.update_poem_row_poem_page(poem, v, markdownConverter, this);
             mainlist.addView(v);
             if (poem.link.equals(selectedPoem.link)){selectedPoemView = v;}
         }
@@ -130,7 +134,8 @@ public class PoemActivity extends AppCompatActivity {
             ClipboardManager clipboard = (ClipboardManager)
                     getSystemService(this.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText("simple text",
-                    Util.convertPoemMarkdown(selectedPoem.content, selectedPoem.timestamp, this)
+                    markdownConverter
+                            .convertPoemMarkdown(selectedPoem.content,selectedPoem.timestamp)
                             .toString());
             clipboard.setPrimaryClip(clip);
             Toast toast = Toast.makeText(this, "Poem copied to clipboard", Toast.LENGTH_SHORT);
@@ -160,7 +165,7 @@ public class PoemActivity extends AppCompatActivity {
                 toast.show();
                 item.setIcon(R.drawable.ic_star_empty);
             }
-            Util.update_poem_row_poem_page(selectedPoem, selectedPoemView, this);
+            Util.update_poem_row_poem_page(selectedPoem, selectedPoemView, markdownConverter, this);
         }
 
         return super.onOptionsItemSelected(item);
@@ -182,8 +187,8 @@ public class PoemActivity extends AppCompatActivity {
                 (ShareActionProvider) MenuItemCompat.getActionProvider(item);
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT,
-                Util.convertPoemMarkdown(selectedPoem.content, selectedPoem.timestamp, this));
+        shareIntent.putExtra(Intent.EXTRA_TEXT, markdownConverter
+                .convertPoemMarkdown(selectedPoem.content, selectedPoem.timestamp));
         mShareActionProvider.setShareIntent(shareIntent);
         return true;
     }

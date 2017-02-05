@@ -22,20 +22,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.almoturg.sprog.data.MarkdownConverter;
 import com.almoturg.sprog.model.PreferencesRepository;
 import com.almoturg.sprog.presenter.MainPresenter;
 import com.almoturg.sprog.R;
 import com.almoturg.sprog.SprogApplication;
+import com.almoturg.sprog.util.PoemsFileParser;
 import com.almoturg.sprog.util.Util;
-import com.almoturg.sprog.model.Poem;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import java.util.List;
-
 import static com.almoturg.sprog.SprogApplication.filtered_poems;
-import static com.almoturg.sprog.SprogApplication.poems;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -59,7 +57,8 @@ public class MainActivity extends AppCompatActivity {
 
         preferences = ((SprogApplication) getApplication()).getPreferences();
         if (presenter == null) {
-            presenter = new MainPresenter(preferences, SprogApplication.getDbHelper(this));
+            presenter = new MainPresenter(preferences, SprogApplication.getDbHelper(this),
+                    new MarkdownConverter(this), new PoemsFileParser(this));
         }
 
         SprogApplication application = (SprogApplication) getApplication();
@@ -130,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
         mTracker.setScreenName("PoemsList");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
+        //TODO: move stuff from here to presenter
+
         // I don't actually know why this doesn't work in onCreate
         // but everything else to do with the recyclerview does.
         // Maybe it would work there??
@@ -157,13 +158,6 @@ public class MainActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         presenter.detachView();
-    }
-
-    public void addPoems(List<Poem> poems_set) {
-        poems.addAll(poems_set);
-        filtered_poems.addAll(poems_set);
-        setStatusNumPoems(poems.size());
-        mAdapter.notifyItemRangeInserted(filtered_poems.size(), poems_set.size());
     }
 
     public void cancelButton(View view) {
@@ -271,6 +265,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void adapterDatasetChanged(){mAdapter.notifyDataSetChanged();}
+
+    public void adapterItemRangeInserted(int from, int to) {
+        mAdapter.notifyItemRangeInserted(from, to);
+    }
 
     public void setProcessing(){
         ((Spinner) findViewById(R.id.sort_spinner)).setSelection(0); // 0 is Date (is there a better way to do this??)

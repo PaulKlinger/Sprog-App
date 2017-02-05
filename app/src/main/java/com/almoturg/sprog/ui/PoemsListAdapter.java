@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.almoturg.sprog.R;
 import com.almoturg.sprog.model.PreferencesRepository;
+import com.almoturg.sprog.presenter.MainListItemPresenter;
 import com.almoturg.sprog.presenter.MainPresenter;
 import com.almoturg.sprog.util.Util;
 import com.almoturg.sprog.model.Poem;
@@ -34,37 +35,44 @@ public class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.View
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    class ViewHolder extends RecyclerView.ViewHolder
+    public class ViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
+        private MainListItemPresenter presenter;
+
         View content_wrapper;
         View first_line;
-        Poem poem;
         public CardView view;
 
-        ViewHolder(View v) {
+        ViewHolder(View v, MainPresenter mainPresenter) {
             super(v);
             v.setOnClickListener(this);
             this.content_wrapper = v.findViewById(R.id.content_wrapper);
             this.view = (CardView) v;
             this.first_line = v.findViewById(R.id.first_line);
+            this.presenter = new MainListItemPresenter(this, mainPresenter);
         }
 
         @Override
         public void onClick(View v) {
-            if (content_wrapper.getVisibility() == View.GONE) {
-                if (!poem.read) {
-                    poem.read = true;
-                    presenter.new_read_poems.add(poem.link);
-                }
-                first_line.setVisibility(View.GONE);
-                content_wrapper.setVisibility(View.VISIBLE);
-                ((TextView) v.findViewById(R.id.content)).setText(
-                        Util.convertPoemMarkdown(poem.content, poem.timestamp, context));
-            } else if (!presenter.updating && !presenter.processing){
-                Intent intent = new Intent(context, PoemActivity.class);
-                intent.putExtra("POEM_ID", filtered_poems.indexOf(poem));
-                context.startActivity(intent);
-            }
+            presenter.onClick();
+        }
+
+        public void setPoem(Poem poem, boolean show_only_favorites, boolean mark_read) {
+            Util.update_poem_row_mainlist(poem, view, show_only_favorites,
+                    mark_read, presenter.getMarkdownConverter(), context);
+            presenter.setPoem(poem);
+        }
+
+        public void expand(CharSequence content){
+            first_line.setVisibility(View.GONE);
+            content_wrapper.setVisibility(View.VISIBLE);
+            ((TextView) view.findViewById(R.id.content)).setText(content);
+        }
+
+        public void startPoemActivity(int poem_id) {
+            Intent intent = new Intent(context, PoemActivity.class);
+            intent.putExtra("POEM_ID", poem_id);
+            context.startActivity(intent);
         }
     }
 
@@ -84,7 +92,7 @@ public class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.View
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.poem_row, parent, false);
         // set the view's size, margins, paddings and layout parameters
-        return new ViewHolder(v);
+        return new ViewHolder(v, presenter);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -93,9 +101,7 @@ public class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.View
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         Poem poem = (filtered_poems.get(position));
-        holder.poem = poem;
-        Util.update_poem_row_mainlist(poem, holder.view,presenter.show_only_favorites,
-                preferences.getMarkRead(), context);
+        holder.setPoem(poem, presenter.show_only_favorites, preferences.getMarkRead());
     }
 
     // Return the size of your dataset (invoked by the layout manager)

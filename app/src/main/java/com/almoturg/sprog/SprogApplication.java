@@ -40,7 +40,6 @@ public class SprogApplication extends Application {
 
     public static List<Poem> poems = new ArrayList<>();
     public static List<Poem> filtered_poems = new ArrayList<>();
-    public static final Object bypassLock = new Object();
     private static SprogDbHelper sprogDbHelper;
 
     /**

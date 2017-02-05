@@ -5,6 +5,7 @@ import android.util.JsonReader;
 import android.util.JsonToken;
 
 import com.almoturg.sprog.SprogApplication;
+import com.almoturg.sprog.data.MarkdownConverter;
 import com.almoturg.sprog.model.ParentComment;
 import com.almoturg.sprog.model.Poem;
 
@@ -22,14 +23,12 @@ import in.uncod.android.bypass.Bypass;
 public class PoemParser {
     private JsonReader reader;
     private HashMap<String, Poem> mainpoem_links;
-    private Bypass bypass;
     private HashSet<String> read_poems;
     private HashSet<String> favorite_poems;
+    private MarkdownConverter markdownConverter;
 
-    public PoemParser(InputStream in, Context context) throws IOException {
-        synchronized (SprogApplication.bypassLock) {
-            bypass = new Bypass(context, new Bypass.Options());
-        }
+    public PoemParser(InputStream in, MarkdownConverter markdownConverter, Context context) throws IOException {
+        this.markdownConverter = markdownConverter;
         read_poems = SprogApplication.getDbHelper(context).getReadPoems();
         favorite_poems = SprogApplication.getDbHelper(context).getFavoritePoems();
         reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
@@ -109,10 +108,9 @@ public class PoemParser {
 
         CharSequence first_line;
 
-        synchronized (SprogApplication.bypassLock) {
-            first_line = bypass.markdownToSpannable(
-                    content.trim().split("\n", 2)[0].trim() + "...");
-        }
+        first_line = markdownConverter.convertMarkdown(
+                content.trim().split("\n", 2)[0].trim() + "...");
+
 
         if (read_poems.contains(link)) {
             read = true;
