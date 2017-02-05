@@ -21,6 +21,8 @@ import android.app.Application;
 import android.content.Context;
 
 import com.almoturg.sprog.model.Poem;
+import com.almoturg.sprog.model.PreferencesRepository;
+import com.almoturg.sprog.model.PreferencesRepositoryImpl;
 import com.almoturg.sprog.util.SprogDbHelper;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
@@ -34,6 +36,8 @@ import java.util.List;
  */
 public class SprogApplication extends Application {
     private Tracker mTracker;
+    private PreferencesRepository preferences;
+
     public static List<Poem> poems = new ArrayList<>();
     public static List<Poem> filtered_poems = new ArrayList<>();
     public static final Object bypassLock = new Object();
@@ -58,5 +62,12 @@ public class SprogApplication extends Application {
             sprogDbHelper = new SprogDbHelper(context);
         }
         return sprogDbHelper;
+    }
+
+    synchronized public  PreferencesRepository getPreferences() {
+        if (preferences == null){
+            preferences = new PreferencesRepositoryImpl(getApplicationContext());
+        }
+        return preferences;
     }
 }

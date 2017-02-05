@@ -9,17 +9,19 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 
-import com.almoturg.sprog.ui.MainActivity;
+import com.almoturg.sprog.presenter.MainPresenter;
 
 import java.io.File;
 
 public class PoemsLoader {
     public static long downloadID;
 
-    public static void loadPoems(final MainActivity activity) {
-        File poems_file = new File(activity.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),
+    public static BroadcastReceiver receiver;
+
+    public static void loadPoems(final Context context, final MainPresenter presenter) {
+        File poems_file = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),
                 "poems.json");
-        File poems_old_file = new File(activity.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),
+        File poems_old_file = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),
                 "poems_old.json");
         if (poems_file.exists()) {
             poems_file.renameTo(poems_old_file);
@@ -31,21 +33,20 @@ public class PoemsLoader {
         request.setTitle("Sprog");
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
 
-        request.setDestinationInExternalFilesDir(activity, Environment.DIRECTORY_DOWNLOADS,
+        request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS,
                 "poems.json");
 
         // get download service and enqueue file
-        DownloadManager manager = (DownloadManager) activity.getSystemService(Context.DOWNLOAD_SERVICE);
-        activity.downloadPoemsComplete = new BroadcastReceiver() {
+        DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        receiver = new BroadcastReceiver() {
             public void onReceive(Context ctxt, Intent intent) {
                 if (intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1) != downloadID){return;}
-                activity.statusView.setText("poems\nloaded");
-                activity.processPoems();
-                activity.unregisterReceiver(activity.downloadPoemsComplete);
-                activity.downloadPoemsComplete = null;
+                context.unregisterReceiver(PoemsLoader.receiver);
+                PoemsLoader.receiver = null;
+                presenter.downloadComplete();
             }
         };
-        activity.registerReceiver(activity.downloadPoemsComplete,
+        context.registerReceiver(receiver,
                 new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         downloadID = manager.enqueue(request);
     }
@@ -61,5 +62,10 @@ public class PoemsLoader {
             manager.remove(cur.getLong(cur.getColumnIndex(DownloadManager.COLUMN_ID)));
         }
         cur.close();
+
+        if (receiver != null) {
+            context.unregisterReceiver(receiver);
+            receiver = null;
+        }
     }
 }

@@ -65,7 +65,7 @@ public class ParsePoemsTask extends AsyncTask<Context, List<Poem>, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean status) {
-        activity.finishedProcessing(status);
+        activity.presenter.finishedProcessing(status);
     }
 
     public ParsePoemsTask(MainActivity activity) {

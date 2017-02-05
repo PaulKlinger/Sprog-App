@@ -1,21 +1,19 @@
 package com.almoturg.sprog.util;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.CardView;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.almoturg.sprog.R;
 import com.almoturg.sprog.SprogApplication;
 import com.almoturg.sprog.model.Poem;
-import com.almoturg.sprog.ui.MainActivity;
+import com.almoturg.sprog.model.PreferencesRepository;
 
 import java.io.File;
 import java.util.Calendar;
@@ -43,18 +41,22 @@ public final class Util {
     public static final int VIEWFLIPPER_ERROR = 3;
 
     public static final int NEW_POEMS_NOTIFICATION_ID = 1;
-    public static final String PREF_NOTIFY_NEW = "NOTIFY_NEW";
-    public static final String PREF_DISPLAYED_NOTIFICATION_DIALOG = "DISPLAYED_NOTIFICATION_DIALOG";
-    public static final String PREF_MARK_READ = "PREF_MARK_READ";
-    public static final String PREF_LAST_UPDATE_TIME = "LAST_UPDATE_TIME";
-    public static final String PREF_LAST_POEM_TIME = "LAST_POEM_TIME";
-    public static final String PREF_UPDATE_NEXT = "UPDATE_NEXT";
-    public static final String PREF_LAST_FCM_TSTAMP = "LAST_FCM_TSTAMP";
 
     private static Bypass bypass;
 
-    public static void update_poem_row(Poem poem, View poem_row, boolean border,
-                                boolean main_list, Context context) {
+    public static void update_poem_row_poem_page(Poem poem, View poem_row, Context context){
+        update_poem_row(poem, poem_row, true, false, false, false, context);
+    }
+
+    public static void update_poem_row_mainlist(Poem poem, View poem_row,
+                                                boolean show_only_favorites, boolean mark_read,
+                                                Context context){
+        update_poem_row(poem, poem_row, false, true, show_only_favorites, mark_read, context);
+    }
+
+    private static void update_poem_row(Poem poem, View poem_row, boolean border,
+                                       boolean main_list, boolean show_only_favorites,
+                                       boolean mark_read, Context context) {
         if (cal == null) {
             cal = Calendar.getInstance(Locale.ENGLISH);
         }
@@ -71,8 +73,7 @@ public final class Util {
             poem_row.findViewById(R.id.first_line).setVisibility(View.VISIBLE);
             poem_row.findViewById(R.id.content_wrapper).setVisibility(View.GONE);
             ((TextView) poem_row.findViewById(R.id.first_line)).setText(poem.first_line);
-            if (poem.read && ((MainActivity) context).prefs.getBoolean(Util.PREF_MARK_READ, true)
-                    && !((MainActivity) context).show_only_favorites) {
+            if (poem.read && mark_read && !show_only_favorites) {
                 ((CardView) poem_row).setCardBackgroundColor(
                         ResourcesCompat.getColor(context.getResources(),
                                 R.color.colorReadPoem, null));
@@ -183,21 +184,16 @@ public final class Util {
         return converted;
     }
 
-    public static boolean timeToShowNotifyDialog(SharedPreferences prefs){
+    public static boolean timeToShowNotifyDialog(PreferencesRepository prefs){
         // This checks whether it's time to show the dialog asking whether to enable
         // notifications for new poems.
         // The state is stored in the "DISPLAY_NOTIFICATION_DIALOG" pref
         // not set: never launched, 0: launched once, 1: dialog shown
-        Log.d("SPROG", String.format("notify_pref: %d", prefs.getInt(Util.PREF_DISPLAYED_NOTIFICATION_DIALOG, -1)));
-        if (prefs.getInt(Util.PREF_DISPLAYED_NOTIFICATION_DIALOG, -1) == -1){
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt(Util.PREF_DISPLAYED_NOTIFICATION_DIALOG, 0);
-            editor.apply();
+        if (prefs.getDisplayedNotificationDialog() == -1){
+            prefs.setDisplayedNotificationDialog(0);
             return false;
-        } else if (prefs.getInt(Util.PREF_DISPLAYED_NOTIFICATION_DIALOG, -1) == 0) {
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt(Util.PREF_DISPLAYED_NOTIFICATION_DIALOG, 1);
-            editor.apply();
+        } else if (prefs.getDisplayedNotificationDialog() == 0) {
+            prefs.setDisplayedNotificationDialog(1);
             return true;
         } else {
             return false;

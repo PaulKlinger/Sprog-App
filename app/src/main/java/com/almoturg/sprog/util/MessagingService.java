@@ -12,6 +12,8 @@ import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 import com.almoturg.sprog.R;
+import com.almoturg.sprog.SprogApplication;
+import com.almoturg.sprog.model.PreferencesRepository;
 import com.almoturg.sprog.ui.MainActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -37,22 +39,18 @@ public class MessagingService extends FirebaseMessagingService {
                     last_update_timestamps[i] = jsonArray.getDouble(i);
                 }
             } catch(JSONException e){return;}
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
-                    getApplicationContext());
+            PreferencesRepository prefs = ((SprogApplication) getApplication()).getPreferences();
 
-            long last_poem_time = prefs.getLong(Util.PREF_LAST_POEM_TIME, Long.MAX_VALUE);
+            long last_poem_time = prefs.getLastPoemTime();
             int new_poems_count = getNewPoemCount(last_update_timestamps, last_poem_time);
 
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putLong(Util.PREF_LAST_FCM_TSTAMP, remoteMessage.getSentTime());
+            prefs.setLastFCMTimestamp(remoteMessage.getSentTime());
             if (new_poems_count>0){
-                editor.putBoolean(Util.PREF_UPDATE_NEXT, true);
-                if (prefs.getBoolean(Util.PREF_NOTIFY_NEW, false)) {
+                prefs.setUpdateNext(true);
+                if (prefs.getNotifyNew()) {
                     createNotification(new_poems_count);
                 }
             }
-            editor.apply();
-
         }
     }
 

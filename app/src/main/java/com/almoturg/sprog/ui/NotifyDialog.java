@@ -17,6 +17,7 @@ public class NotifyDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState){
+        final SprogApplication application = ((SprogApplication) getActivity().getApplication());
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage("Do you want to receive a notification when new poems are available?" +
                 "\nThis can be changed later in the overflow menu in the top right.")
@@ -24,13 +25,9 @@ public class NotifyDialog extends DialogFragment {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 FirebaseMessaging.getInstance().subscribeToTopic("PoemUpdates");
-                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(
-                        getActivity().getApplicationContext()).edit();
-                editor.putBoolean(Util.PREF_NOTIFY_NEW, true);
-                editor.apply();
+                application.getPreferences().setNotifyNew(true);
                 getActivity().invalidateOptionsMenu();
-                ((SprogApplication) getActivity().getApplication())
-                        .getDefaultTracker().send(new HitBuilders.EventBuilder()
+                application.getDefaultTracker().send(new HitBuilders.EventBuilder()
                             .setCategory("notificationDialog")
                             .setAction("yes")
                             .build());
@@ -39,13 +36,9 @@ public class NotifyDialog extends DialogFragment {
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 FirebaseMessaging.getInstance().unsubscribeFromTopic("PoemUpdates");
-                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(
-                        getActivity().getApplicationContext()).edit();
-                editor.putBoolean(Util.PREF_NOTIFY_NEW, false);
-                editor.apply();
+                application.getPreferences().setNotifyNew(false);
                 getActivity().invalidateOptionsMenu();
-                ((SprogApplication) getActivity().getApplication())
-                        .getDefaultTracker().send(new HitBuilders.EventBuilder()
+                application.getDefaultTracker().send(new HitBuilders.EventBuilder()
                             .setCategory("notificationDialog")
                             .setAction("no")
                             .build());

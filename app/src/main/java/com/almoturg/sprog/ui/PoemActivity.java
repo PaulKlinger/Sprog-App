@@ -80,7 +80,7 @@ public class PoemActivity extends AppCompatActivity {
                 v = LayoutInflater.from(this).inflate(R.layout.poem_row, mainlist, false);
                 ((TextView) v.findViewById(R.id.content))
                         .setMovementMethod(LinkMovementMethod.getInstance());
-                Util.update_poem_row(parent.is_poem, v, true, false, this);
+                Util.update_poem_row_poem_page(parent.is_poem, v, this);
             } else {
                 v = LayoutInflater.from(this)
                         .inflate(R.layout.parents_list_row, mainlist, false);
@@ -98,7 +98,7 @@ public class PoemActivity extends AppCompatActivity {
             v = LayoutInflater.from(this).inflate(R.layout.poem_row, mainlist, false);
             ((TextView) v.findViewById(R.id.content))
                     .setMovementMethod(LinkMovementMethod.getInstance());
-            Util.update_poem_row(poem, v, true, false, this);
+            Util.update_poem_row_poem_page(poem, v, this);
             mainlist.addView(v);
             if (poem.link.equals(selectedPoem.link)){selectedPoemView = v;}
         }
@@ -160,7 +160,7 @@ public class PoemActivity extends AppCompatActivity {
                 toast.show();
                 item.setIcon(R.drawable.ic_star_empty);
             }
-            Util.update_poem_row(selectedPoem, selectedPoemView, true, false, this);
+            Util.update_poem_row_poem_page(selectedPoem, selectedPoemView, this);
         }
 
         return super.onOptionsItemSelected(item);

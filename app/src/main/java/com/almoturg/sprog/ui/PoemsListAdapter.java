@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.almoturg.sprog.R;
+import com.almoturg.sprog.model.PreferencesRepository;
+import com.almoturg.sprog.presenter.MainPresenter;
 import com.almoturg.sprog.util.Util;
 import com.almoturg.sprog.model.Poem;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
@@ -25,6 +27,8 @@ import static com.almoturg.sprog.SprogApplication.filtered_poems;
 public class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.ViewHolder>
         implements FastScrollRecyclerView.SectionedAdapter {
     private Context context;
+    private MainPresenter presenter;
+    private PreferencesRepository preferences;
     private Calendar cal;
 
     // Provide a reference to the views for each data item
@@ -50,13 +54,13 @@ public class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.View
             if (content_wrapper.getVisibility() == View.GONE) {
                 if (!poem.read) {
                     poem.read = true;
-                    ((MainActivity) context).new_read_poems.add(poem.link);
+                    presenter.new_read_poems.add(poem.link);
                 }
                 first_line.setVisibility(View.GONE);
                 content_wrapper.setVisibility(View.VISIBLE);
                 ((TextView) v.findViewById(R.id.content)).setText(
                         Util.convertPoemMarkdown(poem.content, poem.timestamp, context));
-            } else if (!((MainActivity) context).updating && !((MainActivity) context).processing){
+            } else if (!presenter.updating && !presenter.processing){
                 Intent intent = new Intent(context, PoemActivity.class);
                 intent.putExtra("POEM_ID", filtered_poems.indexOf(poem));
                 context.startActivity(intent);
@@ -65,8 +69,11 @@ public class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.View
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    PoemsListAdapter(Context context) {
+    PoemsListAdapter(Context context, MainPresenter presenter, PreferencesRepository preferences) {
         this.context = context;
+        this.presenter = presenter;
+        this.preferences = preferences;
+
         this.cal = Calendar.getInstance(Locale.ENGLISH);
     }
 
@@ -87,7 +94,8 @@ public class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.View
         // - replace the contents of the view with that element
         Poem poem = (filtered_poems.get(position));
         holder.poem = poem;
-        Util.update_poem_row(poem, holder.view, false, true, context);
+        Util.update_poem_row_mainlist(poem, holder.view,presenter.show_only_favorites,
+                preferences.getMarkRead(), context);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -99,12 +107,12 @@ public class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.View
     @NonNull
     @Override
     public String getSectionName(int position) {
-        if (((MainActivity) context).sort_order.equals("Date")) {
+        if (presenter.sort_order.equals("Date")) {
             cal.setTimeInMillis((long) filtered_poems.get(position).timestamp * 1000);
             return DateFormat.format("yyyy-MM", cal).toString();
-        } else if (((MainActivity) context).sort_order.equals("Score")) {
+        } else if (presenter.sort_order.equals("Score")) {
             return Integer.toString(filtered_poems.get(position).score);
-        } else if (((MainActivity) context).sort_order.equals("Gold")) {
+        } else if (presenter.sort_order.equals("Gold")) {
             return Integer.toString(filtered_poems.get(position).gold);
         }
         return "";
