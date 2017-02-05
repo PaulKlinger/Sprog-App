@@ -73,8 +73,9 @@ public class PoemPresenter {
         return Util.last(selectedPoem.link.split("/"));
     }
 
-    public CharSequence getPoemContent() {
-        return markdownConverter.convertPoemMarkdown(selectedPoem.content, selectedPoem.timestamp);
+    public CharSequence getPoemContentString() {
+        return markdownConverter.convertPoemMarkdown(selectedPoem.content, selectedPoem.timestamp)
+                .toString();
     }
 
     public void onActionCopy() {

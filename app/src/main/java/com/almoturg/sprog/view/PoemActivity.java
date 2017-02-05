@@ -112,7 +112,7 @@ public class PoemActivity extends AppCompatActivity {
                 (ShareActionProvider) MenuItemCompat.getActionProvider(item);
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, presenter.getPoemContent());
+        shareIntent.putExtra(Intent.EXTRA_TEXT, presenter.getPoemContentString());
         mShareActionProvider.setShareIntent(shareIntent);
         return true;
     }
