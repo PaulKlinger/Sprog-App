@@ -1,7 +1,5 @@
 package com.almoturg.sprog.presenter;
 
-import android.support.v7.widget.RecyclerView;
-
 import com.almoturg.sprog.data.MarkdownConverter;
 import com.almoturg.sprog.model.Poem;
 import com.almoturg.sprog.ui.PoemsListAdapter;
@@ -32,6 +30,7 @@ public class MainListItemPresenter {
 
     public void onClick() {
         if (!expanded) {
+            expanded = true;
             if (!poem.read) {
                 poem.read = true;
                 mainPresenter.addNewReadPoem(poem);
