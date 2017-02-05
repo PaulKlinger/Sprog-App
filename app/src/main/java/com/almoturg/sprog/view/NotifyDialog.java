@@ -1,15 +1,12 @@
-package com.almoturg.sprog.ui;
+package com.almoturg.sprog.view;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
 import com.almoturg.sprog.SprogApplication;
-import com.almoturg.sprog.util.Util;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.firebase.messaging.FirebaseMessaging;
 

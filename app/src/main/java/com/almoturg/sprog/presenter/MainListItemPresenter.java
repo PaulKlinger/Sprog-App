@@ -1,8 +1,7 @@
 package com.almoturg.sprog.presenter;
 
-import com.almoturg.sprog.data.MarkdownConverter;
 import com.almoturg.sprog.model.Poem;
-import com.almoturg.sprog.ui.PoemsListAdapter;
+import com.almoturg.sprog.view.PoemsListAdapter;
 
 import static com.almoturg.sprog.SprogApplication.filtered_poems;
 

@@ -3,7 +3,7 @@ package com.almoturg.sprog.presenter;
 import com.almoturg.sprog.data.MarkdownConverter;
 import com.almoturg.sprog.model.Poem;
 import com.almoturg.sprog.model.PreferencesRepository;
-import com.almoturg.sprog.ui.MainActivity;
+import com.almoturg.sprog.view.MainActivity;
 import com.almoturg.sprog.data.PoemsFileParser;
 import com.almoturg.sprog.data.PoemsLoader;
 import com.almoturg.sprog.util.SprogDbHelper;

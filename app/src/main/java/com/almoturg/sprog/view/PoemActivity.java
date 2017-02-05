@@ -1,4 +1,4 @@
-package com.almoturg.sprog.ui;
+package com.almoturg.sprog.view;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -23,7 +23,6 @@ import com.almoturg.sprog.R;
 import com.almoturg.sprog.SprogApplication;
 import com.almoturg.sprog.data.MarkdownConverter;
 import com.almoturg.sprog.presenter.PoemPresenter;
-import com.almoturg.sprog.util.Util;
 import com.almoturg.sprog.model.Poem;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;

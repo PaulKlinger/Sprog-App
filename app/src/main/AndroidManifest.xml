@@ -35,10 +35,10 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
-        <activity android:name=".ui.MainActivity" />
-        <activity android:name=".ui.PoemActivity" />
+        <activity android:name=".view.MainActivity" />
+        <activity android:name=".view.PoemActivity" />
         <activity
-            android:name=".ui.SplashActivity"
+            android:name=".view.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,4 +1,4 @@
-package com.almoturg.sprog.ui;
+package com.almoturg.sprog.view;
 
 import android.app.NotificationManager;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package com.almoturg.sprog.ui;
+package com.almoturg.sprog.view;
 
 import android.content.Context;
 import android.support.v4.content.res.ResourcesCompat;

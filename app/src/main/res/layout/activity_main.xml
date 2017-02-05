@@ -8,7 +8,7 @@
     android:background="#eee"
     android:orientation="vertical"
     android:padding="0dp"
-    tools:context="com.almoturg.sprog.ui.MainActivity">
+    tools:context="com.almoturg.sprog.view.MainActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/main_toolbar"

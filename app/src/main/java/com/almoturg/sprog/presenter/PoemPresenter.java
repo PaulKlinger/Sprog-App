@@ -4,7 +4,7 @@ import com.almoturg.sprog.data.MarkdownConverter;
 import com.almoturg.sprog.model.ParentComment;
 import com.almoturg.sprog.model.Poem;
 import com.almoturg.sprog.model.PreferencesRepository;
-import com.almoturg.sprog.ui.PoemActivity;
+import com.almoturg.sprog.view.PoemActivity;
 import com.almoturg.sprog.util.SprogDbHelper;
 import com.almoturg.sprog.util.Util;
 
