@@ -20,8 +20,8 @@ public class UpdateHelpers {
     // and therefore the cancel button is shown when updating
     private static final int MIN_FILE_LENGTH = 1000 * 1000;
 
-    public static boolean isUpdateTime(long last_update_tstamp, long last_fcm_tstamp) {
-        Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+    public static boolean isUpdateTime(Calendar now,
+                                       long last_update_tstamp, long last_fcm_tstamp) {
         // Always load JSON when more than MAX_DAYS_BETWEEN_LOADING_POEMS days have passed
         // This is mainly to get updated scores/gold counts and to remove deleted poems.
         if (now.getTimeInMillis() - last_update_tstamp >

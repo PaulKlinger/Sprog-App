@@ -107,7 +107,9 @@ public class MainPresenter {
             }
         } else {
             if (!update) {
-                update = UpdateHelpers.isUpdateTime(last_update_tstamp, last_fcm_tstamp);
+                update = UpdateHelpers.isUpdateTime(
+                        Calendar.getInstance(TimeZone.getTimeZone("UTC")),
+                        last_update_tstamp, last_fcm_tstamp);
             }
 
             if (update && internet_access) {
