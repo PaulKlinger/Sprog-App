@@ -19,9 +19,9 @@ import com.google.firebase.messaging.RemoteMessage;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import static com.almoturg.sprog.util.Util.NEW_POEMS_NOTIFICATION_ID;
-
 public class MessagingService extends FirebaseMessagingService {
+    public static final int NEW_POEMS_NOTIFICATION_ID = 1;
+
     public MessagingService() {
     }
 

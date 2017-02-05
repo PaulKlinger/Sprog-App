@@ -1,13 +1,13 @@
 package com.almoturg.sprog.presenter;
 
 import com.almoturg.sprog.data.MarkdownConverter;
+import com.almoturg.sprog.data.UpdateHelpers;
 import com.almoturg.sprog.model.Poem;
 import com.almoturg.sprog.model.PreferencesRepository;
 import com.almoturg.sprog.view.MainActivity;
 import com.almoturg.sprog.data.PoemsFileParser;
 import com.almoturg.sprog.data.PoemsLoader;
 import com.almoturg.sprog.model.SprogDbHelper;
-import com.almoturg.sprog.util.Util;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -72,7 +72,7 @@ public class MainPresenter {
     public void onStart() {
         // A dialog asking whether to enable new poem notifications is shown
         // the second time MainActivity is started.
-        if (Util.timeToShowNotifyDialog(preferences)) {
+        if (timeToShowNotifyDialog()) {
             activity.showNotifyDialog();
         }
 
@@ -97,9 +97,9 @@ public class MainPresenter {
     private void preparePoems(boolean update) { // not sure about the name...
         long last_update_tstamp = preferences.getLastUpdateTime();
         long last_fcm_tstamp = preferences.getLastFCMTimestamp();
-        boolean internet_access = Util.isConnected(activity);
+        boolean internet_access = UpdateHelpers.isConnected(activity);
 
-        if (last_update_tstamp == -1 || !Util.poemsFileExists(activity)) {
+        if (last_update_tstamp == -1 || !UpdateHelpers.poemsFileExists(activity)) {
             if (internet_access) {
                 updatePoems();
             } else {
@@ -107,7 +107,7 @@ public class MainPresenter {
             }
         } else {
             if (!update) {
-                update = Util.isUpdateTime(last_update_tstamp, last_fcm_tstamp);
+                update = UpdateHelpers.isUpdateTime(last_update_tstamp, last_fcm_tstamp);
             }
 
             if (update && internet_access) {
@@ -131,7 +131,7 @@ public class MainPresenter {
         filtered_poems.clear();
         activity.adapterDatasetChanged();
         activity.showUpdating();
-        if (Util.poemsFileExists(activity)) {
+        if (UpdateHelpers.poemsFileExists(activity)) {
             // If loading poems takes more than 5s and an old poems file is available
             // show a button to allow cancelling the download
             activity.showCancelButtonDelayed(5000);
@@ -333,5 +333,21 @@ public class MainPresenter {
 
     public MarkdownConverter getMarkdownConverter(){
         return markdownConverter;
+    }
+
+    private boolean timeToShowNotifyDialog(){
+        // This checks whether it's time to show the dialog asking whether to enable
+        // notifications for new poems.
+        // The state is stored in the "DISPLAY_NOTIFICATION_DIALOG" pref
+        // not set: never launched, 0: launched once, 1: dialog shown
+        if (preferences.getDisplayedNotificationDialog() == -1){
+            preferences.setDisplayedNotificationDialog(0);
+            return false;
+        } else if (preferences.getDisplayedNotificationDialog() == 0) {
+            preferences.setDisplayedNotificationDialog(1);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

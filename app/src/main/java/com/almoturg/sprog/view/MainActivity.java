@@ -29,7 +29,6 @@ import com.almoturg.sprog.presenter.MainPresenter;
 import com.almoturg.sprog.R;
 import com.almoturg.sprog.SprogApplication;
 import com.almoturg.sprog.data.PoemsFileParser;
-import com.almoturg.sprog.util.Util;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -47,6 +46,11 @@ public class MainActivity extends AppCompatActivity {
     private EditText search_text;
 
     private Tracker mTracker;
+
+    public static final int VIEWFLIPPER_RECYCLERVIEW = 0;
+    public static final int VIEWFLIPPER_EMPTY_FAVORITES = 1;
+    public static final int VIEWFLIPPER_UPDATING = 2;
+    public static final int VIEWFLIPPER_ERROR = 3;
 
 
     @Override
@@ -162,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void enableFavorites(boolean no_favorites){
         if (no_favorites){
-            viewFlipper.setDisplayedChild(Util.VIEWFLIPPER_EMPTY_FAVORITES);
+            viewFlipper.setDisplayedChild(VIEWFLIPPER_EMPTY_FAVORITES);
         }
         findViewById(R.id.toggle_favorites).setBackgroundResource(
                 R.drawable.favorites_button_background);
@@ -174,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.toggle_favorites).setPadding(
                 toggle_favorites_padding, toggle_favorites_padding,
                 toggle_favorites_padding, toggle_favorites_padding);
-        viewFlipper.setDisplayedChild(Util.VIEWFLIPPER_RECYCLERVIEW);
+        viewFlipper.setDisplayedChild(VIEWFLIPPER_RECYCLERVIEW);
     }
 
     public void toggleSearch(View view) {
@@ -265,13 +269,13 @@ public class MainActivity extends AppCompatActivity {
     public void setProcessing(){
         ((Spinner) findViewById(R.id.sort_spinner)).setSelection(0); // 0 is Date (is there a better way to do this??)
         statusView.setText("processing");
-        viewFlipper.setDisplayedChild(Util.VIEWFLIPPER_RECYCLERVIEW);
+        viewFlipper.setDisplayedChild(VIEWFLIPPER_RECYCLERVIEW);
         toggleSearch(null); // hide search box (checks processing)
     }
 
     public void showError(){
         statusView.setText("error");
-        viewFlipper.setDisplayedChild(Util.VIEWFLIPPER_ERROR);
+        viewFlipper.setDisplayedChild(VIEWFLIPPER_ERROR);
     }
 
     public void showNotifyDialog(){
@@ -294,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (viewFlipper.getDisplayedChild() == Util.VIEWFLIPPER_UPDATING) {
+                if (viewFlipper.getDisplayedChild() == VIEWFLIPPER_UPDATING) {
                     findViewById(R.id.action_cancelUpdate).setVisibility(View.VISIBLE);}
             }
         }, delay_ms);
@@ -304,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void showUpdating(){
         findViewById(R.id.action_cancelUpdate).setVisibility(View.INVISIBLE);
-        viewFlipper.setDisplayedChild(Util.VIEWFLIPPER_UPDATING);
+        viewFlipper.setDisplayedChild(VIEWFLIPPER_UPDATING);
     }
 
     public void trackEvent(String category, String action, String label){
