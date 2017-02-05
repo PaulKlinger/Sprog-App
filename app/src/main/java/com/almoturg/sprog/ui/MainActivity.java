@@ -23,7 +23,6 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.almoturg.sprog.model.PreferencesRepository;
-import com.almoturg.sprog.model.PreferencesRepositoryImpl;
 import com.almoturg.sprog.presenter.MainPresenter;
 import com.almoturg.sprog.R;
 import com.almoturg.sprog.SprogApplication;
@@ -40,7 +39,7 @@ import static com.almoturg.sprog.SprogApplication.poems;
 
 
 public class MainActivity extends AppCompatActivity {
-    public MainPresenter presenter;
+    public static MainPresenter presenter;
     private PreferencesRepository preferences;
 
     private RecyclerView mRecyclerView;
@@ -58,9 +57,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        preferences = new PreferencesRepositoryImpl(this);
-        presenter = new MainPresenter(this, preferences,
-                SprogApplication.getDbHelper(this));
+        preferences = ((SprogApplication) getApplication()).getPreferences();
+        if (presenter == null) {
+            presenter = new MainPresenter(preferences, SprogApplication.getDbHelper(this));
+        }
 
         SprogApplication application = (SprogApplication) getApplication();
         mTracker = application.getDefaultTracker();
@@ -120,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         FirebaseMessaging.getInstance().subscribeToTopic("PoemUpdates");
+
+        presenter.attachView(this);
     }
 
     @Override
@@ -149,6 +151,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         presenter.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 
     public void addPoems(List<Poem> poems_set) {
@@ -184,15 +192,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void toggleSearch(View view) {
-        presenter.toggleSearch(search_box.getVisibility() == View.VISIBLE);
+        presenter.toggleSearch();
     }
 
-    public void enableSearch(){
+    public void enableSearch(String search_string){
         search_box.setVisibility(View.VISIBLE);
         findViewById(R.id.toggle_search).setBackgroundResource(R.drawable.search_button_background);
         search_text.requestFocus();
         ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
                 .showSoftInput(search_text, InputMethodManager.SHOW_IMPLICIT);
+        search_text.setText(search_string);
     }
 
     public void disableSearch(){

@@ -24,9 +24,11 @@ public class MainPresenter {
 
     public ArrayList<String> new_read_poems = new ArrayList<>(); // Poems newly marked as read
 
-    public boolean processing;
-    public boolean updating;
-    public boolean show_only_favorites;
+    public boolean processing = false;
+    public boolean updating = false;
+    public boolean show_only_favorites = false;
+
+    private boolean show_search_bar = false;
 
     // for analytics tracking of search queries
     private String last_search_string = "";
@@ -34,11 +36,30 @@ public class MainPresenter {
 
     public String sort_order = "Date";
 
-    public MainPresenter(MainActivity activity, PreferencesRepository preferences,
+    public MainPresenter(PreferencesRepository preferences,
                          SprogDbHelper dbhelper) {
-        this.activity = activity;
         this.preferences = preferences;
         this.dbhelper = dbhelper;
+    }
+
+    public void attachView(MainActivity activity) {
+        this.activity = activity;
+        if (updating) {
+            activity.showUpdating();
+        }
+        if (processing) {
+            activity.setProcessing();
+        }
+        if (show_only_favorites) {
+            activity.enableFavorites(showEmptyFavoritesMessage());
+        }
+        if (show_search_bar) {
+            activity.enableSearch(last_search_string);
+        }
+    }
+
+    public void detachView(){
+        this.activity = null;
     }
 
     public void onStart() {
@@ -224,10 +245,12 @@ public class MainPresenter {
         preferences.setDisplayedNotificationDialog(1);
     }
 
-    public void toggleSearch(boolean old_state) {
-        if (!old_state && !processing) {
-            activity.enableSearch();
+    public void toggleSearch() {
+        if (!show_search_bar && !processing) {
+            show_search_bar = true;
+            activity.enableSearch(last_search_string);
         } else {
+            show_search_bar = false;
             activity.disableSearch();
             if ((!sent_search) && last_search_string.length() > 0) {
                 activity.trackSearch(last_search_string);
@@ -236,6 +259,11 @@ public class MainPresenter {
             sent_search = false;
             searchPoems("");
         }
+    }
+
+    private boolean showEmptyFavoritesMessage() {
+        return show_only_favorites && last_search_string.length() == 0 &&
+                filtered_poems.size() == 0;
     }
 
     public void toggleFavorites() {
@@ -250,7 +278,7 @@ public class MainPresenter {
                     (last_search_string.length() > 0 ? "s" : "") +
                             Integer.toString(filtered_poems.size()),
                     null);
-            activity.enableFavorites(last_search_string.length() == 0 && filtered_poems.size() == 0);
+            activity.enableFavorites(showEmptyFavoritesMessage());
 
         } else {
             activity.disableFavorites();
