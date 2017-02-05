@@ -3,15 +3,13 @@ package com.almoturg.sprog.presenter;
 import com.almoturg.sprog.data.MarkdownConverter;
 import com.almoturg.sprog.model.ParentComment;
 import com.almoturg.sprog.model.Poem;
-import com.almoturg.sprog.model.PreferencesRepository;
 import com.almoturg.sprog.view.PoemActivity;
-import com.almoturg.sprog.util.SprogDbHelper;
+import com.almoturg.sprog.model.SprogDbHelper;
 import com.almoturg.sprog.util.Util;
 
 import static com.almoturg.sprog.SprogApplication.filtered_poems;
 
 public class PoemPresenter {
-    private PreferencesRepository preferences;
     private SprogDbHelper dbHelper;
     private MarkdownConverter markdownConverter;
     private PoemActivity activity;
@@ -20,9 +18,8 @@ public class PoemPresenter {
     private Poem mainPoem; // The mainpoem corresponding to the selected one.
 
 
-    public PoemPresenter(PreferencesRepository preferences, SprogDbHelper dbHelper,
+    public PoemPresenter(SprogDbHelper dbHelper,
                          MarkdownConverter markdownConverter) {
-        this.preferences = preferences;
         this.dbHelper = dbHelper;
         this.markdownConverter = markdownConverter;
     }

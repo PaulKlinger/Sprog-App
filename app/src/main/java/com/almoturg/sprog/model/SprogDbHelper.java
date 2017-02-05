@@ -1,14 +1,12 @@
-package com.almoturg.sprog.util;
+package com.almoturg.sprog.model;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 
 public class SprogDbHelper extends SQLiteOpenHelper {
@@ -49,7 +47,7 @@ public class SprogDbHelper extends SQLiteOpenHelper {
         onUpgrade(db, oldVersion, newVersion);
     }
 
-    HashSet<String> getReadPoems() {
+    public HashSet<String> getReadPoems() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cur = db.rawQuery("SELECT link from " + READ_TABLE, null);
         HashSet<String> read_poems = new HashSet<>();

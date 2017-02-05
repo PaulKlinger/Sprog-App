@@ -1,7 +1,5 @@
 package com.almoturg.sprog.model;
 
-import com.almoturg.sprog.util.SprogDbHelper;
-
 import java.util.List;
 
 

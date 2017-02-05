@@ -1,4 +1,4 @@
-package com.almoturg.sprog.util;
+package com.almoturg.sprog.data;
 
 import android.content.Context;
 import android.util.JsonReader;
@@ -8,6 +8,7 @@ import com.almoturg.sprog.SprogApplication;
 import com.almoturg.sprog.data.MarkdownConverter;
 import com.almoturg.sprog.model.ParentComment;
 import com.almoturg.sprog.model.Poem;
+import com.almoturg.sprog.model.SprogDbHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,23 +21,24 @@ import java.util.List;
 import in.uncod.android.bypass.Bypass;
 
 
-public class PoemParser {
+class PoemParser {
     private JsonReader reader;
     private HashMap<String, Poem> mainpoem_links;
     private HashSet<String> read_poems;
     private HashSet<String> favorite_poems;
     private MarkdownConverter markdownConverter;
 
-    public PoemParser(InputStream in, MarkdownConverter markdownConverter, Context context) throws IOException {
+    PoemParser(InputStream in, SprogDbHelper dbHelper, MarkdownConverter markdownConverter)
+            throws IOException {
         this.markdownConverter = markdownConverter;
-        read_poems = SprogApplication.getDbHelper(context).getReadPoems();
-        favorite_poems = SprogApplication.getDbHelper(context).getFavoritePoems();
+        read_poems = dbHelper.getReadPoems();
+        favorite_poems = dbHelper.getFavoritePoems();
         reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
         mainpoem_links = new HashMap<>();
         reader.beginArray();
     }
 
-    public List<Poem> getPoems(int n) throws IOException {
+    List<Poem> getPoems(int n) throws IOException {
         if (reader == null) {
             return null;
         }

@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import android.os.Environment;
 
 import com.almoturg.sprog.model.Poem;
-import com.almoturg.sprog.util.PoemParser;
+import com.almoturg.sprog.model.SprogDbHelper;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,17 +25,21 @@ public class PoemsFileParser {
     }
 
     public void parsePoems(ParsePoemsCallbackInterface callback,
-                           MarkdownConverter markdownConverter){
-        new ParsePoemsTask(callback).execute(new ParsePoemsTaskParams(context, markdownConverter));
+                           SprogDbHelper dbHelper, MarkdownConverter markdownConverter){
+        new ParsePoemsTask(callback).execute(
+                new ParsePoemsTaskParams(context, dbHelper, markdownConverter));
     }
 
     private static class ParsePoemsTaskParams {
         Context context;
         MarkdownConverter markdownConverter;
+        SprogDbHelper dbHelper;
 
-        ParsePoemsTaskParams(Context context, MarkdownConverter markdownConverter) {
+        ParsePoemsTaskParams(Context context, SprogDbHelper dbHelper,
+                             MarkdownConverter markdownConverter) {
             this.context = context;
             this.markdownConverter = markdownConverter;
+            this.dbHelper = dbHelper;
         }
     }
 
@@ -58,13 +62,13 @@ public class PoemsFileParser {
             }
 
             try {
-                processFile(params[0].context, used_file, params[0].markdownConverter);
+                processFile(params[0], used_file);
 
             } catch (IOException e) {
                 used_file.delete();
                 if (used_file != poems_old_file) {
                     try {
-                        processFile(params[0].context, poems_old_file, params[0].markdownConverter);
+                        processFile(params[0], poems_old_file);
                     } catch (IOException e2) {
                         poems_old_file.delete();
                         return false;
@@ -76,11 +80,10 @@ public class PoemsFileParser {
             return true;
         }
 
-        private void processFile(Context context, File poems_file,
-                                 MarkdownConverter markdownConverter) throws IOException {
+        private void processFile(ParsePoemsTaskParams params, File poems_file) throws IOException {
             List<Poem> poems;
-            PoemParser parser = new PoemParser(new FileInputStream(poems_file), markdownConverter,
-                    context);
+            PoemParser parser = new PoemParser(new FileInputStream(poems_file),
+                    params.dbHelper, params.markdownConverter);
             while (true) {
                 poems = parser.getPoems(10);
                 if (poems == null) {

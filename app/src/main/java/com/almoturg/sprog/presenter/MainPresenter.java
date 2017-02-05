@@ -6,7 +6,7 @@ import com.almoturg.sprog.model.PreferencesRepository;
 import com.almoturg.sprog.view.MainActivity;
 import com.almoturg.sprog.data.PoemsFileParser;
 import com.almoturg.sprog.data.PoemsLoader;
-import com.almoturg.sprog.util.SprogDbHelper;
+import com.almoturg.sprog.model.SprogDbHelper;
 import com.almoturg.sprog.util.Util;
 
 import java.util.ArrayList;
@@ -220,7 +220,7 @@ public class MainPresenter {
             public void finishedProcessing(boolean status) {
                 MainPresenter.this.finishedProcessing(status);
             }
-        }, markdownConverter);
+        }, dbhelper, markdownConverter);
     }
 
     private void addPoems(List<Poem> new_poems) {

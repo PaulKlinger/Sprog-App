@@ -42,8 +42,7 @@ public class PoemActivity extends AppCompatActivity {
 
         if (presenter == null) {
             Context appcontext = getApplicationContext();
-            presenter = new PoemPresenter(((SprogApplication) getApplication()).getPreferences(),
-                    SprogApplication.getDbHelper(appcontext),
+            presenter = new PoemPresenter(SprogApplication.getDbHelper(appcontext),
                     new MarkdownConverter(appcontext));
         }
         setContentView(R.layout.activity_poem);

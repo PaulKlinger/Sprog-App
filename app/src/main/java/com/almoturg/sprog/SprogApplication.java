@@ -23,7 +23,7 @@ import android.content.Context;
 import com.almoturg.sprog.model.Poem;
 import com.almoturg.sprog.model.PreferencesRepository;
 import com.almoturg.sprog.model.PreferencesRepositoryImpl;
-import com.almoturg.sprog.util.SprogDbHelper;
+import com.almoturg.sprog.model.SprogDbHelper;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 
