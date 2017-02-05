@@ -23,7 +23,7 @@ public class MainPresenter {
     private MainActivity activity;
     private PreferencesRepository preferences;
     private SprogDbHelper dbhelper;
-    public MarkdownConverter markdownConverter;
+    private MarkdownConverter markdownConverter;
     private PoemsFileParser poemsFileParser;
 
     private ArrayList<String> new_read_poems = new ArrayList<>(); // Poems newly marked as read
@@ -329,5 +329,9 @@ public class MainPresenter {
 
     public boolean poemsReady(){
         return !updating && !processing;
+    }
+
+    public MarkdownConverter getMarkdownConverter(){
+        return markdownConverter;
     }
 }

@@ -15,7 +15,6 @@ import com.almoturg.sprog.R;
 import com.almoturg.sprog.model.PreferencesRepository;
 import com.almoturg.sprog.presenter.MainListItemPresenter;
 import com.almoturg.sprog.presenter.MainPresenter;
-import com.almoturg.sprog.util.Util;
 import com.almoturg.sprog.model.Poem;
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
@@ -58,8 +57,7 @@ public class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.View
         }
 
         public void setPoem(Poem poem, boolean show_only_favorites, boolean mark_read) {
-            Util.update_poem_row_mainlist(poem, view, show_only_favorites,
-                    mark_read, presenter.getMarkdownConverter(), context);
+            PoemRow.update_poem_row_mainlist(poem, view, show_only_favorites, mark_read, context);
             presenter.setPoem(poem);
         }
 

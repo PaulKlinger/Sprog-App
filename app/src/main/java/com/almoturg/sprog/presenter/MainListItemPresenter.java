@@ -13,7 +13,6 @@ public class MainListItemPresenter {
 
     private MainPresenter mainPresenter;
 
-
     public MainListItemPresenter(PoemsListAdapter.ViewHolder view, MainPresenter mainPresenter) {
         this.view = view;
         this.mainPresenter = mainPresenter;
@@ -24,10 +23,6 @@ public class MainListItemPresenter {
         expanded = false;
     }
 
-    public MarkdownConverter getMarkdownConverter() {
-        return mainPresenter.markdownConverter;
-    }
-
     public void onClick() {
         if (!expanded) {
             expanded = true;
@@ -35,7 +30,7 @@ public class MainListItemPresenter {
                 poem.read = true;
                 mainPresenter.addNewReadPoem(poem);
             }
-            view.expand(mainPresenter.markdownConverter
+            view.expand(mainPresenter.getMarkdownConverter()
                     .convertPoemMarkdown(poem.content, poem.timestamp));
         } else if (mainPresenter.poemsReady()){
             view.startPoemActivity(filtered_poems.indexOf(poem));

@@ -1,9 +1,5 @@
 package com.almoturg.sprog.model;
 
-import android.app.Application;
-import android.content.Context;
-
-import com.almoturg.sprog.SprogApplication;
 import com.almoturg.sprog.util.SprogDbHelper;
 
 import java.util.List;
@@ -44,9 +40,8 @@ public class Poem {
         this.favorite = is_favorite;
     }
 
-    public void toggleFavorite(Context context){
+    public void toggleFavorite(SprogDbHelper db){
         this.favorite = !this.favorite;
-        SprogDbHelper db = SprogApplication.getDbHelper(context);
         if (this.favorite) {
             db.addFavoritePoem(this.link);
         } else {

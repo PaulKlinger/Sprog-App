@@ -2,6 +2,7 @@ package com.almoturg.sprog.ui;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.view.MenuItemCompat;
@@ -21,32 +22,35 @@ import android.widget.Toast;
 import com.almoturg.sprog.R;
 import com.almoturg.sprog.SprogApplication;
 import com.almoturg.sprog.data.MarkdownConverter;
+import com.almoturg.sprog.presenter.PoemPresenter;
 import com.almoturg.sprog.util.Util;
-import com.almoturg.sprog.model.ParentComment;
 import com.almoturg.sprog.model.Poem;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
-import static com.almoturg.sprog.SprogApplication.filtered_poems;
 
 public class PoemActivity extends AppCompatActivity {
-    private Poem poem; // The mainpoem corresponding to the selected one.
-    private Poem selectedPoem; // The selected poem.
+    private PoemPresenter presenter;
+
     private Tracker mTracker;
     private View selectedPoemView;
-
+    private ViewGroup mainlist;
     private MenuItem favoriteItem;
-    private MarkdownConverter markdownConverter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (presenter == null) {
+            Context appcontext = getApplicationContext();
+            presenter = new PoemPresenter(((SprogApplication) getApplication()).getPreferences(),
+                    SprogApplication.getDbHelper(appcontext),
+                    new MarkdownConverter(appcontext));
+        }
         setContentView(R.layout.activity_poem);
 
         SprogApplication application = (SprogApplication) getApplication();
         mTracker = application.getDefaultTracker();
-
-        markdownConverter = new MarkdownConverter(this);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.poem_toolbar);
         setSupportActionBar(myToolbar);
@@ -56,57 +60,9 @@ public class PoemActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         Intent mIntent = getIntent();
-        selectedPoem = filtered_poems.get((int) mIntent.getSerializableExtra("POEM_ID"));
-        if (selectedPoem.main_poem != null) { // This poem is in the parents of another one
-            poem = selectedPoem.main_poem;
-        } else {
-            poem = selectedPoem;
-        }
+        mainlist = (ViewGroup) findViewById(R.id.single_poem_main_list);
 
-        ViewGroup mainlist = (ViewGroup) findViewById(R.id.single_poem_main_list);
-
-        View v;
-        v = LayoutInflater.from(this).inflate(R.layout.post_row, mainlist, false);
-        ((TextView) v.findViewById(R.id.title))
-                .setText(markdownConverter.convertMarkdown(poem.post_title));
-        ((TextView) v.findViewById(R.id.author)).setText(poem.post_author);
-        if (poem.post_content != null && poem.post_content.length() > 0) {
-            ((TextView) v.findViewById(R.id.content))
-                    .setText(markdownConverter.convertMarkdown(poem.post_content));
-            ((TextView) v.findViewById(R.id.content))
-                    .setMovementMethod(LinkMovementMethod.getInstance());
-            v.findViewById(R.id.content).setVisibility(View.VISIBLE);
-        }
-        mainlist.addView(v);
-
-        for (ParentComment parent : poem.parents) {
-            if (parent.is_poem != null) {
-                v = LayoutInflater.from(this).inflate(R.layout.poem_row, mainlist, false);
-                ((TextView) v.findViewById(R.id.content))
-                        .setMovementMethod(LinkMovementMethod.getInstance());
-                Util.update_poem_row_poem_page(parent.is_poem, v, markdownConverter, this);
-            } else {
-                v = LayoutInflater.from(this)
-                        .inflate(R.layout.parents_list_row, mainlist, false);
-                ((TextView) v.findViewById(R.id.content))
-                        .setText(markdownConverter.convertMarkdown(parent.content));
-                ((TextView) v.findViewById(R.id.content))
-                        .setMovementMethod(LinkMovementMethod.getInstance());
-                ((TextView) v.findViewById(R.id.author)).setText(parent.author);
-            }
-            mainlist.addView(v);
-            if (parent.link != null && parent.link.equals(selectedPoem.link)){selectedPoemView = v;}
-        }
-
-        if (poem.content != null && poem.content.length() > 0) {
-            v = LayoutInflater.from(this).inflate(R.layout.poem_row, mainlist, false);
-            ((TextView) v.findViewById(R.id.content))
-                    .setMovementMethod(LinkMovementMethod.getInstance());
-            Util.update_poem_row_poem_page(poem, v, markdownConverter, this);
-            mainlist.addView(v);
-            if (poem.link.equals(selectedPoem.link)){selectedPoemView = v;}
-        }
-
+        presenter.attachView(this, (int) mIntent.getSerializableExtra("POEM_ID"));
     }
 
     @Override
@@ -114,11 +70,13 @@ public class PoemActivity extends AppCompatActivity {
         super.onStart();
         mTracker.setScreenName("Poem");
         mTracker.send(new HitBuilders.ScreenViewBuilder().build());
-        mTracker.send(new HitBuilders.EventBuilder()
-                .setCategory("PoemPage")
-                .setAction(Util.last(poem.link.split("/")))
-                .build());
+        trackEvent("PoemPage", presenter.getSelectedPoemID(), null);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 
     @Override
@@ -127,45 +85,14 @@ public class PoemActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) {
             finish(); // close this activity and return to preview activity (if there is any)
         } else if (item.getItemId() == R.id.action_copy) {
-            mTracker.send(new HitBuilders.EventBuilder()
-                    .setCategory("copy")
-                    .setAction(Util.last(poem.link.split("/")))
-                    .build());
-            ClipboardManager clipboard = (ClipboardManager)
-                    getSystemService(this.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText("simple text",
-                    markdownConverter
-                            .convertPoemMarkdown(selectedPoem.content,selectedPoem.timestamp)
-                            .toString());
-            clipboard.setPrimaryClip(clip);
-            Toast toast = Toast.makeText(this, "Poem copied to clipboard", Toast.LENGTH_SHORT);
-            toast.show();
+            presenter.onActionCopy();
         } else if (item.getItemId() == R.id.action_toReddit) {
-            mTracker.send(new HitBuilders.EventBuilder()
-                    .setCategory("toReddit")
-                    .setAction(Util.last(poem.link.split("/")))
-                    .build());
-            startActivity(new Intent(Intent.ACTION_VIEW).setData(
-                    Uri.parse(poem.link + "?context=100")));
+            presenter.onActionToReddit();
         } else if (item.getItemId() == R.id.action_share) {
             Toast toast = Toast.makeText(this, "sharing", Toast.LENGTH_SHORT);
             toast.show();
         } else if (item.getItemId() == R.id.action_addToFavorites){
-            selectedPoem.toggleFavorite(this);
-            if (selectedPoem.favorite){
-                mTracker.send(new HitBuilders.EventBuilder()
-                        .setCategory("favorite")
-                        .setAction(Util.last(selectedPoem.link.split("/")))
-                        .build());
-                Toast toast = Toast.makeText(this, "added to favorites", Toast.LENGTH_SHORT);
-                toast.show();
-                item.setIcon(R.drawable.ic_star_full);
-            } else {
-                Toast toast = Toast.makeText(this, "removed from favorites", Toast.LENGTH_SHORT);
-                toast.show();
-                item.setIcon(R.drawable.ic_star_empty);
-            }
-            Util.update_poem_row_poem_page(selectedPoem, selectedPoemView, markdownConverter, this);
+            presenter.onActionToggleFavorite();
         }
 
         return super.onOptionsItemSelected(item);
@@ -177,7 +104,7 @@ public class PoemActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.poem_toolbar, menu);
 
         favoriteItem = menu.findItem(R.id.action_addToFavorites);
-        if (selectedPoem.favorite){
+        if (presenter.isFavorite()){
             favoriteItem.setIcon(R.drawable.ic_star_full);
         }
 
@@ -187,9 +114,90 @@ public class PoemActivity extends AppCompatActivity {
                 (ShareActionProvider) MenuItemCompat.getActionProvider(item);
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, markdownConverter
-                .convertPoemMarkdown(selectedPoem.content, selectedPoem.timestamp));
+        shareIntent.putExtra(Intent.EXTRA_TEXT, presenter.getPoemContent());
         mShareActionProvider.setShareIntent(shareIntent);
         return true;
+    }
+
+    public void displayPost(CharSequence title, CharSequence author, CharSequence content) {
+        View v = LayoutInflater.from(this).inflate(R.layout.post_row, mainlist, false);
+        ((TextView) v.findViewById(R.id.title))
+                .setText(title);
+        ((TextView) v.findViewById(R.id.author)).setText(author);
+        if (content != null) {
+            ((TextView) v.findViewById(R.id.content))
+                    .setText(content);
+            ((TextView) v.findViewById(R.id.content))
+                    .setMovementMethod(LinkMovementMethod.getInstance());
+            v.findViewById(R.id.content).setVisibility(View.VISIBLE);
+        }
+        mainlist.addView(v);
+    }
+
+    public void displayParentPoem(Poem poem, boolean is_selected) {
+        View v = LayoutInflater.from(this).inflate(R.layout.poem_row, mainlist, false);
+        ((TextView) v.findViewById(R.id.content))
+                .setMovementMethod(LinkMovementMethod.getInstance());
+        PoemRow.update_poem_row_poem_page(poem, v, this);
+        mainlist.addView(v);
+        if (is_selected){
+            selectedPoemView = v;
+        }
+    }
+
+    public void displayParentComment(CharSequence content, CharSequence author) {
+        View v = LayoutInflater.from(this)
+                .inflate(R.layout.parents_list_row, mainlist, false);
+        ((TextView) v.findViewById(R.id.content))
+                .setText(content);
+        ((TextView) v.findViewById(R.id.content))
+                .setMovementMethod(LinkMovementMethod.getInstance());
+        ((TextView) v.findViewById(R.id.author)).setText(author);
+    }
+
+    public void displayMainPoem(Poem poem, boolean is_selected) {
+        View v = LayoutInflater.from(this).inflate(R.layout.poem_row, mainlist, false);
+        ((TextView) v.findViewById(R.id.content))
+                .setMovementMethod(LinkMovementMethod.getInstance());
+        PoemRow.update_poem_row_poem_page(poem, v,  this);
+        mainlist.addView(v);
+        if (is_selected) {
+            selectedPoemView = v;
+        }
+    }
+
+    public void copyToClipboard(String text) {
+        ClipboardManager clipboard = (ClipboardManager)
+                getSystemService(this.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("simple text", text);
+        clipboard.setPrimaryClip(clip);
+        Toast toast = Toast.makeText(this, "Poem copied to clipboard", Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    public void openLink(String link) {
+        startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(link)));
+    }
+
+    public void addedFavorite(Poem selectedPoem) {
+        Toast toast = Toast.makeText(this, "added to favorites", Toast.LENGTH_SHORT);
+        toast.show();
+        favoriteItem.setIcon(R.drawable.ic_star_full);
+        PoemRow.update_poem_row_poem_page(selectedPoem, selectedPoemView, this);
+    }
+
+    public void removedFavorite(Poem selectedPoem) {
+        Toast toast = Toast.makeText(this, "removed from favorites", Toast.LENGTH_SHORT);
+        toast.show();
+        favoriteItem.setIcon(R.drawable.ic_star_empty);
+        PoemRow.update_poem_row_poem_page(selectedPoem, selectedPoemView, this);
+    }
+
+    public void trackEvent(String category, String action, String label){
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory(category)
+                .setAction(action)
+                .setLabel(label)
+                .build());
     }
 }
