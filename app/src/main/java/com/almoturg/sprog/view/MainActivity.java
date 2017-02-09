@@ -2,6 +2,7 @@ package com.almoturg.sprog.view;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -246,6 +247,8 @@ public class MainActivity extends AppCompatActivity {
             item.setChecked(!item.isChecked());
             presenter.optionNotifyNew(item.isChecked());
             trackEvent("notificationOption", item.isChecked() ? "yes" : "no", null);
+        } else if (id == R.id.action_stats) {
+            presenter.optionStats();
         }
 
         return super.onOptionsItemSelected(item);
@@ -321,5 +324,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void setPoemsLoaded(){
         statusView.setText("poems\nloaded");
+    }
+
+    public void launchStats() {
+        Intent intent = new Intent(this, StatsActivity.class);
+        this.startActivity(intent);
     }
 }

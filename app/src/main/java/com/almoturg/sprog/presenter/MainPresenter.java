@@ -275,6 +275,11 @@ public class MainPresenter {
         preferences.setDisplayedNotificationDialog(1);
     }
 
+    public void optionStats() {
+        activity.trackEvent("openStats", null, null);
+        activity.launchStats();
+    }
+
     public void toggleSearch() {
         if (!show_search_bar && !processing) {
             show_search_bar = true;

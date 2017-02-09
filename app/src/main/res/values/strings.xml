@@ -6,4 +6,5 @@
         <item>Score</item>
         <item>Gold</item>
     </string-array>
+    <string name="title_activity_stats">Statistics</string>
 </resources>

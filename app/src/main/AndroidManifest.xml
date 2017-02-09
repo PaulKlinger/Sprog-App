@@ -29,12 +29,12 @@
             android:name="com.google.android.gms.analytics.AnalyticsService"
             android:enabled="true"
             android:exported="false" />
-        <service
-            android:name=".data.MessagingService">
+        <service android:name=".data.MessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <activity android:name=".view.MainActivity" />
         <activity android:name=".view.PoemActivity" />
         <activity
@@ -45,6 +45,15 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.StatsActivity"
+            android:label="@string/title_activity_stats"
+            android:parentActivityName=".view.MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.almoturg.sprog.view.MainActivity" />
         </activity>
     </application>
 

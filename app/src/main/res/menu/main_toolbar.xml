@@ -11,7 +11,7 @@
         app:showAsAction="never"/>-->
     <item
         android:id="@+id/action_mark_read"
-        android:orderInCategory="200"
+        android:orderInCategory="100"
         android:title="gray out read poems"
         android:checkable="true"
         app:showAsAction="never"/>
@@ -25,5 +25,10 @@
         android:orderInCategory="300"
         android:title="new poem notifications"
         android:checkable="true"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_stats"
+        android:orderInCategory="400"
+        android:title="statistics"
         app:showAsAction="never"/>
 </menu>
