@@ -69,7 +69,7 @@ public class PoemRow {
             poem_row.findViewById(R.id.author).setVisibility(View.VISIBLE);
         }
         ((TextView) poem_row.findViewById(R.id.gold_count))
-                .setText(" × " + Long.toString(poem.gold));
+                .setText(" \u00D7 " + Long.toString(poem.gold));
         if (poem.gold > 0) {
             poem_row.findViewById(R.id.gold_display).setVisibility(View.VISIBLE);
         } else {

@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setStatusNumPoems(int numPoems){
-        statusView.setText(String.format("× %d", numPoems));
+        statusView.setText(String.format("\u00D7 %d", numPoems));
     }
 
     @Override
