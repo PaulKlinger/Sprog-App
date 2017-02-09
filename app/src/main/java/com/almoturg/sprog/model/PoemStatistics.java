@@ -9,10 +9,13 @@ public class PoemStatistics {
 
     public long num;
     public long total_words;
+    public double avg_words;
+
     public long total_score;
     public double avg_score;
     public double med_score;
-    public double total_gold;
+
+    public long total_gold;
 
     public long total_timmy;
     public long total_timmy_fucking_died;
@@ -22,9 +25,12 @@ public class PoemStatistics {
 
         total_words = Stream.of(poems).map(p -> p.content.split("\\s+"))
                 .flatMap(s -> Stream.of(s)).count();
+        avg_words = ((double) total_words) / num;
+
         total_score = Stream.of(poems).mapToLong(p -> p.score).sum();
         avg_score = ((double) total_score) / num;
         med_score = median(Stream.of(poems).mapToDouble(p -> p.score).toArray());
+
         total_gold = Stream.of(poems).mapToLong(p -> p.gold).sum();
         total_timmy = Stream.of(poems).filter(p -> p.content.toLowerCase()
                 .contains("timmy")).count();

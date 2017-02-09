@@ -7,4 +7,14 @@
         <item>Gold</item>
     </string-array>
     <string name="title_activity_stats">Statistics</string>
+
+    <string name="statistics_list"><![CDATA[ &#8226; Average words: %1$.1f<br/>
+    &#8226; Total words: %2$,d<br/>
+    &#8226; Total gold: %3$,d<br/>
+    &#8226; Median score: %4$.0f<br/>
+    &#8226; Total score: %5$,d<br/>
+    &#8226; Timmy poems: %6$,d<br/>
+    &#8226; Dead Timmies: %7$,d<br/>
+    ]]>
+    </string>
 </resources>

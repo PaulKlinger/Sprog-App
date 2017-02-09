@@ -26,6 +26,7 @@
         <!-- color of the menu overflow icon -->
         <item name="android:textColorSecondary">@color/colorToolbarIcon</item>
         <item name="actionButtonStyle">@style/ActionButtonStyle</item>
+        <item name="titleTextColor">@color/colorToolbarIcon</item>
     </style>
 
     <style name="ActionButtonStyle" parent="@style/Widget.AppCompat.ActionButton">
