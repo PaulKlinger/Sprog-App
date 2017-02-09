@@ -21,7 +21,7 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 import java.util.Calendar;
 import java.util.Locale;
 
-import static com.almoturg.sprog.SprogApplication.filtered_poems;
+import static com.almoturg.sprog.model.Poems.filtered_poems;
 
 
 public class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.ViewHolder>

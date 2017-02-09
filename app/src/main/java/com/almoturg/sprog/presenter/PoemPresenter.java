@@ -7,7 +7,7 @@ import com.almoturg.sprog.view.PoemActivity;
 import com.almoturg.sprog.model.SprogDbHelper;
 import com.almoturg.sprog.util.Util;
 
-import static com.almoturg.sprog.SprogApplication.filtered_poems;
+import static com.almoturg.sprog.model.Poems.filtered_poems;
 
 public class PoemPresenter {
     private SprogDbHelper dbHelper;

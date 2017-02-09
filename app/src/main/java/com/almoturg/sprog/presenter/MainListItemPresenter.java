@@ -3,7 +3,7 @@ package com.almoturg.sprog.presenter;
 import com.almoturg.sprog.model.Poem;
 import com.almoturg.sprog.view.PoemsListAdapter;
 
-import static com.almoturg.sprog.SprogApplication.filtered_poems;
+import static com.almoturg.sprog.model.Poems.filtered_poems;
 
 public class MainListItemPresenter {
     private Poem poem;

@@ -3,6 +3,7 @@ package com.almoturg.sprog.presenter;
 import com.almoturg.sprog.data.MarkdownConverter;
 import com.almoturg.sprog.data.UpdateHelpers;
 import com.almoturg.sprog.model.Poem;
+import com.almoturg.sprog.model.Poems;
 import com.almoturg.sprog.model.PreferencesRepository;
 import com.almoturg.sprog.view.MainActivity;
 import com.almoturg.sprog.data.PoemsFileParser;
@@ -11,13 +12,11 @@ import com.almoturg.sprog.model.SprogDbHelper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.TimeZone;
 
-import static com.almoturg.sprog.SprogApplication.filtered_poems;
-import static com.almoturg.sprog.SprogApplication.poems;
+import static com.almoturg.sprog.model.Poems.filtered_poems;
+import static com.almoturg.sprog.model.Poems.poems;
 
 public class MainPresenter {
     private MainActivity activity;
@@ -153,28 +152,7 @@ public class MainPresenter {
         // sortPoems is automatically called when the spinner is created, poems might not be loaded yet
         if (poems.size() == 0) return;
 
-        if (sort_order.equals("Date")) {
-            Collections.sort(poems, new Comparator<Poem>() {
-                @Override
-                public int compare(Poem p1, Poem p2) {
-                    return (int) (p2.timestamp - p1.timestamp);
-                }
-            });
-        } else if (sort_order.equals("Score")) {
-            Collections.sort(poems, new Comparator<Poem>() {
-                @Override
-                public int compare(Poem p1, Poem p2) {
-                    return (p2.score - p1.score);
-                }
-            });
-        } else if (sort_order.equals("Gold")) {
-            Collections.sort(poems, new Comparator<Poem>() {
-                @Override
-                public int compare(Poem p1, Poem p2) {
-                    return (p2.gold - p1.gold);
-                }
-            });
-        }
+        Poems.sort(sort_order);
         activity.searchPoems();
         activity.scrollToTop();
     }
@@ -194,14 +172,7 @@ public class MainPresenter {
         }
         last_search_string = search_string;
 
-        filtered_poems = new ArrayList<>();
-        for (Poem p : poems) {
-            String content = p.content.toLowerCase();
-            if (content.contains(search_string) &&
-                    (!show_only_favorites || p.favorite)) {
-                filtered_poems.add(p);
-            }
-        }
+        Poems.filter(search_string, show_only_favorites);
         activity.setStatusNumPoems(filtered_poems.size());
         activity.adapterDatasetChanged();
     }
@@ -226,8 +197,7 @@ public class MainPresenter {
     }
 
     private void addPoems(List<Poem> new_poems) {
-        poems.addAll(new_poems);
-        filtered_poems.addAll(new_poems);
+        Poems.add(new_poems);
         activity.setStatusNumPoems(poems.size());
         activity.adapterItemRangeInserted(filtered_poems.size(), new_poems.size());
     }
