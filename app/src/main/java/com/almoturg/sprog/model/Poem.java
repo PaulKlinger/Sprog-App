@@ -9,6 +9,7 @@ public class Poem {
     public String content;
     public CharSequence first_line;
     public double timestamp;
+    public long timestamp_long;
     public String post_title;
     public String post_author;
     public String post_content;
@@ -26,6 +27,7 @@ public class Poem {
         this.gold = gold;
         this.score = score;
         this.timestamp = timestamp;
+        this.timestamp_long = (long) timestamp * 1000;
         this.post_title = post_title;
         this.post_author = post_author;
         this.post_content = post_content;

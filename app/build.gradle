@@ -33,6 +33,7 @@ dependencies {
     compile project(':bypass')
     compile project(':recyclerview-fastscroll')
     compile 'com.annimon:stream:1.1.5'
+    compile "com.androidplot:androidplot-core:1.4.1"
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'

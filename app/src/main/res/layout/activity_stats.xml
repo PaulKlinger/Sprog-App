@@ -18,7 +18,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/statsText"
+        android:textSize="15sp"
+        android:lineSpacingMultiplier="1.1"
         android:padding="10dp"/>
+
+    <com.androidplot.xy.XYPlot
+        android:layout_width="match_parent"
+        android:layout_height="200dip"
+        android:id="@+id/graph" />
 
 
 </LinearLayout>
