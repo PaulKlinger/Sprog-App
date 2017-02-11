@@ -298,12 +298,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void showCancelButtonDelayed(int delay_ms){
         final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (viewFlipper.getDisplayedChild() == VIEWFLIPPER_UPDATING) {
-                    findViewById(R.id.action_cancelUpdate).setVisibility(View.VISIBLE);}
-            }
+        handler.postDelayed(() -> {
+            if (viewFlipper.getDisplayedChild() == VIEWFLIPPER_UPDATING) {
+                findViewById(R.id.action_cancelUpdate).setVisibility(View.VISIBLE);}
         }, delay_ms);
     }
 

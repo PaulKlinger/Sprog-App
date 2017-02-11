@@ -11,7 +11,6 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 public class NotifyDialog extends DialogFragment {
-
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState){
         final SprogApplication application = ((SprogApplication) getActivity().getApplication());
@@ -21,7 +20,6 @@ public class NotifyDialog extends DialogFragment {
                 .setTitle("New Poem Notifications");
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                FirebaseMessaging.getInstance().subscribeToTopic("PoemUpdates");
                 application.getPreferences().setNotifyNew(true);
                 getActivity().invalidateOptionsMenu();
                 application.getDefaultTracker().send(new HitBuilders.EventBuilder()
@@ -32,7 +30,6 @@ public class NotifyDialog extends DialogFragment {
         });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                FirebaseMessaging.getInstance().unsubscribeFromTopic("PoemUpdates");
                 application.getPreferences().setNotifyNew(false);
                 getActivity().invalidateOptionsMenu();
                 application.getDefaultTracker().send(new HitBuilders.EventBuilder()
