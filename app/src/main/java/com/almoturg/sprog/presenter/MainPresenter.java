@@ -230,7 +230,7 @@ public class MainPresenter {
         activity.adapterDatasetChanged();
     }
 
-    public void optionResetRead() {
+    public void clearReadPoems() {
         new_read_poems.clear();
         dbhelper.clearReadPoems();
         for (Poem p : poems) {
@@ -298,6 +298,18 @@ public class MainPresenter {
     public void downloadComplete() {
         processPoems();
         activity.setPoemsLoaded();
+    }
+
+    public void notifyDialogYes() {
+        preferences.setNotifyNew(true);
+        activity.invalidateOptionsMenu();
+        activity.trackEvent("notificationDialog", "yes", null);
+    }
+
+    public void notifyDialogNo() {
+        preferences.setNotifyNew(false);
+        activity.invalidateOptionsMenu();
+        activity.trackEvent("notificationDialog", "no", null);
     }
 
     public void addNewReadPoem(Poem poem){

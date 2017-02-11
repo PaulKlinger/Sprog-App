@@ -7,8 +7,10 @@ import android.support.v7.app.AlertDialog;
 
 import com.almoturg.sprog.presenter.MainPresenter;
 
-public class NotifyDialog extends DialogFragment {
+
+public class ConfirmClearReadDialog extends DialogFragment {
     MainPresenter presenter;
+
     public void setPresenter(MainPresenter presenter) {
         this.presenter = presenter;
     }
@@ -16,11 +18,11 @@ public class NotifyDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("Do you want to receive a notification when new poems are available?" +
-                "\nThis can be changed later in the overflow menu in the top right.")
-                .setTitle("New Poem Notifications");
-        builder.setPositiveButton("Yes", (dialog, id) -> presenter.notifyDialogYes());
-        builder.setNegativeButton("No", (dialog, id) -> presenter.notifyDialogNo());
+        builder.setMessage("Do you really want to set all poems to unread?\n" +
+                "This can't be undone.")
+                .setTitle("");
+        builder.setPositiveButton("Yes", (dialog, id) -> presenter.clearReadPoems());
+        builder.setNegativeButton("No", (dialog, id) -> {});
 
         return builder.create();
     }

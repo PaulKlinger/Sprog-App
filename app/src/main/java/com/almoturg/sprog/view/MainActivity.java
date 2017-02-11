@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
             item.setChecked(!item.isChecked());
             presenter.optionMarkRead(item.isChecked());
         } else if (id == R.id.action_reset_read) {
-            presenter.optionResetRead();
+            showConfirmClearReadDialog();
         } else if (id == R.id.action_notify_new) {
             item.setChecked(!item.isChecked());
             presenter.optionNotifyNew(item.isChecked());
@@ -283,6 +283,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void showNotifyDialog(){
         NotifyDialog notifyDialog = new NotifyDialog();
+        notifyDialog.setPresenter(presenter);
+        FragmentManager fm = this.getSupportFragmentManager();
+        notifyDialog.show(fm, "DIALOG_NOTIFY");
+    }
+
+    public void showConfirmClearReadDialog(){
+        ConfirmClearReadDialog notifyDialog = new ConfirmClearReadDialog();
+        notifyDialog.setPresenter(presenter);
         FragmentManager fm = this.getSupportFragmentManager();
         notifyDialog.show(fm, "DIALOG_NOTIFY");
     }
