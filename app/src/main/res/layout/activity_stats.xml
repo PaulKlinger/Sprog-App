@@ -1,31 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_height="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ap="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeToolbar" />
+
+    <android.widget.ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:theme="@style/ThemeToolbar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <TextView
-        android:text="TextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/statsText"
-        android:textSize="15sp"
-        android:lineSpacingMultiplier="1.1"
-        android:padding="10dp"/>
+            <TextView
+                android:id="@+id/statsText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingMultiplier="1.1"
+                android:padding="10dp"
+                android:text="TextView"
+                android:textColor="@color/colorTextDark"
+                android:textSize="15sp" />
 
-    <com.androidplot.xy.XYPlot
-        android:layout_width="match_parent"
-        android:layout_height="200dip"
-        android:id="@+id/graph" />
+            <com.androidplot.xy.XYPlot
+                android:id="@+id/monthsNPlot"
+                style="@style/GraphStyle"
+                android:layout_width="match_parent"
+                android:layout_height="300dip"
+                android:background="@color/ap_transparent"
+                ap:borderColor="@color/ap_transparent"
+                ap:lineLabels="bottom"
+                ap:title="poems / month" />
 
-
+            <com.androidplot.xy.XYPlot
+                android:id="@+id/avgScorePlot"
+                style="@style/GraphStyle"
+                android:layout_width="match_parent"
+                android:layout_height="300dip"
+                android:background="@color/ap_transparent"
+                ap:borderColor="@color/ap_transparent"
+                ap:title="avg score / poem" />
+        </LinearLayout>
+    </android.widget.ScrollView>
 </LinearLayout>

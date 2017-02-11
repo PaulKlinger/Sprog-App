@@ -1,12 +1,12 @@
 package com.almoturg.sprog.model;
 
-import android.util.Log;
-
 import com.annimon.stream.Stream;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TimeZone;
@@ -27,7 +27,7 @@ public class PoemStatistics {
     public long total_timmy;
     public long total_timmy_fucking_died;
 
-    public PoemStatistics(List<Poem> poems){
+    public PoemStatistics(List<Poem> poems) {
         this.poems = poems;
 
         num = poems.size();
@@ -69,6 +69,33 @@ public class PoemStatistics {
         return monthNPoems;
     }
 
+    public LinkedHashMap<Integer, Double> getMonthAvgScore() {
+        Calendar date = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"));
+        date.setTimeInMillis(getFirstTimestamp());
+        Calendar now = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"));
+        LinkedHashMap<Integer, Double> monthsAvgScore = new LinkedHashMap<>();
+        HashMap<Integer, List<Poem>> monthsPoems = new HashMap<>();
+
+        do {
+            monthsAvgScore.put(totalMonths(date), 0d);
+            monthsPoems.put(totalMonths(date), new ArrayList<>());
+            date.add(Calendar.MONTH, 1);
+        } while (date.get(Calendar.YEAR) < now.get(Calendar.YEAR) ||
+                date.get(Calendar.MONTH) <= now.get(Calendar.MONTH));
+
+        int pkey;
+        for (Poem p : poems) {
+            date.setTimeInMillis(p.timestamp_long);
+            pkey = totalMonths(date);
+            monthsPoems.get(pkey).add(p);
+        }
+        for (int key : monthsPoems.keySet()) {
+            monthsAvgScore.put(key, Stream.of(monthsPoems.get(key))
+                    .mapToDouble(p -> p.score).sum() / monthsPoems.get(key).size());
+        }
+        return monthsAvgScore;
+    }
+
     private static int totalMonths(Calendar cal) {
         return cal.get(Calendar.YEAR) * 12 + cal.get(Calendar.MONTH);
     }
@@ -78,15 +105,15 @@ public class PoemStatistics {
             return 0;
         }
         Arrays.sort(m);
-        int middle = m.length/2;
-        if (m.length%2 == 1) {
+        int middle = m.length / 2;
+        if (m.length % 2 == 1) {
             return m[middle];
         } else {
-            return (m[middle-1] + m[middle]) / 2.0;
+            return (m[middle - 1] + m[middle]) / 2.0;
         }
     }
 
-    private long getFirstTimestamp(){
+    private long getFirstTimestamp() {
         return (long) (Stream.of(poems).mapToDouble(p -> p.timestamp).min().orElse(-1) * 1000);
     }
 }

@@ -19,10 +19,11 @@ public class StatsPresenter {
     public void attachView(StatsActivity activity) {
         this.activity = activity;
         activity.displayStats(stats);
-        initGraph();
+        initMonthsNPlot();
+        initAvgScorePlot();
     }
 
-    private void initGraph(){
+    private void initMonthsNPlot() {
         LinkedHashMap<Integer, Integer> monthsNPoems = stats.getMonthNPoems();
         ArrayList<Number> xs = new ArrayList<>();
         ArrayList<Number> ys = new ArrayList<>();
@@ -30,6 +31,17 @@ public class StatsPresenter {
             xs.add(key);
             ys.add(monthsNPoems.get(key));
         }
-        activity.addGraphData(xs, ys);
+        activity.addMonthsPlotData(xs, ys);
+    }
+
+    private void initAvgScorePlot() {
+        LinkedHashMap<Integer, Double> monthsNPoems = stats.getMonthAvgScore();
+        ArrayList<Number> xs = new ArrayList<>();
+        ArrayList<Number> ys = new ArrayList<>();
+        for (int key : monthsNPoems.keySet()) {
+            xs.add(key);
+            ys.add(monthsNPoems.get(key));
+        }
+        activity.addAvgScorePlotData(xs, ys);
     }
 }

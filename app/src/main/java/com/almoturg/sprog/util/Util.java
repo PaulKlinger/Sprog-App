@@ -1,5 +1,7 @@
 package com.almoturg.sprog.util;
 
+import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.text.Html;
 import android.text.Spanned;
@@ -18,5 +20,10 @@ public final class Util {
         } else {
             return Html.fromHtml(source);
         }
+    }
+
+    public static int getDisplayWidthDp(Context context) {
+        Configuration configuration = context.getResources().getConfiguration();
+        return configuration.screenWidthDp;
     }
 }
