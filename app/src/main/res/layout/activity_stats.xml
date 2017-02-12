@@ -50,7 +50,7 @@
                 android:layout_height="300dip"
                 android:background="@color/ap_transparent"
                 ap:borderColor="@color/ap_transparent"
-                ap:title="avg. score / poem" />
+                ap:title="avg. score / month" />
         </LinearLayout>
     </com.almoturg.sprog.view.VerticalScrollView>
 </LinearLayout>
