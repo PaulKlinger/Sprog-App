@@ -9,6 +9,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.TimeZone;
 
 public class PoemStatistics {
@@ -33,7 +34,10 @@ public class PoemStatistics {
         num = poems.size();
 
         for (Poem p : poems) {
-            total_words += p.content.split("\\s+").length;
+            // use StringTokenizer for performance reasons
+            // String.split is far slower, even with compiled pattern
+            StringTokenizer st = new StringTokenizer(p.content);
+            total_words += st.countTokens();
             total_score += p.score;
             total_gold += p.gold;
             if (p.content.toLowerCase().contains("timmy")) {
