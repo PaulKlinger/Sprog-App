@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.almoturg.sprog.R;
@@ -77,7 +78,7 @@ public class MessagingService extends FirebaseMessagingService {
                 .setSmallIcon(R.drawable.ic_stat_fleuronwhite)
                 .setContentTitle(notification_title)
                 .setContentText("Tap to view.")
-                .setColor(getColor(R.color.colorLauncherIcon))
+                .setColor(ContextCompat.getColor(this, R.color.colorLauncherIcon))
                 .setAutoCancel(true)
                 .setLights(Color.GREEN, 400, 3000);
         Intent mainIntent = new Intent(this, MainActivity.class);
