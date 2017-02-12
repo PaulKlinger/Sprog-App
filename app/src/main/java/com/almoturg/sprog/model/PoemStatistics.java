@@ -32,20 +32,22 @@ public class PoemStatistics {
 
         num = poems.size();
 
-        total_words = Stream.of(poems).map(p -> p.content.split("\\s+"))
-                .flatMap(s -> Stream.of(s)).count();
+        for (Poem p : poems) {
+            total_words += p.content.split("\\s+").length;
+            total_score += p.score;
+            total_gold += p.gold;
+            if (p.content.toLowerCase().contains("timmy")) {
+                total_timmy++;
+            }
+            if (p.content.toLowerCase().contains("timmy fucking died")) {
+                total_timmy_fucking_died++;
+            }
+        }
+
         avg_words = ((double) total_words) / num;
 
-        total_score = Stream.of(poems).mapToLong(p -> p.score).sum();
         avg_score = ((double) total_score) / num;
         med_score = median(Stream.of(poems).mapToDouble(p -> p.score).toArray());
-
-        total_gold = Stream.of(poems).mapToLong(p -> p.gold).sum();
-        total_timmy = Stream.of(poems).filter(p -> p.content.toLowerCase()
-                .contains("timmy")).count();
-        total_timmy_fucking_died = Stream.of(poems).filter(p -> p.content.toLowerCase()
-                .contains("timmy fucking died")).count();
-
     }
 
     public LinkedHashMap<Integer, Integer> getMonthNPoems() {
