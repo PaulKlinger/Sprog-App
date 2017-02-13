@@ -50,6 +50,9 @@ public class MainPresenter {
 
     public void attachView(MainActivity activity) {
         this.activity = activity;
+
+        activity.setSortOrder(sort_order);
+
         if (updating) {
             activity.showUpdating();
         }
@@ -68,7 +71,7 @@ public class MainPresenter {
         this.activity = null;
     }
 
-    public void onStart() {
+    public void onResume() {
         // A dialog asking whether to enable new poem notifications is shown
         // the second time MainActivity is started.
         if (timeToShowNotifyDialog()) {

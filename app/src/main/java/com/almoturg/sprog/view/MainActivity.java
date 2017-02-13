@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     public ViewFlipper viewFlipper;
     private View search_box;
     private EditText search_text;
+    private Spinner sortSpinner;
+    private ArrayAdapter<CharSequence> spinnerAdapter;
 
     private Tracker mTracker;
 
@@ -83,11 +85,11 @@ public class MainActivity extends AppCompatActivity {
         search_box = findViewById(R.id.search_box);
         search_text = (EditText) findViewById(R.id.search_text);
 
-        final Spinner sortSpinner = (Spinner) findViewById(R.id.sort_spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+        sortSpinner = (Spinner) findViewById(R.id.sort_spinner);
+        spinnerAdapter = ArrayAdapter.createFromResource(this,
                 R.array.sort_orders, R.layout.spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sortSpinner.setAdapter(adapter);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sortSpinner.setAdapter(spinnerAdapter);
 
         sortSpinner.post(new Runnable() {
             public void run() {
@@ -128,8 +130,6 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         FirebaseMessaging.getInstance().subscribeToTopic("PoemUpdates");
-
-        presenter.attachView(this);
     }
 
     @Override
@@ -142,18 +142,19 @@ public class MainActivity extends AppCompatActivity {
             mAdapter = new PoemsListAdapter(this, presenter, preferences);
             mRecyclerView.setAdapter(mAdapter);
         }
-        presenter.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.attachView(this);
+        presenter.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         presenter.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
         presenter.detachView();
     }
 
@@ -334,5 +335,9 @@ public class MainActivity extends AppCompatActivity {
     public void launchStats() {
         Intent intent = new Intent(this, StatsActivity.class);
         this.startActivity(intent);
+    }
+
+    public void setSortOrder(String sort_order) {
+        sortSpinner.setSelection(spinnerAdapter.getPosition(sort_order));
     }
 }
