@@ -246,7 +246,7 @@ public class MainPresenter {
     }
 
     public void optionStats() {
-        activity.trackEvent("openStats", null, null);
+        activity.trackEvent("openStats", "", null);
         activity.launchStats();
     }
 
