@@ -151,6 +151,7 @@ public class PoemActivity extends AppCompatActivity {
         ((TextView) v.findViewById(R.id.content))
                 .setMovementMethod(LinkMovementMethod.getInstance());
         ((TextView) v.findViewById(R.id.author)).setText(author);
+        mainlist.addView(v);
     }
 
     public void displayMainPoem(Poem poem, boolean is_selected) {
