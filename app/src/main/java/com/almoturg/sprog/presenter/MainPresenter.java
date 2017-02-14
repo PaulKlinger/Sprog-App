@@ -145,7 +145,7 @@ public class MainPresenter {
     }
 
     public void changeSortOrder(String new_order) {
-        if (!processing) {
+        if (!processing && activity != null) {
             sort_order = new_order;
             sortPoems();
         }
@@ -161,7 +161,7 @@ public class MainPresenter {
     }
 
     public void searchPoems(String search_string) {
-        if (updating) {
+        if (updating || activity == null) {
             return;
         }
 
