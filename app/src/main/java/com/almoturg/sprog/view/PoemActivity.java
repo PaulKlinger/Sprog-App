@@ -199,4 +199,12 @@ public class PoemActivity extends AppCompatActivity {
                 .setLabel(label)
                 .build());
     }
+
+    public void openMainActivityAndClearBack() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+    }
 }

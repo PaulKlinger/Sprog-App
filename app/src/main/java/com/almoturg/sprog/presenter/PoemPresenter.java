@@ -26,7 +26,13 @@ public class PoemPresenter {
 
     public void attachView(PoemActivity activity, int poem_id) {
         this.activity = activity;
+        if (poem_id >= filtered_poems.size()) {
+            // Go back to main activity if the app was cleared from memory
+            // (It might make sense to go back to the poem page after loading poems?)
+            activity.openMainActivityAndClearBack();
+        }
         selectedPoem = filtered_poems.get(poem_id);
+
         if (selectedPoem.main_poem != null) { // This poem is in the parents of another one
             mainPoem = selectedPoem.main_poem;
         } else {
