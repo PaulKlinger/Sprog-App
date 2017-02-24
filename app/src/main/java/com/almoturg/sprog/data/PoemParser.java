@@ -62,6 +62,7 @@ class PoemParser {
         String post_title = null;
         String post_author = null;
         String post_content = null;
+        String post_url = null;
         List<ParentComment> parents = null;
         String link = null;
         Poem main_poem = null;
@@ -71,7 +72,11 @@ class PoemParser {
         reader.beginObject();
         while (reader.hasNext()) {
             String name = reader.nextName();
-
+            JsonToken check = reader.peek();
+            if (check == JsonToken.NULL) {
+                reader.skipValue();
+                continue;
+            }
             switch (name) {
                 case "gold":
                     gold = reader.nextInt();
@@ -91,6 +96,9 @@ class PoemParser {
                     break;
                 case "submission_title":
                     post_title = reader.nextString();
+                    break;
+                case "submission_url":
+                    post_url = reader.nextString();
                     break;
                 case "submission_user":
                     post_author = formatUsername(reader.nextString());
@@ -122,7 +130,7 @@ class PoemParser {
         }
 
         Poem poem = new Poem(gold, score, content, first_line, timestamp,
-                post_title, post_author, post_content,
+                post_title, post_author, post_content, post_url,
                 parents, link, main_poem, read, favorite);
 
         if (main_poem == null) {

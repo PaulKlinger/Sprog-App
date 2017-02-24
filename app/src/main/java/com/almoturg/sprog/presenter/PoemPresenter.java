@@ -44,7 +44,7 @@ public class PoemPresenter {
         }
 
         activity.displayPost(markdownConverter.convertMarkdown(mainPoem.post_title),
-                mainPoem.post_author, postContent);
+                mainPoem.post_author, postContent, mainPoem.post_url);
 
         showParents();
 

@@ -13,6 +13,7 @@ public class Poem {
     public String post_title;
     public String post_author;
     public String post_content;
+    public String post_url;
     public List<ParentComment> parents;
     public String link;
     public Poem main_poem;
@@ -20,7 +21,7 @@ public class Poem {
     public boolean favorite;
 
     public Poem(int gold, int score, String content, CharSequence first_line, double timestamp,
-                String post_title, String post_author, String post_content,
+                String post_title, String post_author, String post_content, String post_url,
                 List<ParentComment> parents, String link, Poem main_poem,
                 boolean is_read, boolean is_favorite) {
         this.content = content;
@@ -31,6 +32,7 @@ public class Poem {
         this.post_title = post_title;
         this.post_author = post_author;
         this.post_content = post_content;
+        this.post_url = post_url;
         this.parents = parents;
         this.link = link;
         this.main_poem = main_poem;

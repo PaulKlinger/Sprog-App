@@ -26,4 +26,8 @@ public final class Util {
         Configuration configuration = context.getResources().getConfiguration();
         return configuration.screenWidthDp;
     }
+
+    public static Spanned linkToSpan(String link) {
+        return fromHtml(String.format("<a href=\"%s\">%s</a>", link, link));
+    }
 }

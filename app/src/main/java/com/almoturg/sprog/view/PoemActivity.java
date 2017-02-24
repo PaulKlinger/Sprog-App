@@ -24,6 +24,7 @@ import com.almoturg.sprog.SprogApplication;
 import com.almoturg.sprog.data.MarkdownConverter;
 import com.almoturg.sprog.presenter.PoemPresenter;
 import com.almoturg.sprog.model.Poem;
+import com.almoturg.sprog.util.Util;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
@@ -117,17 +118,22 @@ public class PoemActivity extends AppCompatActivity {
         return true;
     }
 
-    public void displayPost(CharSequence title, CharSequence author, CharSequence content) {
+    public void displayPost(CharSequence title, CharSequence author, CharSequence content,
+                            String link) {
         View v = LayoutInflater.from(this).inflate(R.layout.post_row, mainlist, false);
         ((TextView) v.findViewById(R.id.title))
                 .setText(title);
         ((TextView) v.findViewById(R.id.author)).setText(author);
-        if (content != null) {
-            ((TextView) v.findViewById(R.id.content))
-                    .setText(content);
+        if (content != null || link != null) {
             ((TextView) v.findViewById(R.id.content))
                     .setMovementMethod(LinkMovementMethod.getInstance());
             v.findViewById(R.id.content).setVisibility(View.VISIBLE);
+            if (content != null) {
+                ((TextView) v.findViewById(R.id.content)).setText(content);
+            } else if (link != null) {
+                ((TextView) v.findViewById(R.id.content))
+                        .setText(Util.linkToSpan(link));
+            }
         }
         mainlist.addView(v);
     }
