@@ -78,7 +78,6 @@ public class MainPresenter {
             activity.showNotifyDialog();
         }
 
-        activity.cancelNotifications();
         boolean update = preferences.getUpdateNext();
         if (update) {
             preferences.setUpdateNext(false);
@@ -299,6 +298,7 @@ public class MainPresenter {
     }
 
     public void downloadComplete() {
+        activity.cancelNotifications();
         processPoems();
         activity.setPoemsLoaded();
     }

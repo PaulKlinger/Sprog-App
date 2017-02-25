@@ -79,7 +79,7 @@ public class MessagingService extends FirebaseMessagingService {
                 .setContentTitle(notification_title)
                 .setContentText("Tap to view.")
                 .setColor(ContextCompat.getColor(this, R.color.colorLauncherIcon))
-                .setAutoCancel(true)
+                .setAutoCancel(false)
                 .setLights(Color.GREEN, 400, 3000);
         Intent mainIntent = new Intent(this, MainActivity.class);
         mainIntent.putExtra("UPDATE", true);
