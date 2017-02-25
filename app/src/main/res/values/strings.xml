@@ -8,13 +8,15 @@
     </string-array>
     <string name="title_activity_stats">Statistics</string>
 
-    <string name="statistics_list"><![CDATA[ &#8226; Average words: %1$.1f<br/>
-    &#8226; Total words: %2$,d<br/>
-    &#8226; Total gold: %3$,d<br/>
-    &#8226; Median score: %4$.0f<br/>
-    &#8226; Total score: %5$,d<br/>
-    &#8226; Timmy poems: %6$,d<br/>
-    &#8226; Dead Timmies: %7$,d<br/>
+    <string name="statistics_list"><![CDATA[ &#8226; Number of poems: %1$,d<br/>
+    &#8226; Number of read poems: %2$,d (%3$.2f%%)<br/>
+    &#8226; Average words: %4$.1f<br/>
+    &#8226; Total words: %5$,d<br/>
+    &#8226; Total gold: %6$,d<br/>
+    &#8226; Median score: %7$.0f<br/>
+    &#8226; Total score: %8$,d<br/>
+    &#8226; Timmy poems: %9$,d<br/>
+    &#8226; Dead Timmies: %10$,d<br/>
     ]]>
     </string>
 </resources>

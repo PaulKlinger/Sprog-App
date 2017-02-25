@@ -43,6 +43,7 @@ public class StatsActivity extends AppCompatActivity {
     public void displayStats(PoemStatistics stats) {
         ((TextView) findViewById(R.id.statsText)).setText(Util.fromHtml(
                 getResources().getString(R.string.statistics_list,
+                        stats.num, stats.num_read, stats.percent_read,
                         stats.avg_words, stats.total_words, stats.total_gold, stats.med_score,
                         stats.total_score, stats.total_timmy, stats.total_timmy_fucking_died)));
     }

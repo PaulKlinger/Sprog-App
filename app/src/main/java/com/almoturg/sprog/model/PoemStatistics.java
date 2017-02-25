@@ -16,6 +16,8 @@ public class PoemStatistics {
     private List<Poem> poems;
 
     public long num;
+    public long num_read;
+    public double percent_read;
     public long total_words;
     public double avg_words;
 
@@ -46,7 +48,12 @@ public class PoemStatistics {
             if (p.content.toLowerCase().contains("timmy fucking died")) {
                 total_timmy_fucking_died++;
             }
+            if (p.read) {
+                num_read++;
+            }
         }
+
+        percent_read = (double) num_read / num * 100;
 
         avg_words = ((double) total_words) / num;
 
