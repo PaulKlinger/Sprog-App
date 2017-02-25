@@ -16,6 +16,8 @@ public class Poems {
             Collections.sort(poems, (p1, p2) -> (p2.score - p1.score));
         } else if (sort_order.equals("Gold")) {
             Collections.sort(poems, (p1, p2) -> (p2.gold - p1.gold));
+        } else if (sort_order.equals("Rnd.")) {
+            Collections.shuffle(poems);
         }
     }
 

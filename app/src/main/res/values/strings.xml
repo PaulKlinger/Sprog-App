@@ -5,6 +5,7 @@
         <item>Date</item>
         <item>Score</item>
         <item>Gold</item>
+        <item>Rnd.</item>
     </string-array>
     <string name="title_activity_stats">Statistics</string>
 
