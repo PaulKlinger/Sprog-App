@@ -205,8 +205,8 @@ public class MainPresenter {
     }
 
     private void cancelLoadingPoems() {
-        PoemsLoader.cancelAllDownloads(activity);
         updating = false;
+        PoemsLoader.cancelAllDownloads(activity);
     }
 
     private void finishedProcessing(boolean status) {
