@@ -37,4 +37,9 @@ public class Poems {
         filtered_poems.addAll(new_poems);
     }
 
+    public static void clear() {
+        poems.clear();
+        filtered_poems.clear();
+    }
+
 }

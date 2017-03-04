@@ -14,6 +14,7 @@ import java.util.List;
 
 public class PoemsFileParser {
     private Context context;
+    private ParsePoemsTask task;
 
     public interface ParsePoemsCallbackInterface {
         void addPoems(List<Poem> poems);
@@ -26,8 +27,14 @@ public class PoemsFileParser {
 
     public void parsePoems(ParsePoemsCallbackInterface callback,
                            SprogDbHelper dbHelper, MarkdownConverter markdownConverter){
-        new ParsePoemsTask(callback).execute(
-                new ParsePoemsTaskParams(context, dbHelper, markdownConverter));
+        task = new ParsePoemsTask(callback);
+        task.execute(new ParsePoemsTaskParams(context, dbHelper, markdownConverter));
+    }
+
+    public void cancelParsing() {
+        if (task != null) {
+            task.cancel(true);
+        }
     }
 
     private static class ParsePoemsTaskParams {

@@ -127,8 +127,7 @@ public class MainPresenter {
         activity.clearStatus();
         activity.disableFavorites();
 
-        poems.clear();
-        filtered_poems.clear();
+        Poems.clear();
         activity.adapterDatasetChanged();
         activity.showUpdating();
         if (UpdateHelpers.poemsFileExists(activity)) {
@@ -196,14 +195,22 @@ public class MainPresenter {
     }
 
     private void addPoems(List<Poem> new_poems) {
-        Poems.add(new_poems);
-        activity.setStatusNumPoems(poems.size());
-        activity.adapterItemRangeInserted(filtered_poems.size(), new_poems.size());
+        if (processing) { // don't add poems if processing has been cancelled
+            Poems.add(new_poems);
+            activity.setStatusNumPoems(poems.size());
+            activity.adapterItemRangeInserted(filtered_poems.size(), new_poems.size());
+        }
     }
 
     private void cancelLoadingPoems() {
         updating = false;
         PoemsLoader.cancelAllDownloads(activity);
+        if (processing) {
+            processing = false;
+            poemsFileParser.cancelParsing();
+            Poems.clear();
+            activity.adapterDatasetChanged();
+        }
     }
 
     private void finishedProcessing(boolean status) {
