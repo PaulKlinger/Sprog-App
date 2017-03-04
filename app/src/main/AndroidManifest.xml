@@ -35,8 +35,10 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".view.MainActivity" />
-        <activity android:name=".view.PoemActivity" />
+        <activity android:name=".view.MainActivity"
+            android:theme="@style/AppTheme"/>
+        <activity android:name=".view.PoemActivity"
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".view.SplashActivity"
             android:theme="@style/SplashTheme">
@@ -49,11 +51,7 @@
         <activity
             android:name=".view.StatsActivity"
             android:label="@string/title_activity_stats"
-            android:parentActivityName=".view.MainActivity"
             android:theme="@style/AppTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.almoturg.sprog.view.MainActivity" />
         </activity>
     </application>
 

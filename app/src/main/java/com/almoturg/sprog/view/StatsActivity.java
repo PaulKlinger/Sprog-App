@@ -3,6 +3,7 @@ package com.almoturg.sprog.view;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.almoturg.sprog.R;
@@ -34,6 +35,7 @@ public class StatsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         monthsNPlot = (XYPlot) findViewById(R.id.monthsNPlot);
         avgScorePlot = (XYPlot) findViewById(R.id.avgScorePlot);
 
@@ -54,5 +56,13 @@ public class StatsActivity extends AppCompatActivity {
 
     public void addAvgScorePlotData(List<Number> xs, List<Number> ys) {
         Graphs.initGraph(this, avgScorePlot, xs, ys, Graphs.LINE, 1000);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish(); // close this activity and return to preview activity (if there is any)
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
