@@ -52,6 +52,11 @@ public class PoemsLoader {
     }
 
     public static void cancelAllDownloads(Context context){
+        if (receiver != null) {
+            context.unregisterReceiver(receiver);
+            receiver = null;
+        }
+
         DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Query query = new DownloadManager.Query();
         query.setFilterByStatus(
@@ -62,10 +67,5 @@ public class PoemsLoader {
             manager.remove(cur.getLong(cur.getColumnIndex(DownloadManager.COLUMN_ID)));
         }
         cur.close();
-
-        if (receiver != null) {
-            context.unregisterReceiver(receiver);
-            receiver = null;
-        }
     }
 }
