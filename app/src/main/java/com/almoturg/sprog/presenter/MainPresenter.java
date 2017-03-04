@@ -79,9 +79,6 @@ public class MainPresenter {
         }
 
         boolean update = preferences.getUpdateNext();
-        if (update) {
-            preferences.setUpdateNext(false);
-        }
         if (filtered_poems.size() > 0) {
             activity.setStatusNumPoems(filtered_poems.size());
             activity.adapterDatasetChanged(); // to update e.g. favorite status
@@ -216,6 +213,7 @@ public class MainPresenter {
 
                 Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
                 preferences.setLastUpdateTime(now.getTimeInMillis());
+                preferences.setUpdateNext(false);
                 // Store timestamp of last poem for new poem notifications
                 // Can't store double in sharedprefs so store timestamp in milliseconds as long
                 preferences.setLastPoemTime((long) poems.get(0).timestamp * 1000);
