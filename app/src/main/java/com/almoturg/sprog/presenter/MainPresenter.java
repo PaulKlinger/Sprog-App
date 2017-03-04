@@ -292,7 +292,9 @@ public class MainPresenter {
 
     public void pressedCancelButton() {
         cancelLoadingPoems();
-        processPoems();
+        if (poems.size() == 0) {
+            processPoems();
+        }
     }
 
     public void downloadComplete() {
