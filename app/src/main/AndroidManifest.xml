@@ -36,18 +36,14 @@
         </service>
 
         <activity android:name=".view.MainActivity"
-            android:theme="@style/AppTheme"/>
-        <activity android:name=".view.PoemActivity"
-            android:theme="@style/AppTheme"/>
-        <activity
-            android:name=".view.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+            </activity>
+        <activity android:name=".view.PoemActivity"
+            android:theme="@style/AppTheme"/>
         <activity
             android:name=".view.StatsActivity"
             android:label="@string/title_activity_stats"
