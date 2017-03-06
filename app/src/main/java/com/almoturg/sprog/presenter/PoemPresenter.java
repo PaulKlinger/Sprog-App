@@ -30,6 +30,7 @@ public class PoemPresenter {
             // Go back to main activity if the app was cleared from memory
             // (It might make sense to go back to the poem page after loading poems?)
             activity.openMainActivityAndClearBack();
+            return;
         }
         selectedPoem = filtered_poems.get(poem_id);
 
