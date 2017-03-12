@@ -1,11 +1,8 @@
 package com.almoturg.sprog.data;
 
-import android.content.Context;
 import android.util.JsonReader;
 import android.util.JsonToken;
 
-import com.almoturg.sprog.SprogApplication;
-import com.almoturg.sprog.data.MarkdownConverter;
 import com.almoturg.sprog.model.ParentComment;
 import com.almoturg.sprog.model.Poem;
 import com.almoturg.sprog.model.SprogDbHelper;
@@ -17,8 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-
-import in.uncod.android.bypass.Bypass;
 
 
 class PoemParser {
