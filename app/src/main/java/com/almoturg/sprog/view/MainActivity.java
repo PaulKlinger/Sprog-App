@@ -285,7 +285,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void showNotifyDialog(){
         NotifyDialog notifyDialog = new NotifyDialog();
-        notifyDialog.setPresenter(presenter);
         FragmentManager fm = this.getSupportFragmentManager();
         notifyDialog.show(fm, "DIALOG_NOTIFY");
     }
