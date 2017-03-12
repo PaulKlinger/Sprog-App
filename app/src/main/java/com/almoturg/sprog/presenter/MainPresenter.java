@@ -67,7 +67,7 @@ public class MainPresenter {
         }
     }
 
-    public void detachView(){
+    public void detachView() {
         this.activity = null;
     }
 
@@ -203,6 +203,11 @@ public class MainPresenter {
     }
 
     private void cancelLoadingPoems() {
+        if (activity == null) {
+            // not sure how this could ever be reached but this might fix the crash by
+            // NullPointerException in PoemsLoader.cancelAllDownloads.
+            return;
+        }
         updating = false;
         PoemsLoader.cancelAllDownloads(activity);
         if (processing) {
@@ -322,24 +327,24 @@ public class MainPresenter {
         activity.trackEvent("notificationDialog", "no", null);
     }
 
-    public void addNewReadPoem(Poem poem){
+    public void addNewReadPoem(Poem poem) {
         new_read_poems.add(poem.link);
     }
 
-    public boolean poemsReady(){
+    public boolean poemsReady() {
         return !updating && !processing;
     }
 
-    public MarkdownConverter getMarkdownConverter(){
+    public MarkdownConverter getMarkdownConverter() {
         return markdownConverter;
     }
 
-    private boolean timeToShowNotifyDialog(){
+    private boolean timeToShowNotifyDialog() {
         // This checks whether it's time to show the dialog asking whether to enable
         // notifications for new poems.
         // The state is stored in the "DISPLAY_NOTIFICATION_DIALOG" pref
         // not set: never launched, 0: launched once, 1: dialog shown
-        if (preferences.getDisplayedNotificationDialog() == -1){
+        if (preferences.getDisplayedNotificationDialog() == -1) {
             preferences.setDisplayedNotificationDialog(0);
             return false;
         } else if (preferences.getDisplayedNotificationDialog() == 0) {
