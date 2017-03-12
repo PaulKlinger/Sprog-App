@@ -1,5 +1,7 @@
 package com.almoturg.sprog.presenter;
 
+import android.annotation.SuppressLint;
+
 import com.almoturg.sprog.data.MarkdownConverter;
 import com.almoturg.sprog.model.ParentComment;
 import com.almoturg.sprog.model.Poem;
@@ -110,6 +112,16 @@ public class PoemPresenter {
     }
 
     public boolean isFavorite() {
+        if (selectedPoem == null){
+            // This should never be reached because selectedPoem is set in attachView, which is
+            // called in PoemActivity.onCreate. It still happened several times though...
+            // This might have something to do with the issue mentioned here:
+            // https://github.com/JakeWharton/ActionBarSherlock/issues/459
+            // i.e. onCreateOptionsMenu is called after finish() (when we determined that the
+            // poems haven't been loaded yet and go back to MainActivity).
+            // If this is the case just returning false should fix it.
+            return false;
+        }
         return selectedPoem.favorite;
     }
 }
