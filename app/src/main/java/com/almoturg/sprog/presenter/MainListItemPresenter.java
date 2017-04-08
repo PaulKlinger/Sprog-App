@@ -35,4 +35,14 @@ public class MainListItemPresenter {
             view.startPoemActivity(filtered_poems.indexOf(poem));
         }
     }
+
+    public void onLongClick() {
+        if (mainPresenter.preferences.getLongPressLink()) {
+            if (!poem.read) {
+                poem.read = true;
+                mainPresenter.addNewReadPoem(poem);
+            }
+            view.openLink(poem.link + "?context=100");
+        }
+    }
 }

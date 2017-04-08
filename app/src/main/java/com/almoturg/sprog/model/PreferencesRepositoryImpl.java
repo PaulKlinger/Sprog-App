@@ -7,15 +7,16 @@ import android.preference.PreferenceManager;
 
 public class PreferencesRepositoryImpl implements PreferencesRepository {
 
-    public static final String PREF_NOTIFY_NEW = "NOTIFY_NEW";
-    public static final String PREF_DISPLAYED_NOTIFICATION_DIALOG = "DISPLAYED_NOTIFICATION_DIALOG";
-    public static final String PREF_MARK_READ = "PREF_MARK_READ";
-    public static final String PREF_LAST_UPDATE_TIME = "LAST_UPDATE_TIME";
-    public static final String PREF_LAST_POEM_TIME = "LAST_POEM_TIME";
-    public static final String PREF_UPDATE_NEXT = "UPDATE_NEXT";
-    public static final String PREF_LAST_FCM_TSTAMP = "LAST_FCM_TSTAMP";
+    private static final String PREF_NOTIFY_NEW = "NOTIFY_NEW";
+    private static final String PREF_LONG_PRESS = "LONG_PRESS";
+    private static final String PREF_DISPLAYED_NOTIFICATION_DIALOG = "DISPLAYED_NOTIFICATION_DIALOG";
+    private static final String PREF_MARK_READ = "PREF_MARK_READ";
+    private static final String PREF_LAST_UPDATE_TIME = "LAST_UPDATE_TIME";
+    private static final String PREF_LAST_POEM_TIME = "LAST_POEM_TIME";
+    private static final String PREF_UPDATE_NEXT = "UPDATE_NEXT";
+    private static final String PREF_LAST_FCM_TSTAMP = "LAST_FCM_TSTAMP";
 
-    public SharedPreferences prefs;
+    private SharedPreferences prefs;
 
     public PreferencesRepositoryImpl(Context context) {
         prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
@@ -48,6 +49,16 @@ public class PreferencesRepositoryImpl implements PreferencesRepository {
     @Override
     public void setNotifyNew(boolean newValue) {
         setValue(PREF_NOTIFY_NEW, newValue);
+    }
+
+    @Override
+    public boolean getLongPressLink() {
+        return prefs.getBoolean(PREF_LONG_PRESS, true);
+    }
+
+    @Override
+    public void setLongPressLink(boolean newValue) {
+        setValue(PREF_LONG_PRESS, newValue);
     }
 
     @Override

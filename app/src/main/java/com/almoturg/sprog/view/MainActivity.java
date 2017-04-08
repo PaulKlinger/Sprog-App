@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         FirebaseMessaging.getInstance().subscribeToTopic("PoemUpdates");
+        //FirebaseMessaging.getInstance().subscribeToTopic("testPoemUpdates");
     }
 
     @Override
@@ -229,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main_toolbar, menu);
         menu.findItem(R.id.action_mark_read).setChecked(preferences.getMarkRead());
         menu.findItem(R.id.action_notify_new).setChecked(preferences.getNotifyNew());
+        menu.findItem(R.id.action_long_press).setChecked(preferences.getLongPressLink());
         return true;
     }
 
@@ -249,6 +251,9 @@ public class MainActivity extends AppCompatActivity {
             item.setChecked(!item.isChecked());
             presenter.optionNotifyNew(item.isChecked());
             trackEvent("notificationOption", item.isChecked() ? "yes" : "no", null);
+        } else if (id == R.id.action_long_press){
+            item.setChecked(!item.isChecked());
+            presenter.optionLongPress(item.isChecked());
         } else if (id == R.id.action_stats) {
             presenter.optionStats();
         }

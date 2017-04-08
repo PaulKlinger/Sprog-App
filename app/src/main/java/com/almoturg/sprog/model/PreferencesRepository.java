@@ -4,6 +4,9 @@ public interface PreferencesRepository {
     boolean getNotifyNew();
     void setNotifyNew(boolean newValue);
 
+    boolean getLongPressLink();
+    void setLongPressLink(boolean newValue);
+
     int getDisplayedNotificationDialog();
     void setDisplayedNotificationDialog(int newValue);
 

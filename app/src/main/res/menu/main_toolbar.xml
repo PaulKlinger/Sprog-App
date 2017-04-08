@@ -27,8 +27,14 @@
         android:checkable="true"
         app:showAsAction="never"/>
     <item
-        android:id="@+id/action_stats"
+        android:id="@+id/action_long_press"
         android:orderInCategory="400"
+        android:title="long press opens reddit"
+        android:checkable="true"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_stats"
+        android:orderInCategory="500"
         android:title="statistics"
         app:showAsAction="never"/>
 </menu>

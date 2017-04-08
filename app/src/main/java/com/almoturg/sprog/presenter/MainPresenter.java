@@ -20,7 +20,7 @@ import static com.almoturg.sprog.model.Poems.poems;
 
 public class MainPresenter {
     private MainActivity activity;
-    private PreferencesRepository preferences;
+    public PreferencesRepository preferences;
     private SprogDbHelper dbhelper;
     private MarkdownConverter markdownConverter;
     private PoemsFileParser poemsFileParser;
@@ -255,6 +255,10 @@ public class MainPresenter {
         preferences.setNotifyNew(newValue);
         // if the user set the notification manually we don't need to show the dialogue
         preferences.setDisplayedNotificationDialog(1);
+    }
+
+    public void optionLongPress(boolean newValue) {
+        preferences.setLongPressLink(newValue);
     }
 
     public void optionStats() {

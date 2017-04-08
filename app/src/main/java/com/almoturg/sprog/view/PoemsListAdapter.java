@@ -2,6 +2,7 @@ package com.almoturg.sprog.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -35,7 +36,7 @@ public class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.View
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public class ViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
+            implements View.OnClickListener, View.OnLongClickListener {
         private MainListItemPresenter presenter;
 
         View content_wrapper;
@@ -45,6 +46,7 @@ public class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.View
         ViewHolder(View v, MainPresenter mainPresenter) {
             super(v);
             v.setOnClickListener(this);
+            v.setOnLongClickListener(this);
             this.content_wrapper = v.findViewById(R.id.content_wrapper);
             this.view = (CardView) v;
             this.first_line = v.findViewById(R.id.first_line);
@@ -54,6 +56,12 @@ public class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.View
         @Override
         public void onClick(View v) {
             presenter.onClick();
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            presenter.onLongClick();
+            return true;
         }
 
         public void setPoem(Poem poem, boolean show_only_favorites, boolean mark_read) {
@@ -71,6 +79,10 @@ public class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.View
             Intent intent = new Intent(context, PoemActivity.class);
             intent.putExtra("POEM_ID", poem_id);
             context.startActivity(intent);
+        }
+
+        public void openLink(String link) {
+            context.startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(link)));
         }
     }
 
