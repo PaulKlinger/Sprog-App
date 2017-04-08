@@ -83,6 +83,10 @@ public class PoemPresenter {
     }
 
     public CharSequence getPoemContentString() {
+        if (selectedPoem == null){
+            // See comment in isFavorite().
+            return "";
+        }
         return markdownConverter.convertPoemMarkdown(selectedPoem.content, selectedPoem.timestamp)
                 .toString();
     }
