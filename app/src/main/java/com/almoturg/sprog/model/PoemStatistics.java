@@ -67,11 +67,10 @@ public class PoemStatistics {
         Calendar now = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"));
         LinkedHashMap<Integer, Integer> monthNPoems = new LinkedHashMap<>();
 
-        do {
+        while (totalMonths(date) <= totalMonths(now)) {
             monthNPoems.put(totalMonths(date), 0);
             date.add(Calendar.MONTH, 1);
-        } while (date.get(Calendar.YEAR) < now.get(Calendar.YEAR) ||
-                date.get(Calendar.MONTH) <= now.get(Calendar.MONTH));
+        }
 
         int pkey;
         for (Poem p : poems) {
@@ -89,12 +88,11 @@ public class PoemStatistics {
         LinkedHashMap<Integer, Double> monthsAvgScore = new LinkedHashMap<>();
         HashMap<Integer, List<Poem>> monthsPoems = new HashMap<>();
 
-        do {
+        while (totalMonths(date) <= totalMonths(now)) {
             monthsAvgScore.put(totalMonths(date), 0d);
             monthsPoems.put(totalMonths(date), new ArrayList<>());
             date.add(Calendar.MONTH, 1);
-        } while (date.get(Calendar.YEAR) < now.get(Calendar.YEAR) ||
-                date.get(Calendar.MONTH) <= now.get(Calendar.MONTH));
+        }
 
         int pkey;
         for (Poem p : poems) {
