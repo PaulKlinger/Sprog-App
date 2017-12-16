@@ -201,21 +201,21 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_below="@+id/search_text">
-                        <android.support.v7.widget.AppCompatButton
+                        <Button
                             android:id="@+id/button_filter_unread"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="unread"
                             android:onClick="toggleFilterUnread"
                             style="@style/FilterButton"/>
-                        <android.support.v7.widget.AppCompatButton
+                        <Button
                             android:id="@+id/button_filter_long"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="long"
                             android:onClick="toggleFilterLong"
                             style="@style/FilterButton" />
-                        <android.support.v7.widget.AppCompatButton
+                        <Button
                             android:id="@+id/button_filter_short"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
