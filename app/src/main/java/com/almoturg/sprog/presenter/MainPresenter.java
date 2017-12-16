@@ -291,7 +291,8 @@ public class MainPresenter {
     }
 
     private boolean showEmptyFavoritesMessage() {
-        return show_only_favorites && last_search_string.length() == 0 &&
+        return show_only_favorites && last_search_string.length() == 0
+                && !filter_short && !filter_long && !filter_unread &&
                 filtered_poems.size() == 0;
     }
 
@@ -315,14 +316,14 @@ public class MainPresenter {
     }
 
     public void toggleFilterUnread() {
-        filter_unread = ! filter_unread;
+        filter_unread = !filter_unread;
         activity.trackEvent("filter", "unread", filter_unread ? "on" : "off");
         activity.searchPoems();
         activity.setFilterButtonState(filter_unread, filter_short, filter_long);
     }
 
     public void toggleFilterLong() {
-        filter_long = ! filter_long;
+        filter_long = !filter_long;
         activity.trackEvent("filter", "long", filter_long ? "on" : "off");
         if (filter_long) {
             filter_short = false;
@@ -332,7 +333,7 @@ public class MainPresenter {
     }
 
     public void toggleFilterShort() {
-        filter_short = ! filter_short;
+        filter_short = !filter_short;
         activity.trackEvent("filter", "short", filter_short ? "on" : "off");
         if (filter_short) {
             filter_long = false;
