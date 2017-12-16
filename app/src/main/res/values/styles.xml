@@ -43,6 +43,13 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="FilterButton" parent="Base.Widget.AppCompat.Button">
+        <item name="android:textSize">12sp</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:layout_margin">2dp</item>
+        <item name="android:minHeight">10dp</item>
+        <item name="android:minWidth">10dp</item>
+    </style>
 
     <style name="GraphStyle">
         <item name="android:background">@color/ap_transparent</item>

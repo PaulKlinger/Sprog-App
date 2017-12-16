@@ -21,12 +21,16 @@ public class Poems {
         }
     }
 
-    public static void filter(String search_string, boolean only_favorites) {
+    public static void filter(String search_string, boolean only_favorites, boolean only_unread,
+                              boolean only_long, boolean only_short) {
         filtered_poems = new ArrayList<>();
         for (Poem p : poems) {
             String content = p.content.toLowerCase();
             if (content.contains(search_string) &&
-                    (!only_favorites || p.favorite)) {
+                    (!only_favorites || p.favorite) &&
+                    (!only_unread || !p.read) &&
+                    (! only_long || p.content.length() >= 550) &&
+                    (! only_short || p.content.length() <= 200)) {
                 filtered_poems.add(p);
             }
         }

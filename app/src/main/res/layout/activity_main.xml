@@ -10,172 +10,223 @@
     android:padding="0dp"
     tools:context="com.almoturg.sprog.view.MainActivity">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/main_toolbar"
+    <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/main_content"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorAccent"
-        android:elevation="4dp"
-        android:theme="@style/ThemeToolbar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+        android:layout_height="match_parent">
 
-        <LinearLayout
+
+        <ViewFlipper
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
+            android:id="@+id/poemsListEmptyFlipper"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+                android:id="@+id/my_recycler_view"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:adjustViewBounds="true"
-                android:paddingBottom="12dp"
-                android:paddingTop="12dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/fleuron_white" />
-
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:background="@color/colorBackground"
+                app:fastScrollPopupBackgroundSize="50dp"
+                app:fastScrollPopupBgColor="@color/colorAccent"
+                app:fastScrollPopupTextSize="25sp"
+                app:fastScrollThumbColor="@color/colorAccent"
+                android:fillViewport="true"/>
             <TextView
-                android:id="@+id/status"
-                android:layout_width="wrap_content"
+                android:layout_width="250dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:paddingLeft="10dp"
-                android:paddingTop="5dp"
-                android:textSize="16sp"
-                android:textColor="@color/colorText"/>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-            <com.almoturg.sprog.view.DynamicWidthSpinner
-                android:id="@+id/sort_spinner"
-                style="@style/Widget.Spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom"
-                android:dropDownWidth="wrap_content"
-                android:gravity="bottom"
-                android:minWidth="0dp"
-                android:layout_marginBottom="1dp"/>
-            <Button
-                android:id="@+id/toggle_favorites"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom"
-                android:drawableLeft="@drawable/ic_stars"
-                android:drawableStart="@drawable/ic_stars"
-                android:onClick="toggleFavorites"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:paddingBottom="@dimen/toggle_favorites_padding"
-                android:paddingTop="@dimen/toggle_favorites_padding"
-                android:paddingRight="@dimen/toggle_favorites_padding"
-                android:paddingLeft="@dimen/toggle_favorites_padding"
-                android:layout_marginRight="5dp"
-                android:layout_marginBottom="1dp"/>
-
-            <Button
-                android:id="@+id/toggle_search"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom"
-                android:drawableLeft="@drawable/search"
-                android:drawableStart="@drawable/search"
-                android:minWidth="0dp"
-                android:onClick="toggleSearch"
-                android:padding="0dp"
-                android:paddingBottom="1dp"/>
-        </LinearLayout>
-    </android.support.v7.widget.Toolbar>
-
-    <RelativeLayout
-        android:id="@+id/search_box"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="4dp"
-        android:background="#fff">
-        <EditText
-            android:id="@+id/search_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:background="@color/cardview_light_background"
-            android:imeOptions="actionDone"
-            android:inputType="textFilter"
-            android:padding="4dp"
-            android:textColor="#333"/>
-        <Button
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_alignParentRight="true"
-            android:layout_gravity="center_vertical"
-            android:drawableLeft="@drawable/ic_cancel"
-            android:drawableStart="@drawable/ic_cancel"
-            android:minWidth="0dp"
-            android:onClick="clearSearch"
-            android:padding="0dp" />
-    </RelativeLayout>
-
-    <ViewFlipper
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/poemsListEmptyFlipper">
-        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
-            android:id="@+id/my_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:background="@color/colorBackground"
-            app:fastScrollPopupBackgroundSize="50dp"
-            app:fastScrollPopupBgColor="@color/colorAccent"
-            app:fastScrollPopupTextSize="25sp"
-            app:fastScrollThumbColor="@color/colorAccent" />
-        <TextView
-            android:layout_width="250dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="You have no favorite poems yet :(\n\nTap the star icon on a poem's individual page to add it to your favorites."
-            android:layout_gravity="center"
-            android:id="@+id/emptyFavoritesText"/>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical">
-            <ProgressBar
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:id="@+id/ctrlActivityIndicator"
-                android:indeterminateOnly="true"
-                android:keepScreenOn="true"
-                android:layout_gravity="center_horizontal"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="loading poems"
-                android:textSize="17sp"
-                android:paddingBottom="10dp"/>
-            <Button
-                android:id="@+id/action_cancelUpdate"
-                android:visibility="invisible"
+                android:text="You have no favorite poems yet :(\n\nTap the star icon on a poem's individual page to add it to your favorites."
+                android:layout_gravity="center"
+                android:id="@+id/emptyFavoritesText"/>
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="cancel"
-                android:onClick="cancelButton"/>
-        </LinearLayout>
-        <TextView
-            android:layout_width="wrap_content"
+                android:orientation="vertical">
+                <ProgressBar
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:id="@+id/ctrlActivityIndicator"
+                    android:indeterminateOnly="true"
+                    android:keepScreenOn="true"
+                    android:layout_gravity="center_horizontal"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="loading poems"
+                    android:textSize="17sp"
+                    android:paddingBottom="10dp"/>
+                <Button
+                    android:id="@+id/action_cancelUpdate"
+                    android:visibility="invisible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="cancel"
+                    android:onClick="cancelButton"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Error loading poems. Restart app to try again."/>
+        </ViewFlipper>
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Error loading poems. Restart app to try again."/>
-    </ViewFlipper>
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_scrollFlags="scroll|enterAlways|snap">
+                <android.support.v7.widget.Toolbar
+                android:id="@+id/main_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorAccent"
+                android:elevation="4dp"
+                android:theme="@style/ThemeToolbar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:adjustViewBounds="true"
+                        android:paddingBottom="12dp"
+                        android:paddingTop="12dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/fleuron_white" />
+
+                    <TextView
+                        android:id="@+id/status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="5dp"
+                        android:textSize="16sp"
+                        android:textColor="@color/colorText"/>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+                    <com.almoturg.sprog.view.DynamicWidthSpinner
+                        android:id="@+id/sort_spinner"
+                        style="@style/Widget.Spinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|bottom"
+                        android:dropDownWidth="wrap_content"
+                        android:gravity="bottom"
+                        android:minWidth="0dp"
+                        android:layout_marginBottom="1dp"/>
+                    <Button
+                        android:id="@+id/toggle_favorites"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|bottom"
+                        android:drawableLeft="@drawable/ic_stars"
+                        android:drawableStart="@drawable/ic_stars"
+                        android:onClick="toggleFavorites"
+                        android:minWidth="0dp"
+                        android:minHeight="0dp"
+                        android:paddingBottom="@dimen/toggle_favorites_padding"
+                        android:paddingTop="@dimen/toggle_favorites_padding"
+                        android:paddingRight="@dimen/toggle_favorites_padding"
+                        android:paddingLeft="@dimen/toggle_favorites_padding"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="1dp"/>
+
+                    <Button
+                        android:id="@+id/toggle_search"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|bottom"
+                        android:drawableLeft="@drawable/search_filter"
+                        android:drawableStart="@drawable/search_filter"
+                        android:minWidth="0dp"
+                        android:onClick="toggleSearch"
+                        android:padding="0dp"
+                        android:paddingBottom="1dp"/>
+                </LinearLayout>
+
+            </android.support.v7.widget.Toolbar>
+                <RelativeLayout
+                    android:id="@+id/search_box"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:elevation="4dp"
+                    android:background="#fff">
+                    <EditText
+                        android:id="@+id/search_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:background="@drawable/search_field_border"
+                        android:layout_margin="5dp"
+                        android:imeOptions="actionDone"
+                        android:inputType="textFilter"
+                        android:padding="4dp"
+                        android:textColor="#333"/>
+                    <Button
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="5dp"
+                        android:drawableLeft="@drawable/ic_cancel"
+                        android:drawableStart="@drawable/ic_cancel"
+                        android:minWidth="0dp"
+                        android:onClick="clearSearch"
+                        android:padding="0dp" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_below="@+id/search_text">
+                        <android.support.v7.widget.AppCompatButton
+                            android:id="@+id/button_filter_unread"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="unread"
+                            android:onClick="toggleFilterUnread"
+                            style="@style/FilterButton"/>
+                        <android.support.v7.widget.AppCompatButton
+                            android:id="@+id/button_filter_long"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="long"
+                            android:onClick="toggleFilterLong"
+                            style="@style/FilterButton" />
+                        <android.support.v7.widget.AppCompatButton
+                            android:id="@+id/button_filter_short"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="short"
+                            android:onClick="toggleFilterShort"
+                            style="@style/FilterButton"/>
+                    </LinearLayout>
+                </RelativeLayout>
+            </LinearLayout>
+
+        </android.support.design.widget.AppBarLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
 </LinearLayout>

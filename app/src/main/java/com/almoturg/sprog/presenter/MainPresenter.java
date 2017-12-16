@@ -30,6 +30,9 @@ public class MainPresenter {
     private boolean processing = false;
     private boolean updating = false;
     public boolean show_only_favorites = false;
+    private boolean filter_unread = false;
+    private boolean filter_short = false;
+    private boolean filter_long = false;
 
     private boolean show_search_bar = false;
 
@@ -64,6 +67,7 @@ public class MainPresenter {
         }
         if (show_search_bar) {
             activity.enableSearch(last_search_string);
+            activity.setFilterButtonState(filter_unread, filter_short, filter_long);
         }
     }
 
@@ -170,7 +174,7 @@ public class MainPresenter {
         }
         last_search_string = search_string;
 
-        Poems.filter(search_string, show_only_favorites);
+        Poems.filter(search_string, show_only_favorites, filter_unread, filter_long, filter_short);
         activity.setStatusNumPoems(filtered_poems.size());
         activity.adapterDatasetChanged();
     }
@@ -270,6 +274,7 @@ public class MainPresenter {
         if (!show_search_bar && !processing) {
             show_search_bar = true;
             activity.enableSearch(last_search_string);
+            activity.setFilterButtonState(filter_unread, filter_short, filter_long);
         } else {
             show_search_bar = false;
             activity.disableSearch();
@@ -278,6 +283,9 @@ public class MainPresenter {
             }
             last_search_string = "";
             sent_search = false;
+            filter_unread = false;
+            filter_short = false;
+            filter_long = false;
             searchPoems("");
         }
     }
@@ -304,6 +312,30 @@ public class MainPresenter {
         } else {
             activity.disableFavorites();
         }
+    }
+
+    public void toggleFilterUnread() {
+        filter_unread = ! filter_unread;
+        activity.searchPoems();
+        activity.setFilterButtonState(filter_unread, filter_short, filter_long);
+    }
+
+    public void toggleFilterLong() {
+        filter_long = ! filter_long;
+        if (filter_long) {
+            filter_short = false;
+        }
+        activity.searchPoems();
+        activity.setFilterButtonState(filter_unread, filter_short, filter_long);
+    }
+
+    public void toggleFilterShort() {
+        filter_short = ! filter_short;
+        if (filter_short) {
+            filter_long = false;
+        }
+        activity.searchPoems();
+        activity.setFilterButtonState(filter_unread, filter_short, filter_long);
     }
 
     public void pressedCancelButton() {

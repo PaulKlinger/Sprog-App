@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -192,9 +194,9 @@ public class MainActivity extends AppCompatActivity {
     public void enableSearch(String search_string){
         search_box.setVisibility(View.VISIBLE);
         findViewById(R.id.toggle_search).setBackgroundResource(R.drawable.search_button_background);
-        search_text.requestFocus();
-        ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
-                .showSoftInput(search_text, InputMethodManager.SHOW_IMPLICIT);
+        //search_text.requestFocus();
+        //((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+        //        .showSoftInput(search_text, InputMethodManager.SHOW_IMPLICIT);
         search_text.setText(search_string);
     }
 
@@ -344,5 +346,23 @@ public class MainActivity extends AppCompatActivity {
 
     public void setSortOrder(String sort_order) {
         sortSpinner.setSelection(spinnerAdapter.getPosition(sort_order));
+    }
+
+    public void toggleFilterUnread(View view) {presenter.toggleFilterUnread();}
+
+    public void toggleFilterLong(View view) {presenter.toggleFilterLong();}
+
+    public void toggleFilterShort(View view) {presenter.toggleFilterShort();}
+
+    public void setFilterButtonState(boolean unread_state, boolean short_state, boolean long_state) {
+        ViewCompat.setBackgroundTintList(findViewById(R.id.button_filter_unread),
+                ContextCompat.getColorStateList(this,
+                        unread_state ? R.color.colorFilterButtonOn : R.color.colorFilterButtonOff));
+        ViewCompat.setBackgroundTintList(findViewById(R.id.button_filter_short),
+                ContextCompat.getColorStateList(this,
+                        short_state ? R.color.colorFilterButtonOn : R.color.colorFilterButtonOff));
+        ViewCompat.setBackgroundTintList(findViewById(R.id.button_filter_long),
+                ContextCompat.getColorStateList(this,
+                        long_state ? R.color.colorFilterButtonOn : R.color.colorFilterButtonOff));
     }
 }
