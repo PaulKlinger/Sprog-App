@@ -94,21 +94,16 @@ public class MainActivity extends AppCompatActivity {
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sortSpinner.setAdapter(spinnerAdapter);
 
-        sortSpinner.post(new Runnable() {
-            public void run() {
-                sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        presenter.changeSortOrder(parent.getItemAtPosition(position).toString());
-                    }
-
-                    public void onNothingSelected(AdapterView<?> parent) {
-                    }
-                });
+        sortSpinner.post(() -> sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                presenter.changeSortOrder(parent.getItemAtPosition(position).toString());
             }
-        });
 
-        final EditText search_box = (EditText) findViewById(R.id.search_text);
-        search_box.addTextChangedListener(new TextWatcher() {
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        }));
+
+        search_text.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
