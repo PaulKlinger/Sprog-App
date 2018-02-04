@@ -1,5 +1,7 @@
 package com.almoturg.sprog.model;
 
+import com.almoturg.sprog.util.Util;
+
 import java.util.List;
 
 
@@ -50,5 +52,9 @@ public class Poem {
             db.removeFavoritePoem(this.link);
         }
 
+    }
+
+    public String getId() {
+        return Util.last(this.link.split("/"));
     }
 }

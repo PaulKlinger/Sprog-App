@@ -1,13 +1,10 @@
 package com.almoturg.sprog.presenter;
 
-import android.annotation.SuppressLint;
-
 import com.almoturg.sprog.data.MarkdownConverter;
 import com.almoturg.sprog.model.ParentComment;
 import com.almoturg.sprog.model.Poem;
 import com.almoturg.sprog.view.PoemActivity;
 import com.almoturg.sprog.model.SprogDbHelper;
-import com.almoturg.sprog.util.Util;
 
 import static com.almoturg.sprog.model.Poems.filtered_poems;
 
@@ -42,7 +39,7 @@ public class PoemPresenter {
             mainPoem = selectedPoem;
         }
         CharSequence postContent = null;
-        if (mainPoem.post_content != null && mainPoem.post_content.length() > 0){
+        if (mainPoem.post_content != null && mainPoem.post_content.length() > 0) {
             postContent = markdownConverter.convertMarkdown(mainPoem.post_content);
         }
 
@@ -53,7 +50,7 @@ public class PoemPresenter {
 
         if (mainPoem.content != null && mainPoem.content.length() > 0) {
             boolean is_selected = false;
-            if (mainPoem.link.equals(selectedPoem.link)){
+            if (mainPoem.link.equals(selectedPoem.link)) {
                 is_selected = true;
             }
             activity.displayMainPoem(mainPoem, is_selected);
@@ -64,8 +61,9 @@ public class PoemPresenter {
         for (ParentComment parent : mainPoem.parents) {
             if (parent.is_poem != null) {
                 boolean is_selected = false;
-                if (parent.link != null && parent.link.equals(selectedPoem.link)){
-                    is_selected = true;}
+                if (parent.link != null && parent.link.equals(selectedPoem.link)) {
+                    is_selected = true;
+                }
                 activity.displayParentPoem(parent.is_poem, is_selected);
             } else {
                 activity.displayParentComment(markdownConverter.convertMarkdown(parent.content),
@@ -78,12 +76,12 @@ public class PoemPresenter {
         this.activity = null;
     }
 
-    public String getSelectedPoemID(){
-        return Util.last(selectedPoem.link.split("/"));
+    public String getSelectedPoemID() {
+        return selectedPoem.getId();
     }
 
     public CharSequence getPoemContentString() {
-        if (selectedPoem == null){
+        if (selectedPoem == null) {
             // See comment in isFavorite().
             return "";
         }
@@ -91,32 +89,43 @@ public class PoemPresenter {
                 .toString();
     }
 
+    public void copyPoemText(Poem poem) {
+        activity.trackEvent("copy", poem.getId(), null);
+        copyText(markdownConverter
+                .convertPoemMarkdown(poem.content, poem.timestamp)
+                .toString(), "Poem copied to clipboard");
+    }
+
+    public void copyText(String text, String toast_text) {
+        activity.copyToClipboard(text, toast_text);
+    }
+
     public void onActionCopy() {
         activity.trackEvent("copy", getSelectedPoemID(), null);
         activity.copyToClipboard(markdownConverter
-                .convertPoemMarkdown(selectedPoem.content,selectedPoem.timestamp)
-                .toString());
+                .convertPoemMarkdown(selectedPoem.content, selectedPoem.timestamp)
+                .toString(), "Poem copied to clipboard");
 
     }
 
     public void onActionToggleFavorite() {
         selectedPoem.toggleFavorite(dbHelper);
-        if (selectedPoem.favorite){
-            activity.trackEvent("favorite", Util.last(selectedPoem.link.split("/")), null);
+        if (selectedPoem.favorite) {
+            activity.trackEvent("favorite", getSelectedPoemID(), null);
             activity.addedFavorite(selectedPoem);
         } else {
             activity.removedFavorite(selectedPoem);
         }
     }
 
-    public void onActionToReddit(){
+    public void onActionToReddit() {
         activity.trackEvent("toReddit", getSelectedPoemID(), null);
         activity.openLink(selectedPoem.link + "?context=100");
 
     }
 
     public boolean isFavorite() {
-        if (selectedPoem == null){
+        if (selectedPoem == null) {
             // This should never be reached because selectedPoem is set in attachView, which is
             // called in PoemActivity.onCreate. It still happened several times though...
             // This might have something to do with the issue mentioned here:

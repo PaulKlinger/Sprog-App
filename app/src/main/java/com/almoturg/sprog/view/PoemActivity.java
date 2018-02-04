@@ -90,7 +90,7 @@ public class PoemActivity extends AppCompatActivity {
         } else if (item.getItemId() == R.id.action_share) {
             Toast toast = Toast.makeText(this, "sharing", Toast.LENGTH_SHORT);
             toast.show();
-        } else if (item.getItemId() == R.id.action_addToFavorites){
+        } else if (item.getItemId() == R.id.action_addToFavorites) {
             presenter.onActionToggleFavorite();
         }
 
@@ -103,7 +103,7 @@ public class PoemActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.poem_toolbar, menu);
 
         favoriteItem = menu.findItem(R.id.action_addToFavorites);
-        if (presenter.isFavorite()){
+        if (presenter.isFavorite()) {
             favoriteItem.setIcon(R.drawable.ic_star_full);
         }
 
@@ -123,6 +123,11 @@ public class PoemActivity extends AppCompatActivity {
         View v = LayoutInflater.from(this).inflate(R.layout.post_row, mainlist, false);
         ((TextView) v.findViewById(R.id.title))
                 .setText(title);
+        v.findViewById(R.id.title).setOnLongClickListener(view -> {
+            trackEvent("copy_title", "title", null);
+            presenter.copyText(title.toString(), "Title copied to clipboard.");
+            return true;
+        });
         ((TextView) v.findViewById(R.id.author)).setText(author);
         if (content != null || link != null) {
             ((TextView) v.findViewById(R.id.content))
@@ -130,6 +135,11 @@ public class PoemActivity extends AppCompatActivity {
             v.findViewById(R.id.content).setVisibility(View.VISIBLE);
             if (content != null) {
                 ((TextView) v.findViewById(R.id.content)).setText(content);
+                v.findViewById(R.id.content).setOnLongClickListener(view -> {
+                    trackEvent("copy_post", "post", null);
+                    presenter.copyText(content.toString(), "Post copied to clipboard.");
+                    return true;
+                });
             } else if (link != null) {
                 ((TextView) v.findViewById(R.id.content))
                         .setText(Util.linkToSpan(link));
@@ -142,9 +152,13 @@ public class PoemActivity extends AppCompatActivity {
         View v = LayoutInflater.from(this).inflate(R.layout.poem_row, mainlist, false);
         ((TextView) v.findViewById(R.id.content))
                 .setMovementMethod(LinkMovementMethod.getInstance());
+        v.findViewById(R.id.content).setOnLongClickListener(view -> {
+            presenter.copyPoemText(poem);
+            return true;
+        });
         PoemRow.update_poem_row_poem_page(poem, v, this);
         mainlist.addView(v);
-        if (is_selected){
+        if (is_selected) {
             selectedPoemView = v;
         }
     }
@@ -152,6 +166,11 @@ public class PoemActivity extends AppCompatActivity {
     public void displayParentComment(CharSequence content, CharSequence author) {
         View v = LayoutInflater.from(this)
                 .inflate(R.layout.parents_list_row, mainlist, false);
+        v.findViewById(R.id.content).setOnLongClickListener(view -> {
+            trackEvent("copy_comment", "comment", null);
+            presenter.copyText(content.toString(), "Comment copied to clipboard.");
+            return true;
+        });
         ((TextView) v.findViewById(R.id.content))
                 .setText(content);
         ((TextView) v.findViewById(R.id.content))
@@ -164,19 +183,23 @@ public class PoemActivity extends AppCompatActivity {
         View v = LayoutInflater.from(this).inflate(R.layout.poem_row, mainlist, false);
         ((TextView) v.findViewById(R.id.content))
                 .setMovementMethod(LinkMovementMethod.getInstance());
-        PoemRow.update_poem_row_poem_page(poem, v,  this);
+        v.findViewById(R.id.content).setOnLongClickListener(view -> {
+            presenter.copyPoemText(poem);
+            return true;
+        });
+        PoemRow.update_poem_row_poem_page(poem, v, this);
         mainlist.addView(v);
         if (is_selected) {
             selectedPoemView = v;
         }
     }
 
-    public void copyToClipboard(String text) {
+    public void copyToClipboard(String text, String toast_text) {
         ClipboardManager clipboard = (ClipboardManager)
                 getSystemService(this.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("simple text", text);
         clipboard.setPrimaryClip(clip);
-        Toast toast = Toast.makeText(this, "Poem copied to clipboard", Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(this, toast_text, Toast.LENGTH_SHORT);
         toast.show();
     }
 
@@ -198,7 +221,7 @@ public class PoemActivity extends AppCompatActivity {
         PoemRow.update_poem_row_poem_page(selectedPoem, selectedPoemView, this);
     }
 
-    public void trackEvent(String category, String action, String label){
+    public void trackEvent(String category, String action, String label) {
         mTracker.send(new HitBuilders.EventBuilder()
                 .setCategory(category)
                 .setAction(action)
