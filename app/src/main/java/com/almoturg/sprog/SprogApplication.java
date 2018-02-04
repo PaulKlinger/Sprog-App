@@ -1,13 +1,19 @@
 package com.almoturg.sprog;
 
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.graphics.Color;
+import android.os.Build;
+import android.support.v4.app.NotificationManagerCompat;
 
 import com.almoturg.sprog.model.PreferencesRepository;
 import com.almoturg.sprog.model.PreferencesRepositoryImpl;
 import com.almoturg.sprog.model.SprogDbHelper;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 
 public class SprogApplication extends Application {
@@ -16,6 +22,29 @@ public class SprogApplication extends Application {
 
     private static SprogDbHelper sprogDbHelper;
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        createNotificationChannel();
+        FirebaseMessaging.getInstance().subscribeToTopic("PoemUpdates");
+        if (BuildConfig.DEBUG) {
+            FirebaseMessaging.getInstance().subscribeToTopic("testPoemUpdates");
+        }
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= 26) {
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannel poemChannel = new NotificationChannel("poem_channel",
+                    "Sprog Poems", NotificationManager.IMPORTANCE_LOW);
+            poemChannel.setDescription("Poem for your Sprog");
+            poemChannel.enableLights(true);
+            poemChannel.setLightColor(Color.GREEN);
+            poemChannel.enableVibration(false);
+            mNotificationManager.createNotificationChannel(poemChannel);
+        }
+    }
 
     synchronized public Tracker getDefaultTracker() {
         if (mTracker == null) {
@@ -33,8 +62,8 @@ public class SprogApplication extends Application {
         return sprogDbHelper;
     }
 
-    synchronized public  PreferencesRepository getPreferences() {
-        if (preferences == null){
+    synchronized public PreferencesRepository getPreferences() {
+        if (preferences == null) {
             preferences = new PreferencesRepositoryImpl(getApplicationContext());
         }
         return preferences;

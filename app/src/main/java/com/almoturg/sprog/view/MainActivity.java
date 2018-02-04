@@ -34,7 +34,6 @@ import com.almoturg.sprog.SprogApplication;
 import com.almoturg.sprog.data.PoemsFileParser;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -126,9 +125,6 @@ public class MainActivity extends AppCompatActivity {
 
         // use a linear layout manager
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        FirebaseMessaging.getInstance().subscribeToTopic("PoemUpdates");
-        //FirebaseMessaging.getInstance().subscribeToTopic("testPoemUpdates");
     }
 
     @Override
