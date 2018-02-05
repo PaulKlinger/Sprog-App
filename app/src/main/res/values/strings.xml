@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Sprog</string>
 
     <string-array name="sort_orders">
         <item>Date</item>
