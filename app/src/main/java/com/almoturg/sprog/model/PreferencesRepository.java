@@ -16,6 +16,9 @@ public interface PreferencesRepository {
     long getLastUpdateTime();
     void setLastUpdateTime(long newValue);
 
+    long getLastFullUpdateTime();
+    void setLastFullUpdateTime(long newValue);
+
     long getLastPoemTime();
     void setLastPoemTime(long newValue);
 

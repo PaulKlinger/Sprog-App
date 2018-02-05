@@ -13,8 +13,9 @@ public class UpdateHelpers {
     // These are the times when an update should be available on the server
     private static final int FIRST_UPDATE_HOUR = 2;
     private static final int SECOND_UPDATE_HOUR = 14;
-    private static final int MIN_HOURS_BETWEEN_UPDATES = 11; // some margin if it runs faster
-    private static final int MAX_DAYS_BETWEEN_LOADING_POEMS = 3;
+    private static final long MIN_HOURS_BETWEEN_UPDATES = 11; // some margin if it runs faster
+    private static final long MAX_DAYS_BETWEEN_LOADING_POEMS = 3;
+    private static final long MAX_DAYS_BETWEEN_FULL_UPDATES = 30;
 
     // minimum length of poems.json file in bytes such that it is assumed to be complete
     // and therefore the cancel button is shown when updating
@@ -50,13 +51,22 @@ public class UpdateHelpers {
                         && diff_in_ms > ms_today - SECOND_UPDATE_HOUR * 60 * 60 * 1000);
     }
 
-    public static boolean poemsFileExists(Context context) {
+    public static boolean poemsFullFileExists(Context context) {
         File file = new File(context.getExternalFilesDir(
-                Environment.DIRECTORY_DOWNLOADS), "poems.json");
+                Environment.DIRECTORY_DOWNLOADS), "poems.json.gz");
         File old_file = new File(context.getExternalFilesDir(
-                Environment.DIRECTORY_DOWNLOADS), "poems_old.json");
+                Environment.DIRECTORY_DOWNLOADS), "poems_old.json.gz");
         return (file.exists() && file.length() > MIN_FILE_LENGTH) ||
                 (old_file.exists() && old_file.length() > MIN_FILE_LENGTH);
+    }
+
+    public static boolean poems60DaysFileExists(Context context) {
+        File file = new File(context.getExternalFilesDir(
+                Environment.DIRECTORY_DOWNLOADS), "poems_60days.json.gz");
+        File old_file = new File(context.getExternalFilesDir(
+                Environment.DIRECTORY_DOWNLOADS), "poems_60days_old.json.gz");
+        return (file.exists() && file.length() > 1) ||
+                (old_file.exists() && old_file.length() > 1);
     }
 
     public static boolean isConnected(Context context) {
@@ -66,5 +76,13 @@ public class UpdateHelpers {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null &&
                 activeNetwork.isConnected();
+    }
+
+    public static PoemsLoader.UpdateType getUpdateType(Calendar now, long last_full_update_tstamp) {
+        if (now.getTimeInMillis() - last_full_update_tstamp >
+                MAX_DAYS_BETWEEN_FULL_UPDATES * 24 * 60 * 60 * 1000) {
+            return PoemsLoader.UpdateType.FULL;
+        }
+        return PoemsLoader.UpdateType.PARTIAL;
     }
 }

@@ -10,7 +10,9 @@ import com.almoturg.sprog.model.SprogDbHelper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 public class PoemsFileParser {
     private Context context;
@@ -18,15 +20,16 @@ public class PoemsFileParser {
 
     public interface ParsePoemsCallbackInterface {
         void addPoems(List<Poem> poems);
+
         void finishedProcessing(boolean status);
     }
 
-    public PoemsFileParser(Context context){
+    public PoemsFileParser(Context context) {
         this.context = context;
     }
 
     public void parsePoems(ParsePoemsCallbackInterface callback,
-                           SprogDbHelper dbHelper, MarkdownConverter markdownConverter){
+                           SprogDbHelper dbHelper, MarkdownConverter markdownConverter) {
         task = new ParsePoemsTask(callback);
         task.execute(new ParsePoemsTaskParams(context, dbHelper, markdownConverter));
     }
@@ -55,49 +58,75 @@ public class PoemsFileParser {
 
         @Override
         protected Boolean doInBackground(ParsePoemsTaskParams... params) {
-            File poems_file = new File(params[0].context
-                    .getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems.json");
-            File poems_old_file = new File(params[0].context
-                    .getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "poems_old.json");
+
+            long min_partial_timestamp = handleFile(params[0],
+                    PoemsLoader.UpdateType.PARTIAL, Long.MAX_VALUE);
+            // we only want to take poems from the full file if they are older
+            // than the oldest one in the partial file (in case they were subsequently deleted)
+            if (min_partial_timestamp == -1) { // parsing of partial file failed
+                min_partial_timestamp = Long.MAX_VALUE; // so take all poems from the
+            }
+            return -1 != handleFile(params[0], PoemsLoader.UpdateType.FULL, min_partial_timestamp);
+        }
+
+        private long handleFile(ParsePoemsTaskParams params, PoemsLoader.UpdateType updateType,
+                                long max_timestamp) {
+            File poems_file = new File(params.context
+                    .getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),
+                    PoemsLoader.getFilename(updateType, PoemsLoader.FileType.CURRENT));
+            File poems_old_file = new File(params.context
+                    .getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),
+                    PoemsLoader.getFilename(updateType, PoemsLoader.FileType.PREV));
             File used_file = poems_file;
             if (!poems_file.exists()) {
                 if (poems_old_file.exists()) {
                     used_file = poems_old_file;
                 } else {
-                    return false;
+                    return -1;
                 }
             }
 
             try {
-                processFile(params[0], used_file);
+                return processFile(params, used_file, max_timestamp);
 
             } catch (IOException e) {
                 used_file.delete();
                 if (used_file != poems_old_file) {
                     try {
-                        processFile(params[0], poems_old_file);
+                        return processFile(params, poems_old_file, max_timestamp);
                     } catch (IOException e2) {
                         poems_old_file.delete();
-                        return false;
+                        return -1;
                     }
                 } else {
-                    return false;
+                    return -1;
                 }
             }
-            return true;
         }
 
-        private void processFile(ParsePoemsTaskParams params, File poems_file) throws IOException {
+        private long processFile(ParsePoemsTaskParams params, File poems_file,
+                                 long max_timestamp) throws IOException {
+            long min_timestamp = Long.MAX_VALUE;
             List<Poem> poems;
-            PoemParser parser = new PoemParser(new FileInputStream(poems_file),
+            PoemParser parser = new PoemParser(new GZIPInputStream(new FileInputStream(poems_file)),
                     params.dbHelper, params.markdownConverter);
             while (true) {
                 poems = parser.getPoems(10);
                 if (poems == null) {
                     break;
                 }
-                publishProgress(poems);
+                List<Poem> newPoems = new ArrayList<>();
+                for (Poem p : poems) {
+                    if (p.timestamp_long < max_timestamp) {
+                        newPoems.add(p);
+                    }
+                    if (p.timestamp_long < min_timestamp) {
+                        min_timestamp = p.timestamp_long;
+                    }
+                }
+                publishProgress(newPoems);
             }
+            return min_timestamp;
         }
 
         @Override

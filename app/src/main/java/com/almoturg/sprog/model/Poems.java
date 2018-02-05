@@ -3,11 +3,13 @@ package com.almoturg.sprog.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 public class Poems {
     public static List<Poem> poems = new ArrayList<>();
     public static List<Poem> filtered_poems = new ArrayList<>();
+    private static HashSet<String> poem_links = new HashSet<>();
 
     public static void sort(String sort_order) {
         if (sort_order.equals("Date")) {
@@ -37,13 +39,21 @@ public class Poems {
     }
 
     public static void add(List<Poem> new_poems) {
-        poems.addAll(new_poems);
-        filtered_poems.addAll(new_poems);
+        for (Poem p : new_poems) {
+            // Might not be necessary with the check for minimum timestamp
+            // in PoemsFileParser. But probably still a good idea?
+            if (!poem_links.contains(p.link)) {
+                poem_links.add(p.link);
+                poems.add(p);
+                filtered_poems.add(p);
+            }
+        }
     }
 
     public static void clear() {
         poems.clear();
         filtered_poems.clear();
+        poem_links.clear();
     }
 
 }

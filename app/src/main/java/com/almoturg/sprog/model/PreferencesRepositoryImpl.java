@@ -12,6 +12,7 @@ public class PreferencesRepositoryImpl implements PreferencesRepository {
     private static final String PREF_DISPLAYED_NOTIFICATION_DIALOG = "DISPLAYED_NOTIFICATION_DIALOG";
     private static final String PREF_MARK_READ = "PREF_MARK_READ";
     private static final String PREF_LAST_UPDATE_TIME = "LAST_UPDATE_TIME";
+    private static final String PREF_LAST_FULL_UPDATE_TIME = "LAST_FULL_UPDATE_TIME";
     private static final String PREF_LAST_POEM_TIME = "LAST_POEM_TIME";
     private static final String PREF_UPDATE_NEXT = "UPDATE_NEXT";
     private static final String PREF_LAST_FCM_TSTAMP = "LAST_FCM_TSTAMP";
@@ -89,6 +90,16 @@ public class PreferencesRepositoryImpl implements PreferencesRepository {
     @Override
     public void setLastUpdateTime(long newValue) {
         setValue(PREF_LAST_UPDATE_TIME, newValue);
+    }
+
+    @Override
+    public long getLastFullUpdateTime() {
+        return prefs.getLong(PREF_LAST_FULL_UPDATE_TIME, -1);
+    }
+
+    @Override
+    public void setLastFullUpdateTime(long newValue) {
+        setValue(PREF_LAST_FULL_UPDATE_TIME, newValue);
     }
 
     @Override

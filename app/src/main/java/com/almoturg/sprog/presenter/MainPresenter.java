@@ -98,12 +98,13 @@ public class MainPresenter {
 
     private void preparePoems(boolean update) { // not sure about the name...
         long last_update_tstamp = preferences.getLastUpdateTime();
+        long last_full_update_tstamp = preferences.getLastUpdateTime();
         long last_fcm_tstamp = preferences.getLastFCMTimestamp();
         boolean internet_access = UpdateHelpers.isConnected(activity);
 
-        if (last_update_tstamp == -1 || !UpdateHelpers.poemsFileExists(activity)) {
+        if (last_full_update_tstamp == -1 || !UpdateHelpers.poemsFullFileExists(activity)) {
             if (internet_access) {
-                updatePoems();
+                updatePoems(PoemsLoader.UpdateType.FULL);
             } else {
                 activity.setStatusNoInternet();
             }
@@ -115,14 +116,16 @@ public class MainPresenter {
             }
 
             if (update && internet_access) {
-                updatePoems();
+                updatePoems(UpdateHelpers.getUpdateType(
+                        Calendar.getInstance(TimeZone.getTimeZone("UTC")),
+                        last_full_update_tstamp));
             } else if (poems.size() == 0) { // file exists by above (except race)
                 processPoems();
             }
         }
     }
 
-    private void updatePoems() {
+    private void updatePoems(PoemsLoader.UpdateType update_type) {
         if (processing || PoemsLoader.receiver != null) {
             return;
         }
@@ -134,13 +137,13 @@ public class MainPresenter {
         Poems.clear();
         activity.adapterDatasetChanged();
         activity.showUpdating();
-        if (UpdateHelpers.poemsFileExists(activity)) {
+        if (UpdateHelpers.poemsFullFileExists(activity)) {
             // If loading poems takes more than 5s and an old poems file is available
             // show a button to allow cancelling the download
             activity.showCancelButtonDelayed(5000);
 
         }
-        PoemsLoader.loadPoems(activity, this);
+        PoemsLoader.loadPoems(activity, this, update_type);
     }
 
     public void changeSortOrder(String new_order) {
