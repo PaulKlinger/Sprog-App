@@ -32,6 +32,7 @@ public class PoemsLoader {
         request.setDescription("Sprog poems");
         request.setTitle("Sprog");
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+        request.setVisibleInDownloadsUi(false);
 
         request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS,
                 "poems.json");
