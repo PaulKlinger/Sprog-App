@@ -28,7 +28,7 @@ public class MainPresenter {
     private ArrayList<String> new_read_poems = new ArrayList<>(); // Poems newly marked as read
 
     private boolean processing = false;
-    private boolean updating = false;
+    private PoemsLoader.UpdateType updating = null;
     public boolean show_only_favorites = false;
     private boolean filter_unread = false;
     private boolean filter_short = false;
@@ -56,7 +56,7 @@ public class MainPresenter {
 
         activity.setSortOrder(sort_order);
 
-        if (updating) {
+        if (updating != null) {
             activity.showUpdating();
         }
         if (processing) {
@@ -129,7 +129,7 @@ public class MainPresenter {
         if (processing || PoemsLoader.receiver != null) {
             return;
         }
-        updating = true;
+        updating = update_type;
         show_only_favorites = false;
         activity.clearStatus();
         activity.disableFavorites();
@@ -163,7 +163,7 @@ public class MainPresenter {
     }
 
     public void searchPoems(String search_string) {
-        if (updating || activity == null) {
+        if (updating != null || activity == null) {
             return;
         }
 
@@ -188,6 +188,11 @@ public class MainPresenter {
         activity.setProcessing();
         poems = new ArrayList<>();
         filtered_poems = new ArrayList<>();
+
+        // Only process the partial file if it is newer than the full one
+        boolean process_partial_file =
+                preferences.getLastUpdateTime() > preferences.getLastFullUpdateTime();
+
         poemsFileParser.parsePoems(new PoemsFileParser.ParsePoemsCallbackInterface() {
             @Override
             public void addPoems(List<Poem> poems) {
@@ -198,7 +203,7 @@ public class MainPresenter {
             public void finishedProcessing(boolean status) {
                 MainPresenter.this.finishedProcessing(status);
             }
-        }, dbhelper, markdownConverter);
+        }, dbhelper, markdownConverter, process_partial_file);
     }
 
     private void addPoems(List<Poem> new_poems) {
@@ -215,7 +220,7 @@ public class MainPresenter {
             // NullPointerException in PoemsLoader.cancelAllDownloads.
             return;
         }
-        updating = false;
+        updating = null;
         PoemsLoader.cancelAllDownloads(activity);
         if (processing) {
             processing = false;
@@ -226,17 +231,20 @@ public class MainPresenter {
     }
 
     private void finishedProcessing(boolean status) {
-        if (updating) {
-            updating = false;
+        if (updating != null) {
             if (poems.size() > 1000 && status) {
-
                 Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-                preferences.setLastUpdateTime(now.getTimeInMillis());
+                if (updating == PoemsLoader.UpdateType.FULL) {
+                    preferences.setLastFullUpdateTime(now.getTimeInMillis());
+                } else if (updating == PoemsLoader.UpdateType.PARTIAL) {
+                    preferences.setLastUpdateTime(now.getTimeInMillis());
+                }
                 preferences.setUpdateNext(false);
                 // Store timestamp of last poem for new poem notifications
                 // Can't store double in sharedprefs so store timestamp in milliseconds as long
                 preferences.setLastPoemTime((long) poems.get(0).timestamp * 1000);
             }
+            updating = null;
         }
         if (!status) {
             activity.showError();
@@ -300,7 +308,7 @@ public class MainPresenter {
     }
 
     public void toggleFavorites() {
-        if (updating) {
+        if (updating != null) {
             return;
         }
         show_only_favorites = !show_only_favorites;
@@ -375,7 +383,7 @@ public class MainPresenter {
     }
 
     public boolean poemsReady() {
-        return !updating && !processing;
+        return (updating == null) && !processing;
     }
 
     public MarkdownConverter getMarkdownConverter() {

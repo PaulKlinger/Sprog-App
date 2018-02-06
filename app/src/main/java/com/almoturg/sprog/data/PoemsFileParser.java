@@ -29,9 +29,11 @@ public class PoemsFileParser {
     }
 
     public void parsePoems(ParsePoemsCallbackInterface callback,
-                           SprogDbHelper dbHelper, MarkdownConverter markdownConverter) {
+                           SprogDbHelper dbHelper, MarkdownConverter markdownConverter,
+                           boolean process_partial_file) {
         task = new ParsePoemsTask(callback);
-        task.execute(new ParsePoemsTaskParams(context, dbHelper, markdownConverter));
+        task.execute(new ParsePoemsTaskParams(context, dbHelper,
+                markdownConverter, process_partial_file));
     }
 
     public void cancelParsing() {
@@ -44,12 +46,14 @@ public class PoemsFileParser {
         Context context;
         MarkdownConverter markdownConverter;
         SprogDbHelper dbHelper;
+        boolean process_partial_file;
 
         ParsePoemsTaskParams(Context context, SprogDbHelper dbHelper,
-                             MarkdownConverter markdownConverter) {
+                             MarkdownConverter markdownConverter, boolean process_partial_file) {
             this.context = context;
             this.markdownConverter = markdownConverter;
             this.dbHelper = dbHelper;
+            this.process_partial_file = process_partial_file;
         }
     }
 
@@ -58,13 +62,16 @@ public class PoemsFileParser {
 
         @Override
         protected Boolean doInBackground(ParsePoemsTaskParams... params) {
+            long min_partial_timestamp = -1;
+            if (params[0].process_partial_file) {
+                min_partial_timestamp = handleFile(params[0],
+                        PoemsLoader.UpdateType.PARTIAL, Long.MAX_VALUE);
+            }
 
-            long min_partial_timestamp = handleFile(params[0],
-                    PoemsLoader.UpdateType.PARTIAL, Long.MAX_VALUE);
             // we only want to take poems from the full file if they are older
             // than the oldest one in the partial file (in case they were subsequently deleted)
             if (min_partial_timestamp == -1) { // parsing of partial file failed
-                min_partial_timestamp = Long.MAX_VALUE; // so take all poems from the
+                min_partial_timestamp = Long.MAX_VALUE; // so take all poems from the full one
             }
             return -1 != handleFile(params[0], PoemsLoader.UpdateType.FULL, min_partial_timestamp);
         }

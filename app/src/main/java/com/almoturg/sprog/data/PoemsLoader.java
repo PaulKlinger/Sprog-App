@@ -30,7 +30,7 @@ public class PoemsLoader {
         base_filenames = Collections.unmodifiableMap(tmp_map);
     }
 
-    public static final String getFilename(UpdateType updateType, FileType fileType) {
+    public static  String getFilename(UpdateType updateType, FileType fileType) {
         if (fileType == FileType.CURRENT) {
             return base_filenames.get(updateType).concat(".json.gz");
         } else {
