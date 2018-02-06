@@ -98,7 +98,7 @@ public class MainPresenter {
 
     private void preparePoems(boolean update) { // not sure about the name...
         long last_update_tstamp = preferences.getLastUpdateTime();
-        long last_full_update_tstamp = preferences.getLastUpdateTime();
+        long last_full_update_tstamp = preferences.getLastFullUpdateTime();
         long last_fcm_tstamp = preferences.getLastFCMTimestamp();
         boolean internet_access = UpdateHelpers.isConnected(activity);
 
