@@ -189,9 +189,10 @@ public class MainPresenter {
         poems = new ArrayList<>();
         filtered_poems = new ArrayList<>();
 
-        // Only process the partial file if it is newer than the full one
-        boolean process_partial_file =
-                preferences.getLastUpdateTime() > preferences.getLastFullUpdateTime();
+        // Only process the partial file if we just got a partial update
+        // or the last update was a partial one
+        boolean process_partial_file = (updating == PoemsLoader.UpdateType.PARTIAL) ||
+                (preferences.getLastUpdateTime() > preferences.getLastFullUpdateTime());
 
         poemsFileParser.parsePoems(new PoemsFileParser.ParsePoemsCallbackInterface() {
             @Override
