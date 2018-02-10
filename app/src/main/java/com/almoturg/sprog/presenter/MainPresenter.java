@@ -209,7 +209,8 @@ public class MainPresenter {
 
     private void addPoems(List<Poem> new_poems) {
         if (processing) { // don't add poems if processing has been cancelled
-            Poems.add(new_poems);
+            Poems.add(new_poems, last_search_string, show_only_favorites,
+                    filter_unread, filter_long, filter_short);
             activity.setStatusNumPoems(poems.size());
             activity.adapterItemRangeInserted(filtered_poems.size(), new_poems.size());
         }
