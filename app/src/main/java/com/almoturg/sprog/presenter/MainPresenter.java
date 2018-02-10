@@ -234,11 +234,12 @@ public class MainPresenter {
     private void finishedProcessing(boolean status) {
         if (updating != null) {
             if (poems.size() > 1000 && status) {
-                Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                long now_ms = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTimeInMillis();
                 if (updating == PoemsLoader.UpdateType.FULL) {
-                    preferences.setLastFullUpdateTime(now.getTimeInMillis());
+                    preferences.setLastUpdateTime(now_ms);
+                    preferences.setLastFullUpdateTime(now_ms);
                 } else if (updating == PoemsLoader.UpdateType.PARTIAL) {
-                    preferences.setLastUpdateTime(now.getTimeInMillis());
+                    preferences.setLastUpdateTime(now_ms);
                 }
                 preferences.setUpdateNext(false);
                 // Store timestamp of last poem for new poem notifications
