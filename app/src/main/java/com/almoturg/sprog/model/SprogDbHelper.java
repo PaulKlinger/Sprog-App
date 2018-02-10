@@ -56,7 +56,6 @@ public class SprogDbHelper extends SQLiteOpenHelper {
             read_poems.add(link);
         }
         cur.close();
-        db.close();
         return read_poems;
     }
 
@@ -73,7 +72,6 @@ public class SprogDbHelper extends SQLiteOpenHelper {
 
         db.setTransactionSuccessful();
         db.endTransaction();
-        db.close();
     }
 
     public void clearReadPoems() {
@@ -90,7 +88,6 @@ public class SprogDbHelper extends SQLiteOpenHelper {
             favorite_poems.add(link);
         }
         cur.close();
-        db.close();
         return favorite_poems;
     }
 
@@ -104,18 +101,15 @@ public class SprogDbHelper extends SQLiteOpenHelper {
 
         db.setTransactionSuccessful();
         db.endTransaction();
-        db.close();
     }
 
     public void removeFavoritePoem(String link) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
 
-        ContentValues values = new ContentValues();
         db.delete(FAVORITES_TABLE, "link=?", new String[]{link});
 
         db.setTransactionSuccessful();
         db.endTransaction();
-        db.close();
     }
 }
