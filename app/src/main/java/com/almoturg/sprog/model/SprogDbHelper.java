@@ -23,7 +23,7 @@ public class SprogDbHelper extends SQLiteOpenHelper {
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + READ_TABLE + ";" +
-            "DROP TABLE IF EXISTS " + FAVORITES_TABLE + ";";
+                    "DROP TABLE IF EXISTS " + FAVORITES_TABLE + ";";
 
     private static final String SQL_CLEAR_READ_POEMS =
             "DELETE FROM " + READ_TABLE;
@@ -38,7 +38,7 @@ public class SprogDbHelper extends SQLiteOpenHelper {
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (newVersion==2){
+        if (newVersion == 2) {
             db.execSQL(SQL_CREATE_FAVORITES_TABLE);
         }
     }
@@ -49,29 +49,32 @@ public class SprogDbHelper extends SQLiteOpenHelper {
 
     public HashSet<String> getReadPoems() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cur = db.rawQuery("SELECT link from " + READ_TABLE, null);
         HashSet<String> read_poems = new HashSet<>();
-        while (cur.moveToNext()) {
-            String link = cur.getString(cur.getColumnIndexOrThrow("link"));
-            read_poems.add(link);
+        try (Cursor cur = db.rawQuery("SELECT link from " + READ_TABLE, null)) {
+            while (cur.moveToNext()) {
+                String link = cur.getString(cur.getColumnIndexOrThrow("link"));
+                read_poems.add(link);
+            }
         }
-        cur.close();
         return read_poems;
     }
 
     public void addReadPoems(ArrayList<String> new_read_poems) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.beginTransaction();
+        try {
+            db.beginTransaction();
 
-        ContentValues values;
-        for (String link : new_read_poems) {
-            values = new ContentValues();
-            values.put("link", link);
-            db.insert(READ_TABLE, null, values);
+            ContentValues values;
+            for (String link : new_read_poems) {
+                values = new ContentValues();
+                values.put("link", link);
+                db.insert(READ_TABLE, null, values);
+            }
+
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
         }
-
-        db.setTransactionSuccessful();
-        db.endTransaction();
     }
 
     public void clearReadPoems() {
@@ -81,35 +84,41 @@ public class SprogDbHelper extends SQLiteOpenHelper {
 
     public HashSet<String> getFavoritePoems() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cur = db.rawQuery("SELECT link from " + FAVORITES_TABLE, null);
         HashSet<String> favorite_poems = new HashSet<>();
-        while (cur.moveToNext()) {
-            String link = cur.getString(cur.getColumnIndexOrThrow("link"));
-            favorite_poems.add(link);
+        try (Cursor cur = db.rawQuery("SELECT link from " + FAVORITES_TABLE, null)) {
+            while (cur.moveToNext()) {
+                String link = cur.getString(cur.getColumnIndexOrThrow("link"));
+                favorite_poems.add(link);
+            }
         }
-        cur.close();
         return favorite_poems;
     }
 
     public void addFavoritePoem(String link) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.beginTransaction();
+        try {
+            db.beginTransaction();
 
-        ContentValues values = new ContentValues();
-        values.put("link", link);
-        db.insert(FAVORITES_TABLE, null, values);
+            ContentValues values = new ContentValues();
+            values.put("link", link);
+            db.insert(FAVORITES_TABLE, null, values);
 
-        db.setTransactionSuccessful();
-        db.endTransaction();
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
     }
 
     public void removeFavoritePoem(String link) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.beginTransaction();
+        try {
+            db.beginTransaction();
 
-        db.delete(FAVORITES_TABLE, "link=?", new String[]{link});
+            db.delete(FAVORITES_TABLE, "link=?", new String[]{link});
 
-        db.setTransactionSuccessful();
-        db.endTransaction();
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
     }
 }
