@@ -1,6 +1,7 @@
 package com.almoturg.sprog.data;
 
 import android.content.Context;
+import android.text.SpannableStringBuilder;
 
 import in.uncod.android.bypass.Bypass;
 
@@ -34,12 +35,27 @@ public class MarkdownConverter {
                 bypass = new Bypass(context);
             }
         }
+
         markdown = markdown.replaceAll("(?:^|[^(\\[])(https?://\\S*\\.\\S*)(?:\\s|$)", "[$1]($1)");
+
+        // Reddit markdown only interprets underscores as italics if they are not followed by a
+        // non-whitespace character. E.g. "_fizz_" becomes italic but "_fizz_buzz" does not.
+        // As the Bypass markdown library does not allow that, we replace such underscores
+        // with a unicode private use char and substitute back afterwards
+        markdown = markdown.replaceAll("(?=\\S)_(?=\\S|$)","\uE000");
 
         CharSequence converted;
         synchronized (bypassLock) {
             converted = bypass.markdownToSpannable(markdown);
         }
-        return converted;
+
+        // Can't directly replace in SpannableString so convert to SpannableStringBuilder first.
+        SpannableStringBuilder converted_builder = new SpannableStringBuilder(converted);
+        for (int i=0; i<converted_builder.length();i++) {
+            if (converted_builder.charAt(i) == '\uE000') {
+                converted_builder.replace(i,i+1,"_");
+            }
+        }
+        return converted_builder;
     }
 }
