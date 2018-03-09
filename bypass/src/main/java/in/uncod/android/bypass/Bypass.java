@@ -1,3 +1,10 @@
+// MODIFIED on 2018-03-09 by Paul Klinger
+// Reddit markdown only interprets underscores as italics if they are not followed by a
+// non-whitespace character. E.g. "_fizz_" becomes italic but "_fizz_buzz" does not.
+// We replace such underscores with a unicode private use char and substitute back
+// afterwards (in the text and in links).
+// modifications are marked "// MODIFIED" below
+
 package in.uncod.android.bypass;
 
 import android.content.Context;
@@ -85,6 +92,10 @@ public class Bypass {
     }
 
     public CharSequence markdownToSpannable(String markdown, ImageGetter imageGetter) {
+        // MODIFIED
+        markdown = markdown.replaceAll("(?<=\\S)_(?=\\S)","\uE000");
+        // --
+
         Document document = processMarkdown(markdown);
 
         int size = document.getElementCount();
@@ -96,6 +107,11 @@ public class Bypass {
 
         return TextUtils.concat(spans);
     }
+    // MODIFIED
+    private String substituteBackUnderscores(String text) {
+        return text.replaceAll("\uE000", "_");
+    }
+    // --
 
     private native Document processMarkdown(String markdown);
 
@@ -135,7 +151,10 @@ public class Bypass {
 
         SpannableStringBuilder builder = new ReverseSpannableStringBuilder();
 
-        String text = element.getText();
+        // MODIFIED
+        String text = substituteBackUnderscores(element.getText());
+        // --
+
         if (element.size() == 0
                 && element.getParent() != null
                 && element.getParent().getType() != Type.BLOCK_CODE) {
@@ -257,7 +276,9 @@ public class Bypass {
                 break;
             case LINK:
             case AUTOLINK:
-                String link = element.getAttribute("link");
+                // MODIFIED
+                String link = substituteBackUnderscores(element.getAttribute("link"));
+                // --
                 if (!TextUtils.isEmpty(link) && Patterns.EMAIL_ADDRESS.matcher(link).matches()) {
                     link = "mailto:" + link;
                 }
