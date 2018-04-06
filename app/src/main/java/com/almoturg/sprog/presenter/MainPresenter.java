@@ -190,9 +190,12 @@ public class MainPresenter {
         filtered_poems = new ArrayList<>();
 
         // Only process the partial file if we just got a partial update
-        // or the last update was a partial one
-        boolean process_partial_file = (updating == PoemsLoader.UpdateType.PARTIAL) ||
-                (preferences.getLastUpdateTime() > preferences.getLastFullUpdateTime());
+        // or the last update (including the current one) was a partial one
+        boolean process_partial_file = (
+                updating == PoemsLoader.UpdateType.PARTIAL ||
+                        (preferences.getLastUpdateTime() > preferences.getLastFullUpdateTime()
+                                && updating != PoemsLoader.UpdateType.FULL)
+        );
 
         poemsFileParser.parsePoems(new PoemsFileParser.ParsePoemsCallbackInterface() {
             @Override
