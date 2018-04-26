@@ -26,13 +26,13 @@ public class UpdateHelpers {
         // Always load JSON when more than MAX_DAYS_BETWEEN_LOADING_POEMS days have passed
         // This is mainly to get updated scores/gold counts and to remove deleted poems.
         if (now.getTimeInMillis() - last_update_tstamp >
-                MAX_DAYS_BETWEEN_LOADING_POEMS * 24 * 60 * 60 * 1000){
+                MAX_DAYS_BETWEEN_LOADING_POEMS * 24 * 60 * 60 * 1000) {
             return true;
         }
 
         // last_fcm_tstamp is the time when the last FCM message was sent
         // if it showed that updates were available this function would not have been called
-        if (now.getTimeInMillis() - last_fcm_tstamp < MIN_HOURS_BETWEEN_UPDATES * 60 * 60 * 1000){
+        if (now.getTimeInMillis() - last_fcm_tstamp < MIN_HOURS_BETWEEN_UPDATES * 60 * 60 * 1000) {
             return false;
         }
 
@@ -53,18 +53,30 @@ public class UpdateHelpers {
 
     public static boolean poemsFullFileExists(Context context) {
         File file = new File(context.getExternalFilesDir(
-                Environment.DIRECTORY_DOWNLOADS), "poems.json.gz");
+                Environment.DIRECTORY_DOWNLOADS),
+                PoemsLoader.getFilename(
+                        PoemsLoader.UpdateType.FULL,
+                        PoemsLoader.FileType.CURRENT));
         File old_file = new File(context.getExternalFilesDir(
-                Environment.DIRECTORY_DOWNLOADS), "poems_old.json.gz");
+                Environment.DIRECTORY_DOWNLOADS),
+                PoemsLoader.getFilename(
+                        PoemsLoader.UpdateType.FULL,
+                        PoemsLoader.FileType.PREV));
         return (file.exists() && file.length() > MIN_FILE_LENGTH) ||
                 (old_file.exists() && old_file.length() > MIN_FILE_LENGTH);
     }
 
     public static boolean poems60DaysFileExists(Context context) {
         File file = new File(context.getExternalFilesDir(
-                Environment.DIRECTORY_DOWNLOADS), "poems_60days.json.gz");
+                Environment.DIRECTORY_DOWNLOADS),
+                PoemsLoader.getFilename(
+                        PoemsLoader.UpdateType.PARTIAL,
+                        PoemsLoader.FileType.CURRENT));
         File old_file = new File(context.getExternalFilesDir(
-                Environment.DIRECTORY_DOWNLOADS), "poems_60days_old.json.gz");
+                Environment.DIRECTORY_DOWNLOADS),
+                PoemsLoader.getFilename(
+                        PoemsLoader.UpdateType.PARTIAL,
+                        PoemsLoader.FileType.PREV));
         return (file.exists() && file.length() > 1) ||
                 (old_file.exists() && old_file.length() > 1);
     }
