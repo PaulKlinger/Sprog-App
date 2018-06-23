@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.AppTheme); // Disable splashscreen image
+        setTheme(R.style.AppThemeDark); // Disable splashscreen image
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 

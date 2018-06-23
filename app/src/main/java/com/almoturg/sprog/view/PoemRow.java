@@ -14,6 +14,9 @@ import com.almoturg.sprog.model.Poem;
 import java.util.Calendar;
 import java.util.Locale;
 
+import static com.almoturg.sprog.util.Util.getThemeColor;
+import static com.almoturg.sprog.util.Util.isDarkTheme;
+
 public class PoemRow {
     private static Calendar cal;
     private static MarkdownConverter markdownConverter;
@@ -40,25 +43,26 @@ public class PoemRow {
         }
 
         if (border) {
-            poem_row.findViewById(R.id.container).setBackgroundResource(R.drawable.card_border);
+            if (isDarkTheme(context)) {
+                poem_row.findViewById(R.id.container).setBackgroundResource(R.drawable.card_border_darktheme);
+            } else {
+                poem_row.findViewById(R.id.container).setBackgroundResource(R.drawable.card_border);
+            }
             // setBackgroundResource removes padding...
             int card_padding = context.getResources().getDimensionPixelSize(R.dimen.card_padding);
             poem_row.findViewById(R.id.container).setPadding(
                     card_padding, card_padding, card_padding, card_padding);
         }
-
         if (main_list) {
             poem_row.findViewById(R.id.first_line).setVisibility(View.VISIBLE);
             poem_row.findViewById(R.id.content_wrapper).setVisibility(View.GONE);
             ((TextView) poem_row.findViewById(R.id.first_line)).setText(poem.first_line);
             if (poem.read && mark_read && !show_only_favorites) {
                 ((CardView) poem_row).setCardBackgroundColor(
-                        ResourcesCompat.getColor(context.getResources(),
-                                R.color.colorReadPoem, null));
+                        getThemeColor(context, R.attr.inactiveCardBackgroundColor));
             } else {
                 ((CardView) poem_row).setCardBackgroundColor(
-                        ResourcesCompat.getColor(context.getResources(),
-                                R.color.colorUnReadPoem, null));
+                        getThemeColor(context, R.attr.activeCardBackgroundColor));
             }
 
         } else {

@@ -28,7 +28,7 @@
                 android:layout_height="match_parent"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
-                android:background="@color/colorBackground"
+                style="@style/Mainlist"
                 app:fastScrollPopupBackgroundSize="50dp"
                 app:fastScrollPopupBgColor="@color/colorAccent"
                 app:fastScrollPopupTextSize="25sp"

@@ -2,12 +2,36 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="themeName">light</item>
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="backgroundColor">@color/colorBackground</item>
+        <item name="textColor">@color/colorText</item>
+
+        <item name="activeCardBackgroundColor">@color/colorUnReadPoem</item>
+        <item name="inactiveCardBackgroundColor">@color/colorReadPoem</item>
+        <item name="android:textColor">@color/colorText</item>
+
         <item name="android:windowDisablePreview">true</item>
         <item name="android:windowBackground">@color/colorBackground</item>
+    </style>
+
+    <style name="AppThemeDark" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="themeName">dark</item>
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="backgroundColor">@color/colorBackgroundDarkTheme</item>
+        <item name="activeCardBackgroundColor">@color/colorUnReadPoemDarkTheme</item>
+        <item name="inactiveCardBackgroundColor">@color/colorReadPoemDarkTheme</item>
+
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowBackground">@color/colorBackgroundDarkTheme</item>
+        <item name="android:textColor">@color/colorTextDarkTheme</item>
+        <item name="textColor">@color/colorTextDarkTheme</item>
     </style>
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
@@ -49,6 +73,20 @@
         <item name="android:layout_margin">2dp</item>
         <item name="android:minHeight">10dp</item>
         <item name="android:minWidth">10dp</item>
+    </style>
+
+    <style name="PoemRow" parent="CardView">
+        <item name="cardBackgroundColor">?attr/activeCardBackgroundColor</item>
+        <item name="android:textColor">?attr/textColor</item>
+    </style>
+
+    <style name="PoemText">
+        <item name="android:textColor">?attr/textColor</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Mainlist" parent="">
+        <item name="android:background">?attr/backgroundColor</item>
     </style>
 
     <style name="GraphStyle">

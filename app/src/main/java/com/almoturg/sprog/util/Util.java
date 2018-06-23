@@ -5,6 +5,9 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.text.Html;
 import android.text.Spanned;
+import android.util.TypedValue;
+
+import com.almoturg.sprog.R;
 
 public final class Util {
     public static <T> T last(T[] array) {
@@ -29,5 +32,17 @@ public final class Util {
 
     public static Spanned linkToSpan(String link) {
         return fromHtml(String.format("<a href=\"%s\">%s</a>", link, link));
+    }
+
+    public static int getThemeColor(Context context, int attrId) {
+        final TypedValue value = new TypedValue();
+        context.getTheme ().resolveAttribute (attrId, value, true);
+        return value.data;
+    }
+
+    public static boolean isDarkTheme(Context context) {
+        final TypedValue value = new TypedValue();
+        context.getTheme ().resolveAttribute (R.attr.themeName, value, true);
+        return value.string.equals("dark");
     }
 }

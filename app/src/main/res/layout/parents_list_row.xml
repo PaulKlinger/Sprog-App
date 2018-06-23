@@ -5,7 +5,7 @@
     cardview:cardCornerRadius="2dp"
     cardview:cardElevation="3dp"
     cardview:cardUseCompatPadding="true"
-    cardview:cardBackgroundColor="#fff"
+    style="@style/PoemRow"
     >
 
     <LinearLayout
@@ -17,7 +17,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorText"
+            android:textColor="?attr/textColor"
             android:id="@+id/content" />
 
         <TextView
