@@ -30,9 +30,9 @@
                 android:paddingRight="5dp"
                 style="@style/Mainlist"
                 app:fastScrollPopupBackgroundSize="50dp"
-                app:fastScrollPopupBgColor="@color/colorAccent"
+                app:fastScrollPopupBgColor="?attr/colorAccent"
                 app:fastScrollPopupTextSize="25sp"
-                app:fastScrollThumbColor="@color/colorAccent"
+                app:fastScrollThumbColor="?attr/colorAccent"
                 android:fillViewport="true"/>
             <TextView
                 android:layout_width="250dp"
@@ -91,10 +91,8 @@
                 android:id="@+id/main_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorAccent"
-                android:elevation="4dp"
-                android:theme="@style/ThemeToolbar"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+                android:background="?attr/colorPrimary"
+                android:elevation="4dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
@@ -117,7 +115,7 @@
                         android:paddingLeft="10dp"
                         android:paddingTop="5dp"
                         android:textSize="16sp"
-                        android:textColor="@color/colorText"/>
+                        style="@style/TextColor"/>
 
                     <View
                         android:layout_width="0dp"
@@ -135,12 +133,10 @@
                         android:layout_marginBottom="1dp"/>
                     <Button
                         android:id="@+id/toggle_favorites"
-                        style="@style/Widget.AppCompat.Button.Borderless"
+                        style="@style/FavoritesButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end|bottom"
-                        android:drawableLeft="@drawable/ic_stars"
-                        android:drawableStart="@drawable/ic_stars"
                         android:onClick="toggleFavorites"
                         android:minWidth="0dp"
                         android:minHeight="0dp"
@@ -153,12 +149,10 @@
 
                     <Button
                         android:id="@+id/toggle_search"
-                        style="@style/Widget.AppCompat.Button.Borderless"
+                        style="@style/SearchFilterButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end|bottom"
-                        android:drawableLeft="@drawable/search_filter"
-                        android:drawableStart="@drawable/search_filter"
                         android:minWidth="0dp"
                         android:onClick="toggleSearch"
                         android:padding="0dp"

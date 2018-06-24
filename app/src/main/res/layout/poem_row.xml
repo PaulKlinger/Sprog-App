@@ -24,6 +24,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:id="@+id/score"
+                style="@style/TextColorSecond"
                 android:minEms="5"/>
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -40,6 +41,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:layout_gravity="center_vertical"
+                    style="@style/TextColorSecond"
                     android:id="@+id/gold_count"/>
             </LinearLayout>
             <View
@@ -49,9 +51,9 @@
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                android:src="@drawable/ic_star_full"
                 android:layout_gravity="center_vertical"
                 android:id="@+id/favorite_icon"
+                style="@style/FavoritedIcon"
                 android:visibility="invisible"/>
             <View
                 android:layout_width="0dp"
@@ -62,6 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:gravity="center_vertical"
+                style="@style/TextColorSecond"
                 android:id="@+id/datetime"/>
         </LinearLayout>
         <TextView

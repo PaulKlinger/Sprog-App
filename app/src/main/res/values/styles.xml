@@ -9,21 +9,29 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="backgroundColor">@color/colorBackground</item>
         <item name="textColor">@color/colorText</item>
+        <item name="textColorSecond">@color/colorTextDark</item>
 
         <item name="activeCardBackgroundColor">@color/colorUnReadPoem</item>
         <item name="inactiveCardBackgroundColor">@color/colorReadPoem</item>
         <item name="android:textColor">@color/colorText</item>
+        <item name="android:textColorSecondary">@color/colorTextDark</item>
+
+        <item name="favoritesIcon">@drawable/ic_stars</item>
+        <item name="searchFilterIcon">@drawable/search_filter</item>
+        <item name="favoritedIcon">@drawable/ic_star_full</item>
+
+        <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
 
         <item name="android:windowDisablePreview">true</item>
         <item name="android:windowBackground">@color/colorBackground</item>
     </style>
 
-    <style name="AppThemeDark" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppThemeDark" parent="Theme.AppCompat.NoActionBar">
         <item name="themeName">dark</item>
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimaryDarkTheme</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkDarkTheme</item>
+        <item name="colorAccent">@color/colorAccentDarkTheme</item>
         <item name="backgroundColor">@color/colorBackgroundDarkTheme</item>
         <item name="activeCardBackgroundColor">@color/colorUnReadPoemDarkTheme</item>
         <item name="inactiveCardBackgroundColor">@color/colorReadPoemDarkTheme</item>
@@ -31,7 +39,15 @@
         <item name="android:windowDisablePreview">true</item>
         <item name="android:windowBackground">@color/colorBackgroundDarkTheme</item>
         <item name="android:textColor">@color/colorTextDarkTheme</item>
+        <item name="android:textColorSecondary">@color/colorTextSecondDarkTheme</item>
         <item name="textColor">@color/colorTextDarkTheme</item>
+        <item name="textColorSecond">@color/colorTextSecondDarkTheme</item>
+
+        <item name="favoritesIcon">@drawable/ic_stars_darktheme</item>
+        <item name="searchFilterIcon">@drawable/search_filter_darktheme</item>
+        <item name="favoritedIcon">@drawable/ic_star_full_darktheme</item>
+
+        <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
     </style>
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
@@ -42,16 +58,8 @@
 
     <style name="Widget.Spinner" parent="Widget.AppCompat.Spinner">
         <item name="android:background">@drawable/spinner_background</item>
-    </style>
-
-    <style name="ThemeToolbar" parent="@style/ThemeOverlay.AppCompat.ActionBar">
-        <!-- navigation icon color -->
-        <item name="colorControlNormal">@color/colorToolbarIcon</item>
-
-        <!-- color of the menu overflow icon -->
-        <item name="android:textColorSecondary">@color/colorToolbarIcon</item>
-        <item name="actionButtonStyle">@style/ActionButtonStyle</item>
-        <item name="titleTextColor">@color/colorToolbarIcon</item>
+        <item name="android:textColor">?attr/textColor</item>
+        <item name="android:popupBackground">?attr/backgroundColor</item>
     </style>
 
     <style name="ActionButtonStyle" parent="@style/Widget.AppCompat.ActionButton">
@@ -77,7 +85,7 @@
 
     <style name="PoemRow" parent="CardView">
         <item name="cardBackgroundColor">?attr/activeCardBackgroundColor</item>
-        <item name="android:textColor">?attr/textColor</item>
+        <item name="android:textColor">?attr/textColorSecond</item>
     </style>
 
     <style name="PoemText">
@@ -87,6 +95,28 @@
 
     <style name="Mainlist" parent="">
         <item name="android:background">?attr/backgroundColor</item>
+    </style>
+
+    <style name="TextColor">
+        <item name="android:textColor">?attr/textColor</item>
+    </style>
+
+    <style name="TextColorSecond">
+        <item name="android:textColor">?attr/textColorSecond</item>
+    </style>
+
+    <style name="FavoritesButton" parent="@style/Widget.AppCompat.Button.Borderless">
+        <item name="android:drawableLeft">?attr/favoritesIcon</item>
+        <item name="android:drawableStart">?attr/favoritesIcon</item>
+    </style>
+
+    <style name="SearchFilterButton" parent="@style/Widget.AppCompat.Button.Borderless">
+        <item name="android:drawableLeft">?attr/searchFilterIcon</item>
+        <item name="android:drawableStart">?attr/searchFilterIcon</item>
+    </style>
+
+    <style name="FavoritedIcon">
+        <item name="android:src">?attr/favoritedIcon</item>
     </style>
 
     <style name="GraphStyle">

@@ -4,6 +4,13 @@
 
     <attr name="backgroundColor" format="color"/>
     <attr name="textColor" format="color"/>
+    <attr name="textColorSecond" format="color"/>
     <attr name="activeCardBackgroundColor" format="color"/>
     <attr name="inactiveCardBackgroundColor" format="color"/>
+
+    <attr name="favoritesIcon" format="reference"/>
+    <attr name="searchFilterIcon" format="reference"/>
+    <attr name="favoritedIcon" format="reference"/>
+
+    <attr name="toolbarPopupTheme" format="reference"/>
 </resources>
