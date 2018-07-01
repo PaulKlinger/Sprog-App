@@ -27,4 +27,7 @@ public interface PreferencesRepository {
 
     long getLastFCMTimestamp();
     void setLastFCMTimestamp(long newValue);
+
+    boolean getDarkTheme();
+    void setDarkTheme(boolean newValue);
 }

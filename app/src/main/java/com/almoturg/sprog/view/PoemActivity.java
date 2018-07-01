@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.almoturg.sprog.R;
 import com.almoturg.sprog.SprogApplication;
 import com.almoturg.sprog.data.MarkdownConverter;
+import com.almoturg.sprog.model.PreferencesRepository;
 import com.almoturg.sprog.presenter.PoemPresenter;
 import com.almoturg.sprog.model.Poem;
 import com.almoturg.sprog.util.Util;
@@ -39,6 +40,7 @@ public class PoemActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ((SprogApplication) getApplication()).setTheme(this);
         super.onCreate(savedInstanceState);
 
         if (presenter == null) {
@@ -104,7 +106,7 @@ public class PoemActivity extends AppCompatActivity {
 
         favoriteItem = menu.findItem(R.id.action_addToFavorites);
         if (presenter.isFavorite()) {
-            favoriteItem.setIcon(R.drawable.ic_star_full);
+            favoriteItem.setIcon(Util.getThemeReference(this,R.attr.favoritedIcon));
         }
 
         MenuItem item = menu.findItem(R.id.action_share);
@@ -210,7 +212,7 @@ public class PoemActivity extends AppCompatActivity {
     public void addedFavorite(Poem selectedPoem) {
         Toast toast = Toast.makeText(this, "added to favorites", Toast.LENGTH_SHORT);
         toast.show();
-        favoriteItem.setIcon(R.drawable.ic_star_full);
+        favoriteItem.setIcon(Util.getThemeReference(this, R.attr.favoritedIcon));
         PoemRow.update_poem_row_poem_page(selectedPoem, selectedPoemView, this);
     }
 

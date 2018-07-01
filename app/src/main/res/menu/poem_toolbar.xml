@@ -6,13 +6,13 @@
     <item
         android:id="@+id/action_addToFavorites"
         android:title="add to favorites"
-        android:icon="@drawable/ic_star_empty"
+        android:icon="?attr/notFavoritedIcon"
         android:orderInCategory="100"
         app:showAsAction="always"/>
     <item
         android:id="@+id/action_toReddit"
         android:title="Reddit comment"
-        android:icon="@drawable/link"
+        android:icon="?attr/linkIcon"
         android:orderInCategory="200"
         app:showAsAction="always"/>
     <item
@@ -25,7 +25,7 @@
     <item
         android:id="@+id/action_copy"
         android:title="copy to clipboard"
-        android:icon="@drawable/ic_copy"
+        android:icon="?attr/copyIcon"
         android:orderInCategory="400"
         app:showAsAction="always"/>
 </menu>

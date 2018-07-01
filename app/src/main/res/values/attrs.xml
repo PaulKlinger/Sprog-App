@@ -11,6 +11,10 @@
     <attr name="favoritesIcon" format="reference"/>
     <attr name="searchFilterIcon" format="reference"/>
     <attr name="favoritedIcon" format="reference"/>
+    <attr name="notFavoritedIcon" format="reference"/>
+    <attr name="copyIcon" format="reference"/>
+    <attr name="linkIcon" format="reference"/>
+    <attr name="searchFieldEditBackground" format="reference"/>
 
     <attr name="toolbarPopupTheme" format="reference"/>
 </resources>

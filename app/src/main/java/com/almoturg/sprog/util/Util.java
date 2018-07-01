@@ -36,13 +36,19 @@ public final class Util {
 
     public static int getThemeColor(Context context, int attrId) {
         final TypedValue value = new TypedValue();
-        context.getTheme ().resolveAttribute (attrId, value, true);
+        context.getTheme().resolveAttribute(attrId, value, true);
+        return value.data;
+    }
+
+    public static int getThemeReference(Context context, int attrId) {
+        final TypedValue value = new TypedValue();
+        context.getTheme().resolveAttribute(attrId, value, false);
         return value.data;
     }
 
     public static boolean isDarkTheme(Context context) {
         final TypedValue value = new TypedValue();
-        context.getTheme ().resolveAttribute (R.attr.themeName, value, true);
+        context.getTheme().resolveAttribute(R.attr.themeName, value, true);
         return value.string.equals("dark");
     }
 }

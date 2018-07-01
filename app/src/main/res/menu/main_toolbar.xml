@@ -37,4 +37,10 @@
         android:orderInCategory="500"
         android:title="statistics"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_darktheme"
+        android:orderInCategory="600"
+        android:title="dark theme"
+        android:checkable="true"
+        app:showAsAction="never"/>
 </menu>

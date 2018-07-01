@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.almoturg.sprog.R;
+import com.almoturg.sprog.SprogApplication;
 import com.almoturg.sprog.model.PoemStatistics;
 import com.almoturg.sprog.presenter.StatsPresenter;
 import com.almoturg.sprog.util.Util;
@@ -25,6 +26,7 @@ public class StatsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ((SprogApplication) getApplication()).setTheme(this);
 
         if (presenter == null) {
             presenter = new StatsPresenter();

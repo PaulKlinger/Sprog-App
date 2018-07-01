@@ -8,17 +8,21 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="backgroundColor">@color/colorBackground</item>
-        <item name="textColor">@color/colorText</item>
-        <item name="textColorSecond">@color/colorTextDark</item>
+        <item name="textColor">@color/colorTextDark</item>
+        <item name="textColorSecond">@color/colorText</item>
 
         <item name="activeCardBackgroundColor">@color/colorUnReadPoem</item>
         <item name="inactiveCardBackgroundColor">@color/colorReadPoem</item>
-        <item name="android:textColor">@color/colorText</item>
-        <item name="android:textColorSecondary">@color/colorTextDark</item>
+        <item name="android:textColor">@color/colorTextDark</item>
+        <item name="android:textColorSecondary">@color/colorText</item>
 
         <item name="favoritesIcon">@drawable/ic_stars</item>
         <item name="searchFilterIcon">@drawable/search_filter</item>
         <item name="favoritedIcon">@drawable/ic_star_full</item>
+        <item name="notFavoritedIcon">@drawable/ic_star_empty</item>
+        <item name="linkIcon">@drawable/link</item>
+        <item name="copyIcon">@drawable/ic_copy</item>
+        <item name="searchFieldEditBackground">@drawable/search_field_border</item>
 
         <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
 
@@ -46,6 +50,10 @@
         <item name="favoritesIcon">@drawable/ic_stars_darktheme</item>
         <item name="searchFilterIcon">@drawable/search_filter_darktheme</item>
         <item name="favoritedIcon">@drawable/ic_star_full_darktheme</item>
+        <item name="notFavoritedIcon">@drawable/ic_star_empty_darktheme</item>
+        <item name="linkIcon">@drawable/link_darktheme</item>
+        <item name="copyIcon">@drawable/ic_copy_darktheme</item>
+        <item name="searchFieldEditBackground">@drawable/search_field_border_darktheme</item>
 
         <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
     </style>
@@ -75,6 +83,16 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="ThemeToolbar" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <!-- navigation icon color -->
+        <item name="colorControlNormal">?attr/textColorSecond</item>
+
+        <!-- color of the menu overflow icon -->
+        <item name="android:textColorSecondary">?attr/textColorSecond</item>
+        <item name="actionButtonStyle">@style/ActionButtonStyle</item>
+        <item name="titleTextColor">?attr/textColorSecond</item>
+    </style>
+
     <style name="FilterButton" parent="Base.Widget.AppCompat.Button">
         <item name="android:textSize">12sp</item>
         <item name="android:padding">10dp</item>
@@ -88,12 +106,20 @@
         <item name="android:textColor">?attr/textColorSecond</item>
     </style>
 
+    <style name="SearchBox">
+        <item name="android:background">?attr/activeCardBackgroundColor</item>
+    </style>
+
     <style name="PoemText">
         <item name="android:textColor">?attr/textColor</item>
         <item name="android:textSize">14sp</item>
     </style>
 
     <style name="Mainlist" parent="">
+        <item name="android:background">?attr/backgroundColor</item>
+    </style>
+
+    <style name="BackgroundColor">
         <item name="android:background">?attr/backgroundColor</item>
     </style>
 
@@ -119,6 +145,11 @@
         <item name="android:src">?attr/favoritedIcon</item>
     </style>
 
+    <style name="SearchFieldEdit">
+        <item name="android:background">?attr/searchFieldEditBackground</item>
+        <item name="android:textColor">?attr/textColor</item>
+    </style>
+
     <style name="GraphStyle">
         <item name="android:background">@color/ap_transparent</item>
         <item name="backgroundColor">@color/ap_transparent</item>
@@ -126,16 +157,16 @@
         <item name="gridBackgroundColor">@color/ap_transparent</item>
         <item name="domainLineColor">#AAA</item>
         <item name="rangeLineColor">#AAA</item>
-        <item name="lineLabelTextColorTop">@color/ap_charcoal</item>
-        <item name="lineLabelTextColorBottom">@color/ap_charcoal</item>
-        <item name="lineLabelTextColorLeft">@color/ap_charcoal</item>
-        <item name="lineLabelTextColorRight">@color/ap_charcoal</item>
+        <item name="lineLabelTextColorTop">?attr/textColorSecond</item>
+        <item name="lineLabelTextColorBottom">?attr/textColorSecond</item>
+        <item name="lineLabelTextColorLeft">?attr/textColorSecond</item>
+        <item name="lineLabelTextColorRight">?attr/textColorSecond</item>
         <item name="domainOriginLineColor">@color/ap_transparent</item>
         <item name="rangeOriginLineColor">@color/ap_transparent</item>
-        <item name="titleTextColor">@color/ap_black</item>
-        <item name="domainTitleTextColor">@color/ap_black</item>
-        <item name="rangeTitleTextColor">@color/ap_black</item>
-        <item name="legendTextColor">@color/ap_black</item>
+        <item name="titleTextColor">?attr/textColorSecond</item>
+        <item name="domainTitleTextColor">?attr/textColorSecond</item>
+        <item name="rangeTitleTextColor">?attr/textColorSecond</item>
+        <item name="legendTextColor">?attr/textColorSecond</item>
         <item name="titleTextSize">17sp</item>
         <item name="rangeTitleTextSize">13sp</item>
         <item name="domainTitleTextSize">13sp</item>

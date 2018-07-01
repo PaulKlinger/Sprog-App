@@ -22,6 +22,5 @@
 
     <color name="colorGraph">#65A782</color>
 
-    <color name="colorFilterButtonOff">#fff</color>
-    <color name="colorFilterButtonOn">#aaa</color>
+
 </resources>

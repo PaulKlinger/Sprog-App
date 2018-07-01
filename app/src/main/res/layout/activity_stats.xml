@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:lineSpacingMultiplier="1.1"
                 android:padding="10dp"
-                android:textColor="@color/colorTextDark"
+                style="@style/TextColorSecond"
                 android:textSize="15sp" />
 
             <com.androidplot.xy.XYPlot

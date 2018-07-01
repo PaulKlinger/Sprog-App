@@ -68,4 +68,13 @@ public class SprogApplication extends Application {
         }
         return preferences;
     }
+
+    public void setTheme(Context context){
+        PreferencesRepository preferences = getPreferences();
+        if (preferences.getDarkTheme()){
+            context.setTheme(R.style.AppThemeDark);
+        } else {
+            context.setTheme(R.style.AppTheme);
+        }
+    }
 }

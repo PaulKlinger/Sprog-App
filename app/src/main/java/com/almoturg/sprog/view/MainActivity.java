@@ -3,10 +3,12 @@ package com.almoturg.sprog.view;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -32,6 +34,7 @@ import com.almoturg.sprog.presenter.MainPresenter;
 import com.almoturg.sprog.R;
 import com.almoturg.sprog.SprogApplication;
 import com.almoturg.sprog.data.PoemsFileParser;
+import com.almoturg.sprog.util.Util;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
@@ -59,7 +62,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.AppThemeDark); // Disable splashscreen image
+
+        // set theme (according to preferences) and disable splashscreen
+        ((SprogApplication) getApplication()).setTheme(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -165,8 +171,13 @@ public class MainActivity extends AppCompatActivity {
         if (no_favorites){
             viewFlipper.setDisplayedChild(VIEWFLIPPER_EMPTY_FAVORITES);
         }
-        findViewById(R.id.toggle_favorites).setBackgroundResource(
-                R.drawable.favorites_button_background);
+        if (Util.isDarkTheme(this)){
+            findViewById(R.id.toggle_favorites).setBackgroundResource(
+                    R.drawable.favorites_button_background_darktheme);
+        } else {
+            findViewById(R.id.toggle_favorites).setBackgroundResource(
+                    R.drawable.favorites_button_background);
+        }
     }
 
     public void disableFavorites() {
@@ -184,7 +195,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void enableSearch(String search_string){
         search_box.setVisibility(View.VISIBLE);
-        findViewById(R.id.toggle_search).setBackgroundResource(R.drawable.search_button_background);
+        if (Util.isDarkTheme(this)){
+            findViewById(R.id.toggle_search).setBackgroundResource(
+                    R.drawable.search_button_background_darktheme);
+        } else {
+            findViewById(R.id.toggle_search).setBackgroundResource(
+                    R.drawable.search_button_background);
+        }
         //search_text.requestFocus();
         //((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
         //        .showSoftInput(search_text, InputMethodManager.SHOW_IMPLICIT);
@@ -224,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
         menu.findItem(R.id.action_mark_read).setChecked(preferences.getMarkRead());
         menu.findItem(R.id.action_notify_new).setChecked(preferences.getNotifyNew());
         menu.findItem(R.id.action_long_press).setChecked(preferences.getLongPressLink());
+        menu.findItem(R.id.action_darktheme).setChecked(preferences.getDarkTheme());
         return true;
     }
 
@@ -243,12 +261,14 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.action_notify_new) {
             item.setChecked(!item.isChecked());
             presenter.optionNotifyNew(item.isChecked());
-            trackEvent("notificationOption", item.isChecked() ? "yes" : "no", null);
         } else if (id == R.id.action_long_press){
             item.setChecked(!item.isChecked());
             presenter.optionLongPress(item.isChecked());
         } else if (id == R.id.action_stats) {
             presenter.optionStats();
+        } else if (id == R.id.action_darktheme) {
+            item.setChecked(!item.isChecked());
+            presenter.optionDarkTheme(item.isChecked());
         }
 
         return super.onOptionsItemSelected(item);
@@ -346,14 +366,13 @@ public class MainActivity extends AppCompatActivity {
     public void toggleFilterShort(View view) {presenter.toggleFilterShort();}
 
     public void setFilterButtonState(boolean unread_state, boolean short_state, boolean long_state) {
+        int inactive_color = Util.getThemeColor(this, R.attr.activeCardBackgroundColor);
+        int active_color = Util.getThemeColor(this, R.attr.inactiveCardBackgroundColor);
         ViewCompat.setBackgroundTintList(findViewById(R.id.button_filter_unread),
-                ContextCompat.getColorStateList(this,
-                        unread_state ? R.color.colorFilterButtonOn : R.color.colorFilterButtonOff));
+                ColorStateList.valueOf(unread_state ? active_color : inactive_color));
         ViewCompat.setBackgroundTintList(findViewById(R.id.button_filter_short),
-                ContextCompat.getColorStateList(this,
-                        short_state ? R.color.colorFilterButtonOn : R.color.colorFilterButtonOff));
+                ColorStateList.valueOf(short_state ? active_color : inactive_color));
         ViewCompat.setBackgroundTintList(findViewById(R.id.button_filter_long),
-                ContextCompat.getColorStateList(this,
-                        long_state ? R.color.colorFilterButtonOn : R.color.colorFilterButtonOff));
+                ColorStateList.valueOf(long_state ? active_color : inactive_color));
     }
 }

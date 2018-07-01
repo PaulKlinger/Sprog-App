@@ -276,6 +276,7 @@ public class MainPresenter {
         preferences.setNotifyNew(newValue);
         // if the user set the notification manually we don't need to show the dialogue
         preferences.setDisplayedNotificationDialog(1);
+        activity.trackEvent("notificationOption", newValue ? "yes" : "no", null);
     }
 
     public void optionLongPress(boolean newValue) {
@@ -285,6 +286,12 @@ public class MainPresenter {
     public void optionStats() {
         activity.trackEvent("openStats", "stats", null);
         activity.launchStats();
+    }
+
+    public void optionDarkTheme(boolean newValue) {
+        activity.trackEvent("darkTheme", newValue ? "enabled" : "disabled", null);
+        preferences.setDarkTheme(newValue);
+        activity.recreate();
     }
 
     public void toggleSearch() {

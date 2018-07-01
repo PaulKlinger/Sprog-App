@@ -16,6 +16,7 @@ public class PreferencesRepositoryImpl implements PreferencesRepository {
     private static final String PREF_LAST_POEM_TIME = "LAST_POEM_TIME";
     private static final String PREF_UPDATE_NEXT = "UPDATE_NEXT";
     private static final String PREF_LAST_FCM_TSTAMP = "LAST_FCM_TSTAMP";
+    private static final String PREF_DARK_THEME = "DARK_THEME";
 
     private SharedPreferences prefs;
 
@@ -130,5 +131,15 @@ public class PreferencesRepositoryImpl implements PreferencesRepository {
     @Override
     public void setLastFCMTimestamp(long newValue) {
         setValue(PREF_LAST_FCM_TSTAMP, newValue);
+    }
+
+    @Override
+    public boolean getDarkTheme() {
+        return prefs.getBoolean(PREF_DARK_THEME,false);
+    }
+
+    @Override
+    public void setDarkTheme(boolean newValue) {
+        setValue(PREF_DARK_THEME, newValue);
     }
 }
