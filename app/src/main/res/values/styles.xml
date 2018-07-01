@@ -11,6 +11,7 @@
         <item name="textColor">@color/colorTextDark</item>
         <item name="textColorSecond">@color/colorText</item>
         <item name="toolbarIconColor">@color/colorToolbarIcon</item>
+        <item name="searchBoxColor">@color/colorUnReadPoem</item>
 
         <item name="activeCardBackgroundColor">@color/colorUnReadPoem</item>
         <item name="inactiveCardBackgroundColor">@color/colorReadPoem</item>
@@ -42,6 +43,7 @@
         <item name="activeCardBackgroundColor">@color/colorUnReadPoemDarkTheme</item>
         <item name="inactiveCardBackgroundColor">@color/colorReadPoemDarkTheme</item>
         <item name="toolbarIconColor">@color/colorAccentDarkTheme</item>
+        <item name="searchBoxColor">@color/colorUnReadPoemDarkTheme</item>
 
         <item name="android:windowDisablePreview">true</item>
         <item name="android:windowBackground">@color/colorBackgroundDarkTheme</item>
@@ -111,7 +113,7 @@
     </style>
 
     <style name="SearchBox">
-        <item name="android:background">?attr/activeCardBackgroundColor</item>
+        <item name="android:background">?attr/searchBoxColor</item>
     </style>
 
     <style name="PoemText">

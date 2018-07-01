@@ -8,6 +8,7 @@
     <attr name="activeCardBackgroundColor" format="color"/>
     <attr name="inactiveCardBackgroundColor" format="color"/>
     <attr name="toolbarIconColor" format="color"/>
+    <attr name="searchBoxColor" format="color"/>
 
     <attr name="favoritesIcon" format="reference"/>
     <attr name="searchFilterIcon" format="reference"/>

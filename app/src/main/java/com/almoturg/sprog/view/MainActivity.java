@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText search_text;
     private Spinner sortSpinner;
     private ArrayAdapter<CharSequence> spinnerAdapter;
+    private Button favorites_button;
 
     private Tracker mTracker;
 
@@ -92,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         viewFlipper = (ViewFlipper) findViewById(R.id.poemsListEmptyFlipper);
         search_box = findViewById(R.id.search_box);
         search_text = (EditText) findViewById(R.id.search_text);
+        favorites_button = (Button) findViewById(R.id.toggle_favorites);
 
         sortSpinner = (Spinner) findViewById(R.id.sort_spinner);
         spinnerAdapter = ArrayAdapter.createFromResource(this,
@@ -172,10 +175,12 @@ public class MainActivity extends AppCompatActivity {
             viewFlipper.setDisplayedChild(VIEWFLIPPER_EMPTY_FAVORITES);
         }
         if (Util.isDarkTheme(this)){
-            findViewById(R.id.toggle_favorites).setBackgroundResource(
+            favorites_button.setBackgroundResource(
                     R.drawable.favorites_button_background_darktheme);
+            favorites_button.setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.ic_stars,0,0,0);
         } else {
-            findViewById(R.id.toggle_favorites).setBackgroundResource(
+            favorites_button.setBackgroundResource(
                     R.drawable.favorites_button_background);
         }
     }
@@ -183,10 +188,14 @@ public class MainActivity extends AppCompatActivity {
     public void disableFavorites() {
         findViewById(R.id.toggle_favorites).setBackgroundColor(Color.TRANSPARENT);
         int toggle_favorites_padding = getResources().getDimensionPixelSize(R.dimen.toggle_favorites_padding);
-        findViewById(R.id.toggle_favorites).setPadding(
+        favorites_button.setPadding(
                 toggle_favorites_padding, toggle_favorites_padding,
                 toggle_favorites_padding, toggle_favorites_padding);
         viewFlipper.setDisplayedChild(VIEWFLIPPER_RECYCLERVIEW);
+        if (Util.isDarkTheme(this)){
+           favorites_button.setCompoundDrawablesWithIntrinsicBounds(
+                   R.drawable.ic_stars_darktheme,0,0,0);
+        }
     }
 
     public void toggleSearch(View view) {
