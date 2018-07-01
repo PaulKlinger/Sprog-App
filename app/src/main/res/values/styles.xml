@@ -41,7 +41,7 @@
         <item name="backgroundColor">@color/colorBackgroundDarkTheme</item>
         <item name="activeCardBackgroundColor">@color/colorUnReadPoemDarkTheme</item>
         <item name="inactiveCardBackgroundColor">@color/colorReadPoemDarkTheme</item>
-        <item name="toolbarIconColor">@color/colorTextSecondDarkTheme</item>
+        <item name="toolbarIconColor">@color/colorAccentDarkTheme</item>
 
         <item name="android:windowDisablePreview">true</item>
         <item name="android:windowBackground">@color/colorBackgroundDarkTheme</item>
@@ -70,7 +70,7 @@
 
     <style name="Widget.Spinner" parent="Widget.AppCompat.Spinner">
         <item name="android:background">@drawable/spinner_background</item>
-        <item name="android:textColor">?attr/textColor</item>
+        <item name="android:textColor">?attr/textColorSecond</item>
         <item name="android:popupBackground">?attr/backgroundColor</item>
     </style>
 
