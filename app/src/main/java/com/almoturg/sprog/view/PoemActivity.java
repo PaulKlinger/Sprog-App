@@ -219,7 +219,7 @@ public class PoemActivity extends AppCompatActivity {
     public void removedFavorite(Poem selectedPoem) {
         Toast toast = Toast.makeText(this, "removed from favorites", Toast.LENGTH_SHORT);
         toast.show();
-        favoriteItem.setIcon(R.drawable.ic_star_empty);
+        favoriteItem.setIcon(Util.getThemeReference(this, R.attr.notFavoritedIcon));
         PoemRow.update_poem_row_poem_page(selectedPoem, selectedPoemView, this);
     }
 
