@@ -101,8 +101,11 @@ public class PoemStatistics {
             monthsPoems.get(pkey).add(p);
         }
         for (int key : monthsPoems.keySet()) {
-            monthsAvgScore.put(key, Stream.of(monthsPoems.get(key))
-                    .mapToDouble(p -> p.score).sum() / monthsPoems.get(key).size());
+            int npoems = monthsPoems.get(key).size();
+            monthsAvgScore.put(key, npoems > 0 ?
+                    Stream.of(monthsPoems.get(key)).mapToDouble(p -> p.score).sum() / npoems
+                    : null
+            );
         }
         return monthsAvgScore;
     }

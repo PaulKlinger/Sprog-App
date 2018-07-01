@@ -31,7 +31,7 @@ public class Graphs {
         XYSeries data = new SimpleXYSeries(xs, ys, "");
         if (type == BAR) {
             BarFormatter formatter = new BarFormatter(
-                    ContextCompat.getColor(context, R.color.colorGraph), Color.TRANSPARENT);
+                    Util.getThemeColor(context, R.attr.colorAccent), Color.TRANSPARENT);
             formatter.setLegendIconEnabled(false);
             plot.addSeries(data, formatter);
             BarRenderer br = plot.getRenderer(BarRenderer.class);
@@ -39,7 +39,7 @@ public class Graphs {
             plot.getGraph().getDomainGridLinePaint().setColor(Color.TRANSPARENT);
         } else if (type == LINE) {
             LineAndPointFormatter formatter = new LineAndPointFormatter(
-                    ContextCompat.getColor(context, R.color.colorGraph),
+                    Util.getThemeColor(context, R.attr.colorAccent),
                     Color.TRANSPARENT, Color.TRANSPARENT, null);
             formatter.setLegendIconEnabled(false);
             plot.addSeries(data, formatter);
@@ -50,7 +50,7 @@ public class Graphs {
 
         plot.setDomainBoundaries((int) xs.get(xs.size() - 1) - Util.getDisplayWidthDp(context) / 20,
                 xs.get(xs.size() - 1).intValue() + 0.5, BoundaryMode.FIXED);
-        int maxy = Stream.of(ys).mapToInt(n -> n.intValue()).max().orElse(0);
+        int maxy = Stream.of(ys).mapToInt(n -> n == null ? 0 : n.intValue()).max().orElse(0);
         plot.setRangeBoundaries(0, maxy, BoundaryMode.FIXED);
         PanZoom panZoom = PanZoom.attach(plot);
         panZoom.setPan(PanZoom.Pan.HORIZONTAL);
