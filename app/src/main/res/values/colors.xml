@@ -11,9 +11,9 @@
     <color name="colorToolbarIcon">#9A343434</color>
     <color name="colorLauncherIcon">#FF8BC34A</color>
 
-    <color name="colorPrimaryDarkTheme">#283921</color>
-    <color name="colorPrimaryDarkDarkTheme">#0a210c</color>
-    <color name="colorAccentDarkTheme">#33691e</color>
+    <color name="colorPrimaryDarkTheme">#263238</color>
+    <color name="colorPrimaryDarkDarkTheme">#212121</color>
+    <color name="colorAccentDarkTheme">#8dc34e</color>
     <color name="colorBackgroundDarkTheme">#161616</color>
     <color name="colorTextDarkTheme">#ececec</color>
     <color name="colorTextSecondDarkTheme">#b6b6b6</color>

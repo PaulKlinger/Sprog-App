@@ -15,6 +15,7 @@
     <attr name="copyIcon" format="reference"/>
     <attr name="linkIcon" format="reference"/>
     <attr name="searchFieldEditBackground" format="reference"/>
+    <attr name="fleuron" format="reference"/>
 
     <attr name="toolbarPopupTheme" format="reference"/>
 </resources>

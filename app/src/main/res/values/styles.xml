@@ -23,6 +23,7 @@
         <item name="linkIcon">@drawable/link</item>
         <item name="copyIcon">@drawable/ic_copy</item>
         <item name="searchFieldEditBackground">@drawable/search_field_border</item>
+        <item name="fleuron">@drawable/fleuron_white</item>
 
         <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
 
@@ -54,14 +55,15 @@
         <item name="linkIcon">@drawable/link_darktheme</item>
         <item name="copyIcon">@drawable/ic_copy_darktheme</item>
         <item name="searchFieldEditBackground">@drawable/search_field_border_darktheme</item>
+        <item name="fleuron">@drawable/fleuron_green</item>
 
         <item name="toolbarPopupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
     </style>
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/background_splash</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkTheme</item>
+        <item name="colorPrimary">@color/colorPrimaryDarkDarkTheme</item>
     </style>
 
     <style name="Widget.Spinner" parent="Widget.AppCompat.Spinner">
@@ -148,6 +150,10 @@
     <style name="SearchFieldEdit">
         <item name="android:background">?attr/searchFieldEditBackground</item>
         <item name="android:textColor">?attr/textColor</item>
+    </style>
+
+    <style name="Fleuron">
+        <item name="android:src">?attr/fleuron</item>
     </style>
 
     <style name="GraphStyle">
