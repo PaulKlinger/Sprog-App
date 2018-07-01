@@ -11,10 +11,10 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     //RecyclerView
-    compile 'com.android.support:recyclerview-v7:24.2.0'
+    implementation 'com.android.support:recyclerview-v7:24.2.0'
 }
 
 //To deploy, re-comment following line & run ./gradlew clean assembleRelease install bintrayUpload
