@@ -10,6 +10,7 @@
         <item name="backgroundColor">@color/colorBackground</item>
         <item name="textColor">@color/colorTextDark</item>
         <item name="textColorSecond">@color/colorText</item>
+        <item name="toolbarIconColor">@color/colorToolbarIcon</item>
 
         <item name="activeCardBackgroundColor">@color/colorUnReadPoem</item>
         <item name="inactiveCardBackgroundColor">@color/colorReadPoem</item>
@@ -40,6 +41,7 @@
         <item name="backgroundColor">@color/colorBackgroundDarkTheme</item>
         <item name="activeCardBackgroundColor">@color/colorUnReadPoemDarkTheme</item>
         <item name="inactiveCardBackgroundColor">@color/colorReadPoemDarkTheme</item>
+        <item name="toolbarIconColor">@color/colorTextSecondDarkTheme</item>
 
         <item name="android:windowDisablePreview">true</item>
         <item name="android:windowBackground">@color/colorBackgroundDarkTheme</item>
@@ -87,12 +89,12 @@
 
     <style name="ThemeToolbar" parent="@style/ThemeOverlay.AppCompat.ActionBar">
         <!-- navigation icon color -->
-        <item name="colorControlNormal">?attr/textColorSecond</item>
+        <item name="colorControlNormal">?attr/toolbarIconColor</item>
 
         <!-- color of the menu overflow icon -->
-        <item name="android:textColorSecondary">?attr/textColorSecond</item>
+        <item name="android:textColorSecondary">?attr/toolbarIconColor</item>
         <item name="actionButtonStyle">@style/ActionButtonStyle</item>
-        <item name="titleTextColor">?attr/textColorSecond</item>
+        <item name="titleTextColor">?attr/toolbarIconColor</item>
     </style>
 
     <style name="FilterButton" parent="Base.Widget.AppCompat.Button">
