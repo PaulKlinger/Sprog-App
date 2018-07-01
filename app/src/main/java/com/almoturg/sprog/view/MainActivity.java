@@ -367,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void setFilterButtonState(boolean unread_state, boolean short_state, boolean long_state) {
         int inactive_color = Util.getThemeColor(this, R.attr.activeCardBackgroundColor);
-        int active_color = Util.getThemeColor(this, R.attr.inactiveCardBackgroundColor);
+        int active_color = Util.getThemeColor(this, R.attr.colorAccent);
         ViewCompat.setBackgroundTintList(findViewById(R.id.button_filter_unread),
                 ColorStateList.valueOf(unread_state ? active_color : inactive_color));
         ViewCompat.setBackgroundTintList(findViewById(R.id.button_filter_short),
