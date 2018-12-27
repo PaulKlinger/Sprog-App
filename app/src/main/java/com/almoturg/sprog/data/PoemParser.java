@@ -51,6 +51,8 @@ class PoemParser {
 
     private Poem readPoem() throws IOException {
         int gold = -1;
+        int silver = -1;
+        int platinum = -1;
         int score = -1;
         String content = null;
         double timestamp = -1;
@@ -75,6 +77,12 @@ class PoemParser {
             switch (name) {
                 case "gold":
                     gold = reader.nextInt();
+                    break;
+                case "silver":
+                    silver = reader.nextInt();
+                    break;
+                case "platinum":
+                    platinum = reader.nextInt();
                     break;
                 case "score":
                     score = reader.nextInt();
@@ -124,7 +132,7 @@ class PoemParser {
             favorite = true;
         }
 
-        Poem poem = new Poem(gold, score, content, first_line, timestamp,
+        Poem poem = new Poem(silver, gold, platinum, score, content, first_line, timestamp,
                 post_title, post_author, post_content, post_url,
                 parents, link, main_poem, read, favorite);
 

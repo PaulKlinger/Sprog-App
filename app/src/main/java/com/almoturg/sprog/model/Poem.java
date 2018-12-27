@@ -6,7 +6,9 @@ import java.util.List;
 
 
 public class Poem {
+    public int silver;
     public int gold;
+    public int platinum;
     public int score;
     public String content;
     public CharSequence first_line;
@@ -22,12 +24,15 @@ public class Poem {
     public boolean read;
     public boolean favorite;
 
-    public Poem(int gold, int score, String content, CharSequence first_line, double timestamp,
+    public Poem(int silver, int gold, int platinum, int score, String content,
+                CharSequence first_line, double timestamp,
                 String post_title, String post_author, String post_content, String post_url,
                 List<ParentComment> parents, String link, Poem main_poem,
                 boolean is_read, boolean is_favorite) {
         this.content = content;
+        this.silver = silver;
         this.gold = gold;
+        this.platinum = platinum;
         this.score = score;
         this.timestamp = timestamp;
         this.timestamp_long = (long) timestamp * 1000;
