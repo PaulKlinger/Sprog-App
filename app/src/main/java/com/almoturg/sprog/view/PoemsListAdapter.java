@@ -128,8 +128,8 @@ public class PoemsListAdapter extends RecyclerView.Adapter<PoemsListAdapter.View
             return DateFormat.format("yyyy-MM", cal).toString();
         } else if (presenter.sort_order.equals("Score")) {
             return Integer.toString(filtered_poems.get(position).score);
-        } else if (presenter.sort_order.equals("Gold")) {
-            return Integer.toString(filtered_poems.get(position).gold);
+        } else if (presenter.sort_order.equals("Awards")) {
+            return Integer.toString(filtered_poems.get(position).totalAwards());
         }
         return "";
     }

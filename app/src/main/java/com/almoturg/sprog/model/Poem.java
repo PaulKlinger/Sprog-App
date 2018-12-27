@@ -59,6 +59,10 @@ public class Poem {
 
     }
 
+    public int totalAwards(){
+        return this.platinum + 2 * this.gold + 3 * this.silver;
+    }
+
     public String getId() {
         return Util.last(this.link.split("/"));
     }

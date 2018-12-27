@@ -3,7 +3,7 @@
     <string-array name="sort_orders">
         <item>Date</item>
         <item>Score</item>
-        <item>Gold</item>
+        <item>Awards</item>
         <item>Random</item>
     </string-array>
     <string name="title_activity_stats">Statistics</string>

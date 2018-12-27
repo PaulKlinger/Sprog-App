@@ -16,8 +16,8 @@ public class Poems {
             Collections.sort(poems, (p1, p2) -> (int) (p2.timestamp - p1.timestamp));
         } else if (sort_order.equals("Score")) {
             Collections.sort(poems, (p1, p2) -> (p2.score - p1.score));
-        } else if (sort_order.equals("Gold")) {
-            Collections.sort(poems, (p1, p2) -> (p2.gold - p1.gold));
+        } else if (sort_order.equals("Awards")) {
+            Collections.sort(poems, (p1, p2) -> (p2.totalAwards() - p1.totalAwards()));
         } else if (sort_order.equals("Random")) {
             Collections.shuffle(poems);
         }
