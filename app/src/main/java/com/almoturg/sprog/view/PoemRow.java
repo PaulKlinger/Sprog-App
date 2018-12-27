@@ -104,7 +104,11 @@ public class PoemRow {
         ((TextView) poem_row.findViewById(R.id.score)).setText(Long.toString(poem.score));
 
         cal.setTimeInMillis((long) poem.timestamp * 1000);
-        ((TextView) poem_row.findViewById(R.id.datetime)).setText(
-                DateFormat.format("yyyy-MM-dd HH:mm:ss", cal).toString());
+        ((TextView) poem_row.findViewById(R.id.date)).setText(
+                DateFormat.format("yyyy-MM-dd", cal).toString());
+        if (context.getResources().getConfiguration().screenWidthDp > 350) {
+            ((TextView) poem_row.findViewById(R.id.time)).setText(
+                    DateFormat.format(" HH:mm:ss", cal).toString());
+        }
     }
 }

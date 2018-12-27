@@ -25,7 +25,7 @@
                 android:gravity="center_vertical"
                 android:id="@+id/score"
                 style="@style/TextColorSecond"
-                android:minEms="5"/>
+                android:minEms="3"/>
             <LinearLayout
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
@@ -109,7 +109,14 @@
                 android:layout_gravity="right"
                 android:gravity="center_vertical"
                 style="@style/TextColorSecond"
-                android:id="@+id/datetime"/>
+                android:id="@+id/date"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:gravity="center_vertical"
+                style="@style/TextColorSecond"
+                android:id="@+id/time"/>
         </LinearLayout>
         <TextView
             android:id="@+id/first_line"
