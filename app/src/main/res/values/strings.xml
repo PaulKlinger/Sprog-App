@@ -12,7 +12,9 @@
     &#8226; Number of read poems: %2$,d (%3$.2f%%)<br/>
     &#8226; Average words: %4$.1f<br/>
     &#8226; Total words: %5$,d<br/>
+    &#8226; Total silver: %11$,d<br/>
     &#8226; Total gold: %6$,d<br/>
+    &#8226; Total platinum: %12$,d<br/>
     &#8226; Median score: %7$.0f<br/>
     &#8226; Total score: %8$,d<br/>
     &#8226; Timmy poems: %9$,d<br/>

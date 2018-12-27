@@ -25,7 +25,9 @@ public class PoemStatistics {
     public double avg_score;
     public double med_score;
 
+    public long total_silver;
     public long total_gold;
+    public long total_platinum;
 
     public long total_timmy;
     public long total_timmy_fucking_died;
@@ -41,7 +43,9 @@ public class PoemStatistics {
             StringTokenizer st = new StringTokenizer(p.content);
             total_words += st.countTokens();
             total_score += p.score;
+            total_silver += p.silver;
             total_gold += p.gold;
+            total_platinum += p.platinum;
             if (p.content.toLowerCase().contains("timmy")) {
                 total_timmy++;
             }
