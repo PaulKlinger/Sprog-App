@@ -27,22 +27,66 @@
                 style="@style/TextColorSecond"
                 android:minEms="5"/>
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/silver_display"
+                android:visibility="invisible">
+
+                <ImageView
+                    android:layout_height="15dp"
+                    android:layout_width="15dp"
+                    android:src="@drawable/my_silver_noborder"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="3dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="2dp"
+                    style="@style/TextColorSecond"
+                    android:id="@+id/silver_count"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/gold_display"
                 android:visibility="invisible">
                 <ImageView
                     android:layout_height="15dp"
                     android:layout_width="15dp"
-                    android:src="@drawable/gold_m"
-                    android:layout_gravity="center_vertical"/>
+                    android:src="@drawable/my_gold"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="3dp"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:layout_gravity="center_vertical"
                     style="@style/TextColorSecond"
-                    android:id="@+id/gold_count"/>
+                    android:id="@+id/gold_count"
+                    android:layout_marginRight="2dp"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/platinum_display"
+                android:visibility="invisible">
+
+                <ImageView
+                    android:layout_height="15dp"
+                    android:layout_width="15dp"
+                    android:src="@drawable/my_platinum"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="3dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_gravity="center_vertical"
+                    style="@style/TextColorSecond"
+                    android:id="@+id/platinum_count"
+                    android:layout_marginRight="2dp"/>
             </LinearLayout>
             <View
                 android:layout_width="0dp"

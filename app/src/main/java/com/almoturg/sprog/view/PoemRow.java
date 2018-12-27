@@ -72,13 +72,29 @@ public class PoemRow {
                     .setText(markdownConverter.convertPoemMarkdown(poem.content, poem.timestamp));
             poem_row.findViewById(R.id.author).setVisibility(View.VISIBLE);
         }
+
+        ((TextView) poem_row.findViewById(R.id.silver_count))
+                .setText(Long.toString(poem.silver));
+        if (poem.silver > 0) {
+            poem_row.findViewById(R.id.silver_display).setVisibility(View.VISIBLE);
+        } else {
+            poem_row.findViewById(R.id.silver_display).setVisibility(View.INVISIBLE);
+        }
         ((TextView) poem_row.findViewById(R.id.gold_count))
-                .setText(" \u00D7 " + Long.toString(poem.gold));
+                .setText(Long.toString(poem.gold));
         if (poem.gold > 0) {
             poem_row.findViewById(R.id.gold_display).setVisibility(View.VISIBLE);
         } else {
             poem_row.findViewById(R.id.gold_display).setVisibility(View.INVISIBLE);
         }
+        ((TextView) poem_row.findViewById(R.id.platinum_count))
+                .setText(Long.toString(poem.platinum));
+        if (poem.platinum > 0) {
+            poem_row.findViewById(R.id.platinum_display).setVisibility(View.VISIBLE);
+        } else {
+            poem_row.findViewById(R.id.platinum_display).setVisibility(View.INVISIBLE);
+        }
+
         if (poem.favorite){
             poem_row.findViewById(R.id.favorite_icon).setVisibility(View.VISIBLE);
         } else {
