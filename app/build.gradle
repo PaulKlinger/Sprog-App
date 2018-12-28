@@ -6,8 +6,8 @@ android {
         applicationId "com.almoturg.sprog"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 27
-        versionName "2.3"
+        versionCode 28
+        versionName "2.3.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
